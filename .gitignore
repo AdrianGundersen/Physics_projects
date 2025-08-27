@@ -1,0 +1,48 @@
+# Compiled object files
+*.o
+*.obj
+
+# Executables
+*.out
+a.out
+*.exe
+
+# Libraries
+*.so
+*.dll
+*.dylib
+
+# Build folders
+/build/
+/bin/
+/CMakeFiles/
+CMakeCache.txt
+Makefile
+
+# Editor/IDE files
+.vscode/
+.idea/
+*.swp
+*~
+
+# Python helper scripts cache
+__pycache__/
+*.pyc
+
+# Data / simulation output
+*.dat
+*.txt
+*.csv
+
+# Plots and figures
+*.png
+*.jpg
+*.jpeg
+*.pdf
+
+# Logs
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
