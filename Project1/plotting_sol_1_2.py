@@ -16,9 +16,9 @@ plt.rcParams.update({
 })
 
 script_dir = os.path.dirname(os.path.abspath(__file__))
-file_path = os.path.join(script_dir, "diff_eq_sol.txt")
+file_path = os.path.join(script_dir)
 
-data = np.loadtxt(file_path)
+data = np.loadtxt(file_path + "/diff_eq_sol.txt")
 
 x = data[:, 0]
 u = data[:, 1]
@@ -31,6 +31,6 @@ plt.ylim(min(u), max(u)*1.1)
 plt.title("Solution to the Differential Equation")
 plt.grid(alpha=0.3)
 plt.tight_layout()
-plt.savefig(file_path + "/Plot2")
+plt.savefig(file_path + "/Plot2.pdf")
 plt.show()
 plt.close()
