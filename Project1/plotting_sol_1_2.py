@@ -14,6 +14,8 @@ u = data[:, 1]
 plt.plot(x, u)
 plt.xlabel("x")
 plt.ylabel("u(x)")
+plt.xlim(min(x), max(x)*1.1)
+plt.ylim(min(u), max(u)*1.1)
 plt.title("Solution to the Differential Equation")
 plt.grid(alpha=0.3)
 plt.tight_layout()
