@@ -4,11 +4,9 @@
 Numerical solution of the boundary value problem:
 
 $$
-\begin{cases}
     -u''(x) = f(x), & x \in [0,1], \\
     f(x) = 100 e^{-10x}, & \\
     u(0) = 0, \quad u(1) = 0. &
-\end{cases}
 $$
 
 - Derive the analytical solution
