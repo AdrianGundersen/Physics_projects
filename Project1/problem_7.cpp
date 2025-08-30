@@ -6,14 +6,33 @@
 #include <fstream>
 #include <string>
 #include <iomanip>
-
-//using namespace std;
+#include <cstdlib>
 
 std::ofstream ofile;
+
+void print_usage(const char* progname) {
+    // made using chatgpt
+    std::cout << "Usage: " << progname << " outputfile\n";
+    std::cout << "\nDescription:\n"
+              << "  Solves -u''(x) = 100 e^{-10x} on (0,1) with u(0)=u(1)=0\n"
+              << "  using the Thomas algorithm for tridiagonal systems.\n"
+              << "\nArguments:\n"
+              << "  outputfile   Name of the file to write (x, u(x)) pairs\n"
+              << "\nInput:\n"
+              << "  The program will then ask you for the number of mesh points n.\n"
+              << std::endl;
+}
 
 // Insert argumentes and vectors
 int main(int argc, char* argv[])
 {
+    //  usage message
+    if (argc > 1 &&
+       (std::string(argv[1]) == "--help" || std::string(argv[1]) == "-h")) {
+        print_usage(argv[0]);
+        return 0;
+    }
+
     auto start = std::chrono::high_resolution_clock::now();
     char *outfilename;
     int i, j, n;
