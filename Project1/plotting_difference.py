@@ -1,5 +1,5 @@
-# plotting_sol_1_2.py
-# General plotting script for x against u(x) from a data file
+# plotting_difference.py
+# Plots the absolute and relative difference between numerical and analytical solutions from a data file.
 
 import os
 import numpy as np
@@ -25,18 +25,3 @@ data_file = input("Enter the data file name: ")
 title = input("Enter the plot title: ")
 
 data = np.loadtxt(os.path.join(file_path, data_file))
-
-x = data[:, 0]
-u = data[:, 1]
-
-plt.plot(x, u)
-plt.xlabel("x")
-plt.ylabel("u(x)")
-plt.xlim(min(x), max(x)*1.1)
-plt.ylim(min(u), max(u)*1.1)
-plt.title(title)
-plt.grid(alpha=0.3)
-plt.tight_layout()
-plt.savefig(file_path + title + ".pdf")
-plt.show()
-plt.close()

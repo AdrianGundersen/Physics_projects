@@ -1,4 +1,4 @@
-# Project 1: 1D Poisson Solver](
+# Project 1: 1D Poisson Solver
 
 ## Description
 Numerical solution of the boundary value problem:
