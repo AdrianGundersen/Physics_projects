@@ -6,6 +6,7 @@
 #include <fstream>
 #include <string>
 #include <iomanip>
+#include <filesystem>
 
 std::vector<double> u_x(std::vector<double> x_vals);
 
@@ -29,9 +30,15 @@ int main(){
     int width = 12; // aligns columns
     int prec = 4; // # of digits (precision)
 
-    // starts writing to file
+    // Creating a folder to save the data inside
     std::ofstream ofile;
-    ofile.open(filename);
+    std::string folder = "output/";
+    namespace fs = std::filesystem;
+    fs::create_directories(folder);
+
+    // starts writing to file
+    std::string filepath = folder + filename;
+    ofile.open(filepath);
 
     for (int i = 0; i <= n; i++){
     ofile << std::setw(width) << std::setprecision(prec) << std::scientific << x_values[i]
