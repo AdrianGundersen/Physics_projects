@@ -22,41 +22,30 @@ script_dir = os.path.dirname(os.path.abspath(__file__))
 file_path = os.path.join(script_dir)
 
 folder = "output"
-data_file = input("Enter the data file name: ")
+data_file_1 = "problem_8_1000n.txt"
+data_file_2 = "problem_8_100000n.txt"
 
-data = np.loadtxt(os.path.join(folder, data_file))
+data_1 = np.loadtxt(os.path.join(folder, data_file_1))
+data_2 = np.loadtxt(os.path.join(folder, data_file_2))
 
-x = data[:, 0]
-v = data[:, 1]
-u = data[:, 2]
-delta = data[:, 3]
+x_1, x_2 = data_1[:, 0], data_2[:, 0]
+v_1, v_2 = data_1[:, 1], data_2[:, 1]
+u_1, u_2 = data_1[:, 2], data_2[:, 2]
+delta_1, delta_2 = data_1[:, 3], data_2[:, 3]
 
-x = x[1:-1]
-v = v[1:-1]
-u = u[1:-1]
-delta = delta[1:-1]
-
-title = "u(x) vs. v(x)"
-
-plt.plot(x, v, label="v(x)")
-plt.plot(x, u, label="u(x)", linestyle="-")
-plt.xlabel("x")
-plt.ylabel("u, v")
-plt.title(title)
-plt.grid(alpha=0.3)
-plt.legend()
-plt.tight_layout()
-plt.savefig(file_path + title + ".pdf")
-plt.show()
-plt.close()
+x_1, x_2 = x_1[1:-1], x_2[1:-1]
+v_1, v_2 = v_1[1:-1], v_2[1:-1]
+u_1, u_2 = u_1[1:-1], u_2[1:-1]
+delta_1, delta_2 = delta_1[1:-1], delta_2[1:-1]
 
 title_log = "Logaritmical absolute error"
-plt.plot(x, delta, label="v(x)")
+plt.plot(x_1, delta_1, label="n=1000")
+plt.plot(x_2, delta_2, label="n=100000")
 plt.xlabel("x")
 plt.ylabel("log_10(|u-v|)")
 plt.title(title_log)
 plt.grid(alpha=0.3)
-#plt.legend()
+plt.legend()
 plt.tight_layout()
 plt.savefig(file_path + title_log + ".pdf")
 plt.show()
