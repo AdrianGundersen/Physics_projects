@@ -7,6 +7,7 @@
 #include <string>
 #include <iomanip>
 #include <cstdlib>
+#include <filesystem>
 
 std::ofstream ofile;
 
@@ -47,7 +48,15 @@ int main(int argc, char* argv[])
     else{
         outfilename = argv[1];
     }
-    ofile.open(outfilename);
+
+    // Creating a directory for the file to be saved
+    std::string folder = "output/";
+    namespace fs = std::filesystem;
+    fs::create_directories(folder);
+    std::string filepath = folder + outfilename;
+
+    ofile.open(filepath);
+
     std::cout << "Read in number of mech points" << std::endl;
 
     //Reads # of mesh points
@@ -69,39 +78,43 @@ int main(int argc, char* argv[])
 
     std::vector<double> v(n);        // approximate solution v
     std::vector<double> g(n, 0.0);   // right-hand side g
-    std::vector<double> temp(n, 0.0);  // temporary vector
-
+    
     // builds g-vector (RHS)
     for (int i = 0; i < n; i++){
         double x = (i+1)*h;     // x-values from 0 to 1 (w/o boundaries)
-        g[i] = h*h * 100.0 * std::exp(-10.0 * x);
+        g[i] = h * h * 100.0 * std::exp(-10.0 * x);
     }
+    
+    std::vector<double> gtemp = g;  // temporary vector
+    std::vector<double> btemp = b;   // diagonal b temp vector
 
     // Forward sub
-    double btemp = b[0];
-    v[0] = g[0] / btemp; // initialize solution at first interior
 
     for (int i = 1; i < n; i++) {
-        temp[i] = c[i-1] / btemp;
-        btemp   = b[i] - a[i] * temp[i];
-        v[i]    = (g[i] - a[i]*v[i-1]) / btemp;   // compute solution into v
+        btemp[i]   = b[i] - c[i-1] * a[i] / btemp[i-1];
+        gtemp[i] = g[i] - a[i] * gtemp[i-1] / btemp[i-1];
     }
 
+
     // backward sub
+    v[n-1] = gtemp[n-1] / btemp[n-1];
+
     for (int i = n-2; i >= 0; i--) {
-        v[i] -= temp[i+1] * v[i+1]; // back-substitute into v
+        v[i] = (gtemp[i] -c[i]* v[i+1]) / btemp[i]; // back-substitute into v
     }
 
     // sets precision and width of output
     int width = 12;
     int prec = 4;
 
-    v.push_back(0.0);  // adds boundary value
+    // adds boundary values
+    v.insert(v.begin(), 0.0);
+    v.push_back(0.0);  
 
     for (int i = 0; i <= n; i++){
         ofile << std::setw(width) << std::setprecision(prec) << std::scientific << x_values[i]
               << std::setw(width) << std::setprecision(prec) << std::scientific << v[i]
-              << std::endl;
+              << "\n";
     }
     ofile.close();
 
