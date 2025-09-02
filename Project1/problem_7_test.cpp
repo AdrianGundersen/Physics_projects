@@ -7,6 +7,7 @@
 #include <string>
 #include <iomanip>
 #include <cstdlib>
+#include <filesystem>
 
 std::ofstream ofile;
 
@@ -47,7 +48,15 @@ int main(int argc, char* argv[])
     else{
         outfilename = argv[1];
     }
-    ofile.open(outfilename);
+
+    // Creating a directory for the file to be saved
+    std::string folder = "output/";
+    namespace fs = std::filesystem;
+    fs::create_directories(folder);
+    std::string filepath = folder + outfilename;
+
+    ofile.open(filepath);
+
     std::cout << "Read in number of mech points" << std::endl;
 
     //Reads # of mesh points

@@ -21,10 +21,11 @@ plt.rcParams.update({
 script_dir = os.path.dirname(os.path.abspath(__file__))
 file_path = os.path.join(script_dir)
 
+folder = "output"
 data_file = input("Enter the data file name: ")
 title = input("Enter the plot title: ")
 
-data = np.loadtxt(os.path.join(file_path, data_file))
+data = np.loadtxt(os.path.join(folder, data_file))
 
 x = data[:, 0]
 u = data[:, 1]
