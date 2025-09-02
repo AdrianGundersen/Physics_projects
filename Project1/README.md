@@ -21,7 +21,7 @@ $$
 - `problem_1_2.cpp` – C++ program for Problem 1 & 2 (analytical solution + simple solver)
 - `problem_7.cpp` – C++ program implementing the Thomas algorithm (general solver)
 - `plotting_sol_1_2.py` – Python plotting script for Problems 1, 2 & 7 
-- `diff_eq_sol.txt` – Example output file (solution data)
+- `output/diff_eq_sol.txt` – Example output file (solution data) are saved in `output` folder
 - `Plot2.pdf` – Example plot generated from `plotting_sol_1_2.py`
 
 ---
@@ -44,7 +44,8 @@ For problem 7:
 ```bash
 ./problem_7.exe filename.txt 
 ```
-Enter the number of steps $n$ between [0,1] in therminal
+- Enter the number of steps $n$ between [0,1] in therminal
+- The output file `filename.txt` will  be saved in the `output` folder.
 
 ### Plot
 To plot Problems 1,2 $ 7 run `plotting_sol_1_2.py` 
