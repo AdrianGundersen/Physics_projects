@@ -44,7 +44,7 @@ For problem 7:
 ```bash
 ./problem_7.exe filename.txt 
 ```
-Enter the number of steps between [0,1] 
+Enter the number of steps $n$ between [0,1] in therminal
 
 ### Plot
 To plot Problems 1,2 $ 7 run `plotting_sol_1_2.py` 
