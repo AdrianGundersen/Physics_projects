@@ -40,6 +40,11 @@ g++ -O2 -std=c++17 problem_7.cpp -o problem_7.exe
 ```
 
 ### Run
+For problem 1 & 2:
+```bash
+./problem_1_2.exe 
+```
+
 For problem 7:
 ```bash
 ./problem_7.exe filename.txt 
