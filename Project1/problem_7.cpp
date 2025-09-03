@@ -67,7 +67,7 @@ int main(int argc, char* argv[])
 
     // vector med x- verdier fra [0,1]
     std::vector<double> x_values;
-    for (int j = 0; j < n; j++){
+    for (int j = 0; j < n + 1; j++){
         x_values.push_back(j*h);
     };
     x_values.push_back(1.0);
