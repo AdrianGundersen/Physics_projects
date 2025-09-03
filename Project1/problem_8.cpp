@@ -85,9 +85,8 @@ double problem_8ab(int k)
     std::vector<double> epsilon = delta;
 
     // Calculatign the exact solution and the absolute error
-    for(int i = 0; i < n; i++){
+    for(int i = 0; i < n +1; i++){
         u[i] = 1 - (1-std::exp(-10.0))*x_values[i]-std::exp(-10.0*x_values[i]); // exact solution
-
         //taiking their absolute values
         double diff = std::abs(u[i] - v[i]);
         double rel_err = std::abs((u[i]-v[i])/u[i]);
@@ -97,12 +96,13 @@ double problem_8ab(int k)
         epsilon[i] = rel_err;
         epsilon_log[i] = log10(rel_err);
     }
-    u.push_back(0.0); // boundary value
 
     //Trekker ut maksimalveriden i epsilon vectoren
     double max_eps = *std::max_element(epsilon.begin() +1, epsilon.end() - 1);
 
-    for (int i = 0; i <= n; i++){
+
+    // Removing the end ppoints, because we dont need the values where the function callaoses. 
+    for (int i = 1; i < n+1; i++){
         ofile << std::setw(width) << std::setprecision(prec) << std::scientific << x_values[i]
               << std::setw(width) << std::setprecision(prec) << std::scientific << v[i]
               << std::setw(width) << std::setprecision(prec) << std::scientific << u[i]
@@ -130,11 +130,11 @@ int main(){
     int width = 16;
     int prec = 6;
 
-    for (int n = 1; n < 8; n++){
+    for (int n = 1; n < 6; n++){
         double maxeps = problem_8ab(n);
         double N = std::pow(10.0,n);
         ofiles << std::setw(width) << std::setprecision(prec) << std::scientific << maxeps
-              << std::setw(width) << std::setprecision(prec) << std::scientific << N
+              << std::setw(width) << std::setprecision(0) << std::scientific << N
               << "\n";
     }
 
