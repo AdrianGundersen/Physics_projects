@@ -34,11 +34,13 @@ u_1, u_2 = data_1[:, 2], data_2[:, 2]
 delta_1, delta_2 = data_1[:, 3], data_2[:, 3]
 epsilon_1, epsilon_2 = data_1[:, 4], data_2[:, 4]
 
+"""
 x_1, x_2 = x_1[1:-1], x_2[1:-1]
 v_1, v_2 = v_1[1:-1], v_2[1:-1]
 u_1, u_2 = u_1[1:-1], u_2[1:-1]
 delta_1, delta_2 = delta_1[1:-1], delta_2[1:-1]
 epsilon_1, epsilon_2 = epsilon_1[1:-1], epsilon_2[1:-1]
+"""
 
 title_absolute = "Logaritmical_absolute_error"
 title_relative = "Logaritmical_relative_error"
