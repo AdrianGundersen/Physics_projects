@@ -111,7 +111,7 @@ int main(int argc, char* argv[])
     v.insert(v.begin(), 0.0);
     v.push_back(0.0);  
 
-    for (int i = 0; i <= n; i++){
+    for (int i = 0; i < n+2; i++){
         ofile << std::setw(width) << std::setprecision(prec) << std::scientific << x_values[i]
               << std::setw(width) << std::setprecision(prec) << std::scientific << v[i]
               << "\n";
