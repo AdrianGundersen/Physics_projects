@@ -29,7 +29,7 @@ $$
 ## Usage
 
 ### Compile
-For Problem 1 & 2:
+For Problem 1, 2 & 8:
 ```bash
 g++ -O2 -std=c++17 problem_1_2.cpp -o problem_1_2.exe 
 ```
@@ -40,7 +40,7 @@ g++ -O2 -std=c++17 problem_7.cpp -o problem_7.exe
 ```
 
 ### Run
-For problem 1 & 2:
+For problem 1, 2 & 8:
 ```bash
 ./problem_1_2.exe 
 ```
@@ -52,8 +52,13 @@ For problem 7:
 - Enter the number of steps $n$ between [0,1] in therminal
 - The output file `filename.txt` will  be saved in the `output` folder.
 
+
+
 ### Plot
 To plot Problems 1,2 $ 7 run `plotting_sol_1_2.py` 
 - Enter the filename in the terminal. It wil autoselect the `output` folder. 
 - Select title for the plot. 
 
+To plot problem 8
+- Run `problem_8.cpp` first.
+- Run `plot_probblem_8.py`
