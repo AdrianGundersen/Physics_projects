@@ -40,14 +40,14 @@ u_1, u_2 = u_1[1:-1], u_2[1:-1]
 delta_1, delta_2 = delta_1[1:-1], delta_2[1:-1]
 epsilon_1, epsilon_2 = epsilon_1[1:-1], epsilon_2[1:-1]
 
-title_absolute = "Logaritmical absolute error"
-title_relative = "Logaritmical relative error"
+title_absolute = "Logaritmical_absolute_error"
+title_relative = "Logaritmical_relative_error"
 
 plt.plot(x_1, delta_1, label="n=1000")
 plt.plot(x_2, delta_2, label="n=100000")
 plt.xlabel(r"$x$")
 plt.ylabel(r"$\log_{10}\!\left|u - v\right|$")
-plt.title(title_absolute)
+plt.title("Logarithmic absolute error")
 plt.grid(alpha=0.3)
 plt.legend()
 plt.tight_layout()
@@ -59,7 +59,7 @@ plt.plot(x_1, epsilon_1, label=r"$n=1000$")
 plt.plot(x_2, epsilon_2, label=r"$n=100000$")
 plt.xlabel(r"$x$")
 plt.ylabel(r"$\log_{10}\!\left|\frac{u-v}{u}\right|$")
-plt.title(title_relative)
+plt.title("Logarithmic relative error")
 plt.grid(alpha=0.3)
 plt.legend()
 plt.tight_layout()
