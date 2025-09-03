@@ -20,6 +20,7 @@ $$
 ## Files
 - `problem_1_2.cpp` – C++ program for Problem 1 & 2 (analytical solution + simple solver)
 - `problem_7.cpp` – C++ program implementing the Thomas algorithm (general solver)
+- `problem_7.cpp` - C++ program implementing the Thomas algorithm (general solver), finds the error and loos for different iterations $n$
 - `plotting_sol_1_2.py` – Python plotting script for Problems 1, 2 & 7 
 - `output/diff_eq_sol.txt` – Example output file (solution data) are saved in `output` folder
 - `Plot2.pdf` – Example plot generated from `plotting_sol_1_2.py`
