@@ -184,8 +184,10 @@ int main(){
     for (int n = 1; n < 6; n++){
         double maxeps = problem_8ab(n);
         double N = std::pow(10.0,n);
+        double h_tabell = 1.0 / (N + 1);
         ofiles << std::setw(width) << std::setprecision(prec) << std::scientific << maxeps
               << std::setw(width) << std::setprecision(0) << std::scientific << N
+              << std::setw(width) << std::setprecision(8) << std::scientific << h_tabell
               << "\n";
     }
 
