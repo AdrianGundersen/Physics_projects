@@ -26,9 +26,13 @@ data_file_1 = "problem_8_1000.txt"
 data_file_2 = "problem_8_100000.txt"
 data_file_3 = "problem_8_10000.txt"
 
+amx_relativ_error = "max_relative_error.txt"
+
 data_1 = np.loadtxt(os.path.join(folder, data_file_1))
 data_2 = np.loadtxt(os.path.join(folder, data_file_2))
 data_3 = np.loadtxt(os.path.join(folder, data_file_3))
+data_4 = np.loadtxt(os.path.join(folder, amx_relativ_error))
+
 
 x_1, x_2, x_3 = data_1[:, 0], data_2[:, 0], data_3[:, 0]
 v_1, v_2, v_3 = data_1[:, 1], data_2[:, 1], data_3[:, 1]
@@ -36,13 +40,16 @@ u_1, u_2, u_3 = data_1[:, 2], data_2[:, 2], data_3[:, 1]
 delta_1, delta_2, delta_3 = data_1[:, 3], data_2[:, 3], data_3[:, 3]
 epsilon_1, epsilon_2, epsilon_3 = data_1[:, 4], data_2[:, 4], data_3[:, 4]
 
-"""
-x_1, x_2 = x_1[1:-1], x_2[1:-1]
-v_1, v_2 = v_1[1:-1], v_2[1:-1]
-u_1, u_2 = u_1[1:-1], u_2[1:-1]
-delta_1, delta_2 = delta_1[1:-1], delta_2[1:-1]
-epsilon_1, epsilon_2 = epsilon_1[1:-1], epsilon_2[1:-1]
-"""
+max_error = data_4[:, 0]
+h = data_4[:,2]
+log_h = np.log10(h)
+log_max_error = np.log10(max_error)
+
+# Linær regresjon: y = p*x + b
+p, b = np.polyfit(log_h, log_max_error, 1)
+xfit = np.linspace(log_h.min(), log_h.max(), 200)
+yfit = p * xfit + b
+
 
 title_absolute = "Logaritmical_absolute_error"
 title_relative = "Logaritmical_relative_error"
@@ -70,5 +77,17 @@ plt.grid(alpha=0.3)
 plt.legend()
 plt.tight_layout()
 plt.savefig(file_path + title_relative + ".pdf")
+plt.show()
+plt.close()
+
+plt.plot(xfit, yfit, "-", label=fr"fit: slope = {p:.3f}, intercept = {b:.3f}")
+plt.plot(log_h, log_max_error, "o", label="data")
+plt.xlabel(r"$\log_{10}(h)$")
+plt.ylabel(r"$\log_{10}(\max |(u-v)/u|)$")
+plt.title("Max relative error vs stepsize")
+plt.grid(alpha=0.3)
+plt.legend()
+plt.tight_layout()
+plt.savefig(file_path + "max_relative_error" + ".pdf")
 plt.show()
 plt.close()
