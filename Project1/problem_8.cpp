@@ -153,7 +153,7 @@ void problem_10(int k){
             g[i] = h * h * 100.0 * std::exp(-10.0 * x);
         }
 
-        for(int i = 0; i < 100; i++){
+        for(int p = 0; p < 100; p++){
 
             std::vector<double> gtemp = g;  // temporary vector
             std::vector<double> btemp = b;   // diagonal b temp vector
@@ -183,11 +183,15 @@ void problem_10(int k){
 
     for(int j = 0; j < nums.size(); j++){
         //problem 8 time
-            auto start2 = std::chrono::high_resolution_clock::now();
-            double dummy = problem_8ab(j+1, true);
-            auto end2 = std::chrono::high_resolution_clock::now();
-            std::chrono::duration<double> duration2 = end2 - start2;
-            time_org.push_back(duration2.count());
+        auto start2 = std::chrono::high_resolution_clock::now();
+            for(int p = 0; p < 100; p++){
+
+                double dummy = problem_8ab(j+1, true);
+        }
+
+        auto end2 = std::chrono::high_resolution_clock::now();
+        std::chrono::duration<double> duration2 = end2 - start2;
+        time_org.push_back(duration2.count());
 
         
         //writing
