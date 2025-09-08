@@ -12,72 +12,25 @@
 
 std::ofstream ofile;
 
-void problem_10(int k){
-    std::vector<int> nums = {10, 100, 1000, 10000, 100000, 1000000};
-    
-        std::string folder_err = "output/";
-        std::string filename_time_opt = "time_optimized_algo.txt";
-        std::string filepath_time_opt = folder_err + filename_time_opt;
 
-        ofile.open(filepath_time_opt);
-
-    for(int j = 0; j < nums.size(); j++){
-        int n = nums[j];
-        double h = 1.0/(n+1);
-        std::vector<double> a(n, -1.0);  // superdiagonal a
-        std::vector<double> b(n, 2.0);   // diagonal b
-        std::vector<double> c(n, -1.0);  // subdiagonal c
-
-        std::vector<double> v(n);        // approximate solution v
-        std::vector<double> g(n, 0.0);   // right-hand side g
-        
-        // builds g-vector (RHS)
-        for (int i = 0; i < n; i++){
-            double x = (i+1)*h;     // x-values from 0 to 1 (w/o boundaries)
-            g[i] = h * h * 100.0 * std::exp(-10.0 * x);
-        }
-
-        for(int i = 0; i < 100; i++){
-            auto start = std::chrono::high_resolution_clock::now();
-
-            std::vector<double> gtemp = g;  // temporary vector
-            std::vector<double> btemp = b;   // diagonal b temp vector
-
-            // Forward sub
-
-            for (int i = 1; i < n; i++) {
-                btemp[i]   = 2.0 - 1.0 / btemp[i-1];
-                gtemp[i] = g[i] + gtemp[i-1] / btemp[i-1];
-            }
-
-
-            // backward sub
-            v[n-1] = gtemp[n-1] / btemp[n-1];
-
-            for (int i = n-2; i >= 0; i--) {
-                v[i] = (gtemp[i] + v[i+1]) / btemp[i]; // back-substitute into v
-            }
-            auto end = std::chrono::high_resolution_clock::now();
-            std::chrono::duration<double> duration = end - start;
-            ofile << duration.count() << "\n";
-    }}
-    ofile.close();
-}
 // Insert argumentes and vectors
-double problem_8ab(int k)
+double problem_8ab(int k, bool check) // bool is to check if it is problem 10
 {
     const int n = std::pow(10.0,k);  
     double h = 1.0/(n+1);
 
-    // Creating a directory and filename for the file to be saved
-    std::string folder = "output/";
-    std::string filename = "problem_8_";
-    std::string txt = ".txt";
-    namespace fs = std::filesystem;
-    fs::create_directories(folder);
-    std::string filepath = folder + filename + std::to_string(n) + txt;
+    if(!check){
+        // Creating a directory and filename for the file to be saved
+        std::string folder = "output/";
+        std::string filename = "problem_8_";
+        std::string txt = ".txt";
+        namespace fs = std::filesystem;
+        fs::create_directories(folder);
+        std::string filepath = folder + filename + std::to_string(n) + txt;
+        ofile.open(filepath);
+}
 
-    ofile.open(filepath);
+    
 
     //step size
 
@@ -119,9 +72,7 @@ double problem_8ab(int k)
         v[i] = (gtemp[i] -c[i]* v[i+1]) / btemp[i]; // back-substitute into v
     }
 
-    // sets precision and width of output
-    int width = 16;
-    int prec = 6;
+    
 
     // adds boundary values
     v.insert(v.begin(), 0.0);
@@ -151,19 +102,100 @@ double problem_8ab(int k)
     //Trekker ut maksimalveriden i epsilon vectoren
     double max_eps = *std::max_element(epsilon.begin() +1, epsilon.end() - 1);
 
-
-    // Removing the end ppoints, because we dont need the values where the function callaoses. 
-    for (int i = 1; i < n+1; i++){
-        ofile << std::setw(width) << std::setprecision(prec) << std::scientific << x_values[i]
-              << std::setw(width) << std::setprecision(prec) << std::scientific << v[i]
-              << std::setw(width) << std::setprecision(prec) << std::scientific << u[i]
-              << std::setw(width) << std::setprecision(prec) << std::scientific << delta[i]
-              << std::setw(width) << std::setprecision(prec) << std::scientific << epsilon_log[i]
-              << "\n";
-    }
-    ofile.close();
+    if(!check){ 
+        // Removing the end ppoints, because we dont need the values where the function callaoses. 
+        // sets precision and width of output
+        int width = 16;
+        int prec = 6;
+        for (int i = 1; i < n+1; i++){
+            ofile << std::setw(width) << std::setprecision(prec) << std::scientific << x_values[i]
+                << std::setw(width) << std::setprecision(prec) << std::scientific << v[i]
+                << std::setw(width) << std::setprecision(prec) << std::scientific << u[i]
+                << std::setw(width) << std::setprecision(prec) << std::scientific << delta[i]
+                << std::setw(width) << std::setprecision(prec) << std::scientific << epsilon_log[i]
+                << "\n";
+        }
+        ofile.close();
+}
 
     return max_eps;
+}
+
+void problem_10(int k){
+    std::vector<int> nums = {10, 100, 1000, 10000, 100000, 1000000};
+    // time taken
+    std::vector<double> time_opt;
+    std::vector<double> time_org;
+
+    
+        std::string folder_err = "output/";
+        std::string filename_time_opt = "time_optimized_algo.txt";
+        std::string filepath_time_opt = folder_err + filename_time_opt;
+
+        ofile.open(filepath_time_opt);
+
+    for(int j = 0; j < nums.size(); j++){
+        auto start = std::chrono::high_resolution_clock::now();     
+        int n = std::pow(10.0, j+1);  
+        double h = 1.0/(n+1);
+        std::vector<double> a(n, -1.0);  // superdiagonal a
+        std::vector<double> b(n, 2.0);   // diagonal b
+        std::vector<double> c(n, -1.0);  // subdiagonal c
+
+        std::vector<double> v(n);        // approximate solution v
+        std::vector<double> g(n, 0.0);   // right-hand side g
+        
+        
+
+        // builds g-vector (RHS)
+        for (int i = 0; i < n; i++){
+            double x = (i+1)*h;     // x-values from 0 to 1 (w/o boundaries)
+            g[i] = h * h * 100.0 * std::exp(-10.0 * x);
+        }
+
+        for(int i = 0; i < 100; i++){
+
+            std::vector<double> gtemp = g;  // temporary vector
+            std::vector<double> btemp = b;   // diagonal b temp vector
+
+            // Forward sub
+
+            for (int i = 1; i < n; i++){
+                btemp[i]   = 2.0 - 1.0 / btemp[i-1];
+                gtemp[i] = g[i] + gtemp[i-1] / btemp[i-1];
+            }
+
+
+            // backward sub
+            v[n-1] = gtemp[n-1] / btemp[n-1];
+
+            for (int i = n-2; i >= 0; i--) {
+                v[i] = (gtemp[i] + v[i+1]) / btemp[i]; // back-substitute into v
+            }
+    }
+        auto end = std::chrono::high_resolution_clock::now();
+        std::chrono::duration<double> duration = end - start;
+        time_opt.push_back(duration.count());
+    }
+
+    int width = 16;
+    int prec = 6;
+
+    for(int j = 0; j < nums.size(); j++){
+        //problem 8 time
+            auto start2 = std::chrono::high_resolution_clock::now();
+            double dummy = problem_8ab(j+1, true);
+            auto end2 = std::chrono::high_resolution_clock::now();
+            std::chrono::duration<double> duration2 = end2 - start2;
+            time_org.push_back(duration2.count());
+
+        
+        //writing
+        ofile << std::setw(width) << std::setprecision(prec) << std::scientific << time_opt[j]
+            << std::setw(width) << std::setprecision(prec) << std::scientific << time_org[j]
+            << "\n";
+    }
+    ofile.close();
 }
 
 int main(){
@@ -182,7 +214,7 @@ int main(){
     int prec = 6;
 
     for (int n = 1; n < 6; n++){
-        double maxeps = problem_8ab(n);
+        double maxeps = problem_8ab(n, false);
         double N = std::pow(10.0,n);
         double h_tabell = 1.0 / (N + 1);
         ofiles << std::setw(width) << std::setprecision(prec) << std::scientific << maxeps
