@@ -26,22 +26,23 @@ data_file_1 = "problem_8_1000.txt"
 data_file_2 = "problem_8_100000.txt"
 data_file_3 = "problem_8_10000.txt"
 
-amx_relativ_error = "max_relative_error.txt"
+max_relative_error = "max_relative_error.txt"
 
 data_1 = np.loadtxt(os.path.join(folder, data_file_1))
 data_2 = np.loadtxt(os.path.join(folder, data_file_2))
 data_3 = np.loadtxt(os.path.join(folder, data_file_3))
-data_4 = np.loadtxt(os.path.join(folder, amx_relativ_error))
+data_4 = np.loadtxt(os.path.join(folder, max_relative_error))
 
 
 x_1, x_2, x_3 = data_1[:, 0], data_2[:, 0], data_3[:, 0]
 v_1, v_2, v_3 = data_1[:, 1], data_2[:, 1], data_3[:, 1]
-u_1, u_2, u_3 = data_1[:, 2], data_2[:, 2], data_3[:, 1]
+u_1, u_2, u_3 = data_1[:, 2], data_2[:, 2], data_3[:, 2]
 delta_1, delta_2, delta_3 = data_1[:, 3], data_2[:, 3], data_3[:, 3]
 epsilon_1, epsilon_2, epsilon_3 = data_1[:, 4], data_2[:, 4], data_3[:, 4]
 
 max_error = data_4[:, 0]
-h = data_4[:,2]
+h = data_4[:,1]
+
 log_h = np.log10(h)
 log_max_error = np.log10(max_error)
 

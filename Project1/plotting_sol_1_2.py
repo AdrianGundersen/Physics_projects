@@ -31,8 +31,8 @@ x = data[:, 0]
 u = data[:, 1]
 
 plt.plot(x, u)
-plt.xlabel("$x$")
-plt.ylabel("$u(x)$")
+plt.xlabel(r"$x$")
+plt.ylabel(r"$u(x)$")
 plt.xlim(min(x), max(x)*1.1)
 plt.ylim(min(u), max(u)*1.1)
 plt.title(title)
