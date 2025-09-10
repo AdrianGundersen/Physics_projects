@@ -15,8 +15,6 @@ std::ofstream ofile;
 // Function for the optimized algorythm
 void optimal(int n,
     std::vector<double>& v,
-    const std::vector<double>& b,
-    const std::vector<double>& g,
     std::vector<double>& btemp,
     std::vector<double>& gtemp){
         // Forward sub
@@ -37,11 +35,9 @@ void optimal(int n,
 
 // function for the original algorythm
 void original(int n,
-    const std::vector<double> & a,
-    const std::vector<double> & b, 
+    const std::vector<double> & a, 
     const std::vector<double> & c,
     std::vector<double> & v,
-    const std::vector<double> & g,
     std::vector<double>& btemp,
     std::vector<double>& gtemp) 
     {    
@@ -87,11 +83,8 @@ void problem_10(){
         std::vector<double> b(n, 2.0);   // diagonal b
         std::vector<double> c(n-1, -1.0);  // subdiagonal c
 
-        std::vector<double> v(n);        // approximate solution v
+        std::vector<double> v(n, 0.0);        // approximate solution v
         std::vector<double> g(n, 0.0);   // right-hand side g
-
-        std::vector<double> btemp = b;
-        std::vector<double> gtemp = g;
 
         // builds g-vector (RHS)
         for (int i = 0; i < n; i++){
@@ -99,11 +92,15 @@ void problem_10(){
             g[i] = h * h * 100.0 * std::exp(-10.0 * x);
         }
 
+        std::vector<double> btemp(n);
+        std::vector<double> gtemp(n);
+
         //Time optimized
         auto start = std::chrono::high_resolution_clock::now();
-
-        for(int p = 0; p < 1000; p++){
-            optimal(n, v, b, g, btemp, gtemp);
+        for (int p = 0; p < 1000; ++p) {
+            btemp = b;
+            gtemp = g;
+            optimal(n, v, btemp, gtemp);
         }
 
         auto end = std::chrono::high_resolution_clock::now();
@@ -112,8 +109,10 @@ void problem_10(){
 
         //time original
         auto start2 = std::chrono::high_resolution_clock::now();
-        for(int p = 0; p < 1000; p++){
-            original(n, a, b, c, v, g, btemp, gtemp);
+        for (int p = 0; p < 1000; ++p) {
+            btemp = b;
+            gtemp = g;
+            original(n, a, c, v, btemp, gtemp);
         }
         auto end2 = std::chrono::high_resolution_clock::now();
         std::chrono::duration<double> duration2 = end2 - start2;
