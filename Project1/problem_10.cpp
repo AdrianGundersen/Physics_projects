@@ -93,8 +93,9 @@ void problem_10(int k){
             // Forward sub
 
             for (int i = 1; i < n; i++) {
-                btemp_8[i]   = b[i] - c[i-1] * a[i] / btemp_8[i-1];
-                gtemp_8[i] = g[i] - a[i] * gtemp_8[i-1] / btemp_8[i-1];
+                double k_i = a[i] / btemp_8[i-1];
+                btemp_8[i]   = b[i] - c[i-1] * k_i;
+                gtemp_8[i] = g[i] - k_i * gtemp_8[i-1];
             }
 
             // backward sub
