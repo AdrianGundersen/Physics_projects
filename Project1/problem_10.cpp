@@ -12,7 +12,7 @@
 
 std::ofstream ofile;
 
-void problem_10(int k){
+void problem_10(){
     int power = 6; // number to power of 10
 
     // time taken for the diffrent algo
@@ -29,7 +29,7 @@ void problem_10(int k){
     //start running 
     for(int j = 0; j < power; j++){
 
-        //Running opt algo
+        //maaking vectors (matrix)
 
         int n = std::pow(10.0, j+1);  
         double h = 1.0/(n+1);
@@ -51,7 +51,7 @@ void problem_10(int k){
         }
 
         auto start = std::chrono::high_resolution_clock::now();
-
+        // running opt algo
         for(int p = 0; p < 1000; p++){
 
            
@@ -76,18 +76,13 @@ void problem_10(int k){
         std::chrono::duration<double> duration = end - start;
         time_opt.push_back(duration.count());
         
-        // Problem 8 time 
+        // Problem 8 vectors 
         std::vector<double> v_8(n);        // approximate solution v
         std::vector<double> g_8(n, 0.0);   // right-hand side g
 
         std::vector<double> gtemp_8 = g;  // temporary vector
         std::vector<double> btemp_8 = b;   // diagonal b temp vector
 
-        for (int i = 0; i < n; i++){
-                double x = (i+1)*h;     // x-values from 0 to 1 (w/o boundaries)
-                g[i] = h * h * 100.0 * std::exp(-10.0 * x);
-        }
-        
         auto start2 = std::chrono::high_resolution_clock::now();
         for(int p = 0; p < 1000; p++){
             // builds g-vector (RHS)
@@ -128,12 +123,7 @@ void problem_10(int k){
 }
 
 int main(){
-    auto start = std::chrono::high_resolution_clock::now();
-
-    // Writes duration of the program
-    auto end = std::chrono::high_resolution_clock::now();
-    std::chrono::duration<double> duration = end - start;
-    std::cout << "Time taken: " << duration.count() << " seconds\n";
+  
 
     std::cout << "Run problem 10? Y/N \n";
 
@@ -141,7 +131,7 @@ int main(){
     std::cin >> input;
 
     if (input == "Y" || input == "y") {
-        problem_10(1e6);
+        problem_10();
     }
     
     return 0;
