@@ -99,11 +99,10 @@ double problem_8ab(int k, bool check) // bool is to check if it is problem 10
             delta[i] = log10(diff);   
             epsilon[i] = rel_err;
             epsilon_log[i] = log10(rel_err);
-    }}
-
-    //Trekker ut maksimalveriden i epsilon vectoren
-    double max_eps = *std::max_element(epsilon.begin() +1, epsilon.end() - 1);
-
+            
+            //Trekker ut maksimalveriden i epsilon vectoren
+        }
+    }
     if(!check){ 
         // Removing the end ppoints, because we dont need the values where the function callaoses. 
         // sets precision and width of output
@@ -111,16 +110,17 @@ double problem_8ab(int k, bool check) // bool is to check if it is problem 10
         int prec = 6;
         for (int i = 1; i < n+1; i++){
             ofile << std::setw(width) << std::setprecision(prec) << std::scientific << x_values[i]
-                << std::setw(width) << std::setprecision(prec) << std::scientific << v[i]
-                << std::setw(width) << std::setprecision(prec) << std::scientific << u[i]
-                << std::setw(width) << std::setprecision(prec) << std::scientific << delta[i]
-                << std::setw(width) << std::setprecision(prec) << std::scientific << epsilon_log[i]
-                << "\n";
+            << std::setw(width) << std::setprecision(prec) << std::scientific << v[i]
+            << std::setw(width) << std::setprecision(prec) << std::scientific << u[i]
+            << std::setw(width) << std::setprecision(prec) << std::scientific << delta[i]
+            << std::setw(width) << std::setprecision(prec) << std::scientific << epsilon_log[i]
+            << "\n";
         }
         ofile.close();
-}
-
-    return max_eps;
+        double max_eps = *std::max_element(epsilon.begin() +1, epsilon.end() - 1);
+        return max_eps;
+    }
+    return 0.0;
 }
 
 void problem_10(int k){
@@ -187,7 +187,7 @@ void problem_10(int k){
         // Problem 8 time 
         auto start2 = std::chrono::high_resolution_clock::now();
         for(int p = 0; p < 100; p++){
-            double dummy = problem_8ab(j+1, true);
+            problem_8ab(j+1, true);
     }
         auto end2 = std::chrono::high_resolution_clock::now();
         std::chrono::duration<double> duration2 = end2 - start2;
