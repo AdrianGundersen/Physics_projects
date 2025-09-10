@@ -18,7 +18,7 @@ $$
 - Compute and tabulate maximum relative errors
 
 ## Files
-- `problem_1_2.cpp` - C++ program for Problem 1 & 2 (analytical solution + simple solver)
+- `problem_2.cpp` - C++ program for Problem 1 & 2 (analytical solution + simple solver)
 - `problem_7.cpp` - C++ program implementing the Thomas algorithm (general solver)
 - `problem_8.cpp` - C++ program implementing the Thomas algorithm (general solver), finds the error and loos for different iterations $n$
 - `problem_10.cpp` - C++ program that comperes the diffrent Thomas algorithms and creates a txt file
@@ -38,9 +38,9 @@ g++ -O2 -std=c++17 problem_i.cpp -o problem_i.exe
 ```
 
 ### Run
-For problem 1, 2 & 8:
+For problem 1, 2:
 ```bash
-./problem_X.exe 
+./problem_i.exe 
 ```
 
 For problem 7:
@@ -50,6 +50,14 @@ For problem 7:
 - Enter the number of steps $n$ between [0,1] in therminal
 - The output file `filename.txt` will  be saved in the `output` folder.
 ```
+
+For problem 8:
+```bash
+./problem_8.exe 
+```
+- Press `N` in therminal. 
+- Creates `problem_8_n.txt` files where n in number of iterations and saves in the `output` folder.
+
 For problem 10:
 ```bash
 ./problem_10.exe 
@@ -63,5 +71,4 @@ To plot Problems 1,2 $ 7 run `plotting_sol_1_2.py`
 - Select title for the plot. 
 
 To plot problem 8
-- Run `problem_8.cpp` first, press `N` in terminal.
 - Run `plot_probblem_8.py`
