@@ -19,6 +19,8 @@ double problem_8ab(int k, bool check) // bool is to check if it is problem 10
     const int n = std::pow(10.0,k);  
     double h = 1.0/(n+1);
 
+    std::vector<double> x_values;
+
     if(!check){
         // Creating a directory and filename for the file to be saved
         std::string folder = "output/";
@@ -28,19 +30,18 @@ double problem_8ab(int k, bool check) // bool is to check if it is problem 10
         fs::create_directories(folder);
         std::string filepath = folder + filename + std::to_string(n) + txt;
         ofile.open(filepath);
-}
+
 
     
 
-    //step size
+        //step size
 
-    // vector med x- verdier fra [0,1]
-    std::vector<double> x_values;
-    for (int j = 0; j < n +1; j++){
-        x_values.push_back(j*h);
-    };
-    x_values.push_back(1.0);
-
+        // vector med x- verdier fra [0,1]
+        for (int j = 0; j < n +1; j++){
+            x_values.push_back(j*h);
+        };
+        x_values.push_back(1.0);
+    }
     std::vector<double> a(n, -1.0);  // superdiagonal a
     std::vector<double> b(n, 2.0);   // diagonal b
     std::vector<double> c(n, -1.0);  // subdiagonal c
@@ -87,17 +88,18 @@ double problem_8ab(int k, bool check) // bool is to check if it is problem 10
     std::vector<double> epsilon = delta;
 
     // Calculatign the exact solution and the absolute error
-    for(int i = 0; i < n +1; i++){
-        u[i] = 1 - (1-std::exp(-10.0))*x_values[i]-std::exp(-10.0*x_values[i]); // exact solution
-        //taiking their absolute values
-        double diff = std::abs(u[i] - v[i]);
-        double rel_err = std::abs((u[i]-v[i])/u[i]);
+    if(!check){
+        for(int i = 0; i < n +1; i++){
+            u[i] = 1 - (1-std::exp(-10.0))*x_values[i]-std::exp(-10.0*x_values[i]); // exact solution
+            //taiking their absolute values
+            double diff = std::abs(u[i] - v[i]);
+            double rel_err = std::abs((u[i]-v[i])/u[i]);
 
-        // taking log_10
-        delta[i] = log10(diff);   
-        epsilon[i] = rel_err;
-        epsilon_log[i] = log10(rel_err);
-    }
+            // taking log_10
+            delta[i] = log10(diff);   
+            epsilon[i] = rel_err;
+            epsilon_log[i] = log10(rel_err);
+    }}
 
     //Trekker ut maksimalveriden i epsilon vectoren
     double max_eps = *std::max_element(epsilon.begin() +1, epsilon.end() - 1);
@@ -139,10 +141,10 @@ void problem_10(int k){
     for(int j = 0; j < power; j++){
 
         //opt algo
-        auto start = std::chrono::high_resolution_clock::now();     
+        auto start = std::chrono::high_resolution_clock::now();
         int n = std::pow(10.0, j+1);  
         double h = 1.0/(n+1);
-        
+
         std::vector<double> a(n, -1.0);  // superdiagonal a
         std::vector<double> b(n, 2.0);   // diagonal b
         std::vector<double> c(n, -1.0);  // subdiagonal c
