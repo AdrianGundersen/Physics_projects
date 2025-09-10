@@ -66,7 +66,7 @@ For problem 10:
 
 For Python files
 ```bash
-python 3 filename.py
+python3 filename.py
 ```
 
 ### Plot
