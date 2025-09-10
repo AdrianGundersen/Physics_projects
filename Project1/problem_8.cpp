@@ -61,8 +61,9 @@ double problem_8ab(int k, bool check) // bool is to check if it is problem 10
     // Forward sub
 
     for (int i = 1; i < n; i++) {
-        btemp[i]   = b[i] - c[i-1] * a[i] / btemp[i-1];
-        gtemp[i] = g[i] - a[i] * gtemp[i-1] / btemp[i-1];
+        double k = a[i] / btemp[i-1];
+        btemp[i]   = b[i] - c[i-1] * k;
+        gtemp[i] = g[i] - gtemp[i-1] *k;
     }
 
 
