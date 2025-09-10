@@ -64,6 +64,10 @@ For problem 10:
 ```
 - Creates `time_optimized_algo.txt` and saves in the `output` folder.
 
+For Python files
+```bash
+python 3 filename.py
+```
 
 ### Plot
 To plot Problems 1,2 $ 7 run `plotting_sol_1_2.py` 
