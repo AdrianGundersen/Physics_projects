@@ -26,8 +26,8 @@ data = np.loadtxt(os.path.join(folder, data_file))
 opt = data[:,0]
 old = data[:,1]
 
-prosent = np.zeros(len(opt))
+prosent = 100*(old - opt) / old
 
 for i in range(len(opt)):
-    prosent[i] = 100 - opt[i] / old[i] * 100
     print(f"{prosent[i]:.4f} %")
+
