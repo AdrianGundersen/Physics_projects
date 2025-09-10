@@ -18,38 +18,29 @@ $$
 - Compute and tabulate maximum relative errors
 
 ## Files
-- `problem_1_2.cpp` – C++ program for Problem 1 & 2 (analytical solution + simple solver)
-- `problem_7.cpp` – C++ program implementing the Thomas algorithm (general solver)
-- `problem_7.cpp` - C++ program implementing the Thomas algorithm (general solver), finds the error and loos for different iterations $n$
-- `plotting_sol_1_2.py` – Python plotting script for Problems 1, 2 & 7 
-- `output/diff_eq_sol.txt` – Example output file (solution data) are saved in `output` folder
-- `Plot2.pdf` – Example plot generated from `plotting_sol_1_2.py`
+- `problem_1_2.cpp` - C++ program for Problem 1 & 2 (analytical solution + simple solver)
+- `problem_7.cpp` - C++ program implementing the Thomas algorithm (general solver)
+- `problem_8.cpp` - C++ program implementing the Thomas algorithm (general solver), finds the error and loos for different iterations $n$
 - `problem_10.cpp` - C++ program that comperes the diffrent Thomas algorithms and creates a txt file
+- `problem_2_plotting.py` - Python plotting script for Problems 1, 2 & 7 
+- `problem_8_plot.py` - Python plotting script for Problem 8
+- `output/diff_eq_sol.txt` - Example output file (solution data) are saved in `output` folder
+- `filepath.pdf` - Example plot generated from `problem_2_plotting.py`
 
 ---
 
 ## Usage
 
 ### Compile
-For Problem 1, 2 & 8:
+For Problem `i`:
 ```bash
-g++ -O2 -std=c++17 problem_1_2.cpp -o problem_1_2.exe 
-```
-
-For Problem 7:
-```bash
-g++ -O2 -std=c++17 problem_7.cpp -o problem_7.exe
-```
-
-For Problem 10:
-```bash
-g++ -O2 -std=c++17 problem_10.cpp -o problem_10.exe 
+g++ -O2 -std=c++17 problem_i.cpp -o problem_i.exe 
 ```
 
 ### Run
 For problem 1, 2 & 8:
 ```bash
-./problem_1_2.exe 
+./problem_X.exe 
 ```
 
 For problem 7:
@@ -72,5 +63,5 @@ To plot Problems 1,2 $ 7 run `plotting_sol_1_2.py`
 - Select title for the plot. 
 
 To plot problem 8
-- Run `problem_8.cpp` first.
+- Run `problem_8.cpp` first, press `N` in terminal.
 - Run `plot_probblem_8.py`
