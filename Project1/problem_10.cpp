@@ -114,9 +114,15 @@ void problem_10(){
     int width = 16;
     int prec = 6;
 
+    double prosent;
+    prosent = 100 * (time_org[j] - time_opt[j]) / time_org[j];
+
         //writing
-        ofile << std::setw(width) << std::setprecision(prec) << std::scientific << time_opt[j]
-            << std::setw(width) << std::setprecision(prec) << std::scientific << time_org[j]
+        ofile 
+        << std::setw(width) << std::setprecision(prec) << std::scientific << time_opt[j]
+        << std::setw(width) << std::setprecision(prec) << std::scientific << time_org[j]
+        << std::setw(width) << std::setprecision(2) << std::fixed << prosent
+        << std::setw(width) << std::setprecision(0) << std::fixed << n
             << "\n";
 }
     ofile.close();
