@@ -122,22 +122,27 @@ double problem_8ab(int k, bool check) // bool is to check if it is problem 10
 }
 
 void problem_10(int k){
-    std::vector<int> nums = {10, 100, 1000, 10000, 100000, 1000000};
-    // time taken
-    std::vector<double> time_opt;
+    int power = 6; // number to power of 10
+
+    // time taken for the diffrent algo
+    std::vector<double> time_opt; 
     std::vector<double> time_org;
 
-    
+    //file 
     std::string folder_err = "output/";
     std::string filename_time_opt = "time_optimized_algo.txt";
     std::string filepath_time_opt = folder_err + filename_time_opt;
 
     ofile.open(filepath_time_opt);
 
-    for(int j = 0; j < nums.size(); j++){
+    //start running 
+    for(int j = 0; j < power; j++){
+
+        //opt algo
         auto start = std::chrono::high_resolution_clock::now();     
         int n = std::pow(10.0, j+1);  
         double h = 1.0/(n+1);
+        
         std::vector<double> a(n, -1.0);  // superdiagonal a
         std::vector<double> b(n, 2.0);   // diagonal b
         std::vector<double> c(n, -1.0);  // subdiagonal c
