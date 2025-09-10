@@ -79,16 +79,16 @@ double problem_8ab(int k, bool check) // bool is to check if it is problem 10
     v.insert(v.begin(), 0.0);
     v.push_back(0.0);  
 
-    // the theoretical vector u
-    std::vector<double> u(n+2);
-
-    // the absolute error between u and v
-    std::vector<double> delta = u;
-    std::vector<double> epsilon_log = delta;
-    std::vector<double> epsilon = delta;
-
-    // Calculatign the exact solution and the absolute error
     if(!check){
+        // the theoretical vector u
+        std::vector<double> u(n+2);
+
+        // the absolute error between u and v
+        std::vector<double> delta = u;
+        std::vector<double> epsilon_log = delta;
+        std::vector<double> epsilon = delta;
+
+        // Calculatign the exact solution and the absolute error
         for(int i = 0; i < n +1; i++){
             u[i] = 1 - (1-std::exp(-10.0))*x_values[i]-std::exp(-10.0*x_values[i]); // exact solution
             //taiking their absolute values
@@ -102,8 +102,8 @@ double problem_8ab(int k, bool check) // bool is to check if it is problem 10
             
             //Trekker ut maksimalveriden i epsilon vectoren
         }
-    }
-    if(!check){ 
+    
+    
         // Removing the end ppoints, because we dont need the values where the function callaoses. 
         // sets precision and width of output
         int width = 16;
@@ -140,28 +140,26 @@ void problem_10(int k){
     //start running 
     for(int j = 0; j < power; j++){
 
-        //opt algo
+        //Running opt algo
         auto start = std::chrono::high_resolution_clock::now();
-        int n = std::pow(10.0, j+1);  
-        double h = 1.0/(n+1);
-
-        std::vector<double> a(n, -1.0);  // superdiagonal a
-        std::vector<double> b(n, 2.0);   // diagonal b
-        std::vector<double> c(n, -1.0);  // subdiagonal c
-
-        std::vector<double> v(n);        // approximate solution v
-        std::vector<double> g(n, 0.0);   // right-hand side g
-        
-        
-
-        // builds g-vector (RHS)
-        for (int i = 0; i < n; i++){
-            double x = (i+1)*h;     // x-values from 0 to 1 (w/o boundaries)
-            g[i] = h * h * 100.0 * std::exp(-10.0 * x);
-        }
 
         for(int p = 0; p < 100; p++){
 
+            int n = std::pow(10.0, j+1);  
+            double h = 1.0/(n+1);
+
+            std::vector<double> a(n, -1.0);  // superdiagonal a
+            std::vector<double> b(n, 2.0);   // diagonal b
+            std::vector<double> c(n, -1.0);  // subdiagonal c
+
+            std::vector<double> v(n);        // approximate solution v
+            std::vector<double> g(n, 0.0);   // right-hand side g
+
+             // builds g-vector (RHS)
+            for (int i = 0; i < n; i++){
+                double x = (i+1)*h;     // x-values from 0 to 1 (w/o boundaries)
+                g[i] = h * h * 100.0 * std::exp(-10.0 * x);
+        }
             std::vector<double> gtemp = g;  // temporary vector
             std::vector<double> btemp = b;   // diagonal b temp vector
 
@@ -179,6 +177,8 @@ void problem_10(int k){
             for (int i = n-2; i >= 0; i--) {
                 v[i] = (gtemp[i] + v[i+1]) / btemp[i]; // back-substitute into v
             }
+            v.insert(v.begin(), 0.0);
+            v.push_back(0.0);  
     }
         auto end = std::chrono::high_resolution_clock::now();
         std::chrono::duration<double> duration = end - start;
