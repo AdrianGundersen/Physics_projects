@@ -24,6 +24,7 @@ $$
 - `plotting_sol_1_2.py` – Python plotting script for Problems 1, 2 & 7 
 - `output/diff_eq_sol.txt` – Example output file (solution data) are saved in `output` folder
 - `Plot2.pdf` – Example plot generated from `plotting_sol_1_2.py`
+- `problem_10.cpp` - C++ program that comperes the diffrent Thomas algorithms and creates a txt file
 
 ---
 
@@ -40,6 +41,11 @@ For Problem 7:
 g++ -O2 -std=c++17 problem_7.cpp -o problem_7.exe
 ```
 
+For Problem 10:
+```bash
+g++ -O2 -std=c++17 problem_10.cpp -o problem_10.exe 
+```
+
 ### Run
 For problem 1, 2 & 8:
 ```bash
@@ -52,7 +58,12 @@ For problem 7:
 ```
 - Enter the number of steps $n$ between [0,1] in therminal
 - The output file `filename.txt` will  be saved in the `output` folder.
-
+```
+For problem 10:
+```bash
+./problem_10.exe 
+```
+- Creates `time_optimized_algo.txt` and saves in the `output` folder.
 
 
 ### Plot
