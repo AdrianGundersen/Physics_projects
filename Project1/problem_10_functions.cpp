@@ -13,17 +13,16 @@
 std::ofstream ofile;
 
 void optimal(int n,
-    std::vector<double> & v,
-    std::vector<double> & g, 
-    std::vector<double> & gtemp,
-    std::vector<double> & btemp){
-    for(int p = 0; p < 1000; p++){
-
+    std::vector<double>& v,
+    const std::vector<double>& b,
+    const std::vector<double>& g,
+    std::vector<double>& btemp,
+    std::vector<double>& gtemp){
         // Forward sub
 
         for (int i = 1; i < n; i++){
             btemp[i]   = 2.0 - 1.0 / btemp[i-1];
-            gtemp[i] = g[i] + gtemp[i-1] / btemp[i-1];
+            gtemp[i] = gtemp[i] + gtemp[i-1] / btemp[i-1];
         }
 
         // backward sub
@@ -32,30 +31,24 @@ void optimal(int n,
         for (int i = n-2; i >= 0; i--) {
             v[i] = (gtemp[i] + v[i+1]) / btemp[i]; // back-substitute into v
         }
-        v.insert(v.begin(), 0.0);
-        v.push_back(0.0);  
-    }
+        // do not add boundary conditions as this increases time unnescessarily
 }
 
 void original(int n,
-     std::vector<double> a,
-     std::vector<double> & b, 
-     std::vector<double> & c,
-     std::vector<double> & v,
-     std::vector<double> & g,
-     std::vector<double> & gtemp,
-     std::vector<double> & btemp){
-    for(int p = 0; p < 1000; p++){
-        // builds g-vector (RHS)
-
-        
-        
+    const std::vector<double> & a,
+    const std::vector<double> & b, 
+    const std::vector<double> & c,
+    std::vector<double> & v,
+    const std::vector<double> & g,
+    std::vector<double>& btemp,
+    std::vector<double>& gtemp) 
+    {    
         // Forward sub
 
         for (int i = 1; i < n; i++) {
             double k_i = a[i-1] / btemp[i-1];
-            btemp[i]   = b[i] - c[i-1] * k_i;
-            gtemp[i] = g[i] - k_i * gtemp[i-1];
+            btemp[i]   = btemp[i] - c[i-1] * k_i;
+            gtemp[i] = gtemp[i] - k_i * gtemp[i-1];
         }
 
         // backward sub
@@ -64,10 +57,7 @@ void original(int n,
         for (int i = n-2; i >= 0; i--) {
             v[i] = (gtemp[i] -c[i]* v[i+1]) / btemp[i]; // back-substitute into v
         }
-        // adds boundary values
-        v.insert(v.begin(), 0.0);
-        v.push_back(0.0);
-    }
+        // do not add boundary conditions as this increases time unnescessarily
      }
 void problem_10(){
     int power = 6; // number to power of 10
@@ -84,12 +74,13 @@ void problem_10(){
     ofile.open(filepath_time_opt);
 
     //start running 
-    for(int j = 0; j < power; j++){
+    for(int j = 1; j < power+1; j++){
 
         //maaking vectors (matrix)
 
-        int n = std::pow(10.0, j+1);  
+        int n = std::pow(10.0, j); // number of grid points 
         double h = 1.0/(n+1);
+
         
         std::vector<double> a(n-1, -1.0);  // superdiagonal a
         std::vector<double> b(n, 2.0);   // diagonal b
@@ -98,8 +89,8 @@ void problem_10(){
         std::vector<double> v(n);        // approximate solution v
         std::vector<double> g(n, 0.0);   // right-hand side g
 
-        std::vector<double> gtemp = g;  // temporary vector
-        std::vector<double> btemp = b;   // diagonal b temp vector
+        std::vector<double> btemp = b;
+        std::vector<double> gtemp = g;
 
         // builds g-vector (RHS)
         for (int i = 0; i < n; i++){
@@ -109,14 +100,20 @@ void problem_10(){
 
         //Time optimized
         auto start = std::chrono::high_resolution_clock::now();
-        optimal(n, v, g, gtemp, btemp);
+
+        for(int p = 0; p < 100; p++){
+            optimal(n, v, b, g, btemp, gtemp);
+        }
+
         auto end = std::chrono::high_resolution_clock::now();
         std::chrono::duration<double> duration = end - start;
         time_opt.push_back(duration.count());
 
         //time original
         auto start2 = std::chrono::high_resolution_clock::now();
-        original(n, a, b, c, v, g, gtemp, btemp);
+        for(int p = 0; p < 100; p++){
+            original(n, a, b, c, v, g, btemp, gtemp);
+        }
         auto end2 = std::chrono::high_resolution_clock::now();
         std::chrono::duration<double> duration2 = end2 - start2;
         time_org.push_back(duration2.count());
@@ -125,12 +122,12 @@ void problem_10(){
     int prec = 6;
 
     double prosent;
-    prosent = 100 * (time_org[j] - time_opt[j]) / time_org[j];
+    prosent = 100 * (time_org[j-1] - time_opt[j-1]) / time_org[j-1];
 
         //writing
         ofile 
-        << std::setw(width) << std::setprecision(prec) << std::scientific << time_opt[j]
-        << std::setw(width) << std::setprecision(prec) << std::scientific << time_org[j]
+        << std::setw(width) << std::setprecision(prec) << std::scientific << time_opt[j-1]
+        << std::setw(width) << std::setprecision(prec) << std::scientific << time_org[j-1]
         << std::setw(width) << std::setprecision(2) << std::fixed << prosent
         << std::setw(width) << std::setprecision(0) << std::fixed << n
             << "\n";
