@@ -14,10 +14,10 @@ std::ofstream ofile;
 
 
 // Insert argumentes and vectors
-double problem_8ab(int k, bool check) // bool is to check if it is problem 10
+double problem_8ab(int k, bool check)   // bool is to check if it is problem 10
 {
-    const int n = std::pow(10.0,k);  
-    double h = 1.0/(n+1);
+    const int n = std::pow(10.0,k);     //number of iterations
+    double h = 1.0/(n+1);               // step size
 
     std::vector<double> x_values;
 
@@ -30,11 +30,6 @@ double problem_8ab(int k, bool check) // bool is to check if it is problem 10
         fs::create_directories(folder);
         std::string filepath = folder + filename + std::to_string(n) + txt;
         ofile.open(filepath);
-
-
-    
-
-        //step size
 
         // vector med x- verdier fra [0,1]
         for (int j = 0; j < n +1; j++){
@@ -58,23 +53,20 @@ double problem_8ab(int k, bool check) // bool is to check if it is problem 10
     std::vector<double> gtemp = g;  // temporary vector
     std::vector<double> btemp = b;   // diagonal b temp vector
 
-    // Forward sub
-
+    // Forward sub from  n=1 to n-1
     for (int i = 1; i < n; i++) {
         double k = a[i-1] / btemp[i-1];
         btemp[i]   = b[i] - c[i-1] * k;
         gtemp[i] = g[i] - gtemp[i-1] *k;
     }
 
-
-    // backward sub
+    // last element in back sub
     v[n-1] = gtemp[n-1] / btemp[n-1];
-
+    
+    // backward sub from n-2 to n=0
     for (int i = n-2; i >= 0; i--) {
         v[i] = (gtemp[i] -c[i]* v[i+1]) / btemp[i]; // back-substitute into v
     }
-
-    
 
     // adds boundary values
     v.insert(v.begin(), 0.0);
@@ -101,10 +93,8 @@ double problem_8ab(int k, bool check) // bool is to check if it is problem 10
             epsilon[i] = rel_err;
             epsilon_log[i] = log10(rel_err);
             
-            //Trekker ut maksimalveriden i epsilon vectoren
         }
-    
-    
+        
         // Removing the end ppoints, because we dont need the values where the function callaoses. 
         // sets precision and width of output
         int width = 16;
@@ -118,12 +108,15 @@ double problem_8ab(int k, bool check) // bool is to check if it is problem 10
             << "\n";
         }
         ofile.close();
+        //Trekker ut maksimalveriden i epsilon vectoren
         double max_eps = *std::max_element(epsilon.begin() +1, epsilon.end() - 1);
         return max_eps;
     }
     return 0.0;
 }
 
+// function which is calles oppon if you press yes in terminal while running the code.
+// We made a more spesialized version of this code where we called on functions in problem_10.cpp
 void problem_10(int k){
     int power = 6; // number to power of 10
 
@@ -146,8 +139,8 @@ void problem_10(int k){
 
         for(int p = 0; p < 1000; p++){
 
-            int n = std::pow(10.0, j+1);  
-            double h = 1.0/(n+1);
+            int n = std::pow(10.0, j+1);     // iterations 
+            double h = 1.0/(n+1);            // step size
 
             std::vector<double> a(n, -1.0);  // superdiagonal a
             std::vector<double> b(n, 2.0);   // diagonal b
@@ -171,7 +164,6 @@ void problem_10(int k){
                 gtemp[i] = g[i] + gtemp[i-1] / btemp[i-1];
             }
 
-
             // backward sub
             v[n-1] = gtemp[n-1] / btemp[n-1];
 
@@ -194,17 +186,21 @@ void problem_10(int k){
         std::chrono::duration<double> duration2 = end2 - start2;
         time_org.push_back(duration2.count());
     
-
     int width = 16;
     int prec = 6;
 
-        
+    // calculate the prosentage gain 
+    double prosent;
+    prosent = 100 * (time_org[j] - time_opt[j]) / time_org[j];
+    int n = std::pow(10.0, j+1);
 
-        
-        //writing
-        ofile << std::setw(width) << std::setprecision(prec) << std::scientific << time_opt[j]
-            << std::setw(width) << std::setprecision(prec) << std::scientific << time_org[j]
-            << "\n";
+    //writing
+    ofile 
+    << std::setw(width) << std::setprecision(prec) << std::scientific << time_opt[j]
+    << std::setw(width) << std::setprecision(prec) << std::scientific << time_org[j]
+    << std::setw(width) << std::setprecision(2) << std::fixed << prosent
+    << std::setw(width) << std::setprecision(0) << std::fixed << n
+        << "\n";
 }
     ofile.close();
 }
@@ -236,19 +232,20 @@ int main(){
 
     ofiles.close();
 
+    
+    std::cout << "Run problem 10? Y/N \n";
+    
+    std::string input;
+    std::cin >> input;
+    
+    if (input == "Y" || input == "y") {
+        problem_10(1e6);
+    }
+
     // Writes duration of the program
     auto end = std::chrono::high_resolution_clock::now();
     std::chrono::duration<double> duration = end - start;
     std::cout << "Time taken: " << duration.count() << " seconds\n";
-
-    std::cout << "Run problem 10? Y/N \n";
-
-    std::string input;
-    std::cin >> input;
-
-    if (input == "Y" || input == "y") {
-        problem_10(1e6);
-    }
     
     return 0;
 }
