@@ -29,5 +29,5 @@ old = data[:,1]
 prosent = np.zeros(len(opt))
 
 for i in range(len(opt)):
-    prosent[i] = old[i] / opt[i] * 100
+    prosent[i] = 100 - opt[i] / old[i] * 100
     print(f"{prosent[i]:.4f} %")
