@@ -52,7 +52,7 @@ void problem_10(){
         auto start = std::chrono::high_resolution_clock::now();
 
         // running optimalized algo 1000 times
-        for(int p = 0; p < 1000; p++){
+        for(int p = 0; p < 100; p++){
             std::vector<double> gtemp = g;  // temporary vector
             std::vector<double> btemp = b;   // diagonal b temp vector
             std::vector<double> v_10 = v;   // subdiagonal c temp vector
@@ -89,7 +89,7 @@ void problem_10(){
             // Forward sub
 
             for (int i = 1; i < n; i++) {
-                double k_i = a[i] / btemp_8[i-1];
+                double k_i = a[i-1] / btemp_8[i-1];
                 btemp_8[i] = btemp_8[i] - c[i-1] * k_i;
                 gtemp_8[i] = gtemp_8[i] - k_i * gtemp_8[i-1];
             }
