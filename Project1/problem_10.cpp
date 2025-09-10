@@ -124,15 +124,7 @@ void problem_10(){
 
 int main(){
   
-
-    std::cout << "Run problem 10? Y/N \n";
-
-    std::string input;
-    std::cin >> input;
-
-    if (input == "Y" || input == "y") {
-        problem_10();
-    }
+    problem_10();
     
     return 0;
 }
