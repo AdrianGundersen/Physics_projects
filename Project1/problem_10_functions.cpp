@@ -12,6 +12,7 @@
 
 std::ofstream ofile;
 
+// Function for the optimized algorythm
 void optimal(int n,
     std::vector<double>& v,
     const std::vector<double>& b,
@@ -34,6 +35,7 @@ void optimal(int n,
         // do not add boundary conditions as this increases time unnescessarily
 }
 
+// function for the original algorythm
 void original(int n,
     const std::vector<double> & a,
     const std::vector<double> & b, 
@@ -44,7 +46,6 @@ void original(int n,
     std::vector<double>& gtemp) 
     {    
         // Forward sub
-
         for (int i = 1; i < n; i++) {
             double k_i = a[i-1] / btemp[i-1];
             btemp[i]   = btemp[i] - c[i-1] * k_i;
@@ -101,7 +102,7 @@ void problem_10(){
         //Time optimized
         auto start = std::chrono::high_resolution_clock::now();
 
-        for(int p = 0; p < 100; p++){
+        for(int p = 0; p < 1000; p++){
             optimal(n, v, b, g, btemp, gtemp);
         }
 
@@ -111,7 +112,7 @@ void problem_10(){
 
         //time original
         auto start2 = std::chrono::high_resolution_clock::now();
-        for(int p = 0; p < 100; p++){
+        for(int p = 0; p < 1000; p++){
             original(n, a, b, c, v, g, btemp, gtemp);
         }
         auto end2 = std::chrono::high_resolution_clock::now();
@@ -121,6 +122,7 @@ void problem_10(){
     int width = 16;
     int prec = 6;
 
+    // calculate the prosentage gain 
     double prosent;
     prosent = 100 * (time_org[j-1] - time_opt[j-1]) / time_org[j-1];
 
