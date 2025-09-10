@@ -30,7 +30,6 @@ void problem_10(int k){
     for(int j = 0; j < power; j++){
 
         //Running opt algo
-        auto start = std::chrono::high_resolution_clock::now();
 
         int n = std::pow(10.0, j+1);  
         double h = 1.0/(n+1);
@@ -45,13 +44,17 @@ void problem_10(int k){
         std::vector<double> gtemp = g;  // temporary vector
         std::vector<double> btemp = b;   // diagonal b temp vector
 
+        // builds g-vector (RHS)
+        for (int i = 0; i < n; i++){
+            double x = (i+1)*h;     // x-values from 0 to 1 (w/o boundaries)
+            g[i] = h * h * 100.0 * std::exp(-10.0 * x);
+        }
+
+        auto start = std::chrono::high_resolution_clock::now();
+
         for(int p = 0; p < 1000; p++){
 
-             // builds g-vector (RHS)
-            for (int i = 0; i < n; i++){
-                double x = (i+1)*h;     // x-values from 0 to 1 (w/o boundaries)
-                g[i] = h * h * 100.0 * std::exp(-10.0 * x);
-        }
+           
 
             // Forward sub
 
@@ -74,21 +77,22 @@ void problem_10(int k){
         time_opt.push_back(duration.count());
         
         // Problem 8 time 
-        auto start2 = std::chrono::high_resolution_clock::now();
-
         std::vector<double> v_8(n);        // approximate solution v
         std::vector<double> g_8(n, 0.0);   // right-hand side g
 
         std::vector<double> gtemp_8 = g;  // temporary vector
         std::vector<double> btemp_8 = b;   // diagonal b temp vector
 
+        for (int i = 0; i < n; i++){
+                double x = (i+1)*h;     // x-values from 0 to 1 (w/o boundaries)
+                g[i] = h * h * 100.0 * std::exp(-10.0 * x);
+        }
+        
+        auto start2 = std::chrono::high_resolution_clock::now();
         for(int p = 0; p < 1000; p++){
             // builds g-vector (RHS)
 
-            for (int i = 0; i < n; i++){
-                double x = (i+1)*h;     // x-values from 0 to 1 (w/o boundaries)
-                g[i] = h * h * 100.0 * std::exp(-10.0 * x);
-                }
+            
             
             // Forward sub
 
