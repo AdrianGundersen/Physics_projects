@@ -137,8 +137,11 @@ void problem_10(){
 }
 
 int main(){
-  
+    auto start = std::chrono::high_resolution_clock::now();
     problem_10();
-    
+    // Writes duration of the program
+    auto end = std::chrono::high_resolution_clock::now();
+    std::chrono::duration<double> duration = end - start;
+    std::cout << "Time taken: " << duration.count() << " seconds\n";
     return 0;
 }
