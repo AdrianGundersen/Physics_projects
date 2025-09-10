@@ -143,7 +143,7 @@ void problem_10(int k){
         //Running opt algo
         auto start = std::chrono::high_resolution_clock::now();
 
-        for(int p = 0; p < 100; p++){
+        for(int p = 0; p < 1000; p++){
 
             int n = std::pow(10.0, j+1);  
             double h = 1.0/(n+1);
@@ -186,7 +186,7 @@ void problem_10(int k){
 
         // Problem 8 time 
         auto start2 = std::chrono::high_resolution_clock::now();
-        for(int p = 0; p < 100; p++){
+        for(int p = 0; p < 1000; p++){
             problem_8ab(j+1, true);
     }
         auto end2 = std::chrono::high_resolution_clock::now();

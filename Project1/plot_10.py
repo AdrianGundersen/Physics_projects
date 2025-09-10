@@ -29,5 +29,5 @@ old = data[:,1]
 prosent = 100*(old - opt) / old
 
 for i in range(len(opt)):
-    print(f"{prosent[i]:.4f} %")
+    print(f"N = 10^{i}: {prosent[i]:.4f} %")
 
