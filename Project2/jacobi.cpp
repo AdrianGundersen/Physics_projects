@@ -14,20 +14,20 @@ void jacobi_rotate(arma::mat& A, arma::mat& R, int k, int l){
     double tau = (A(l ,l) - A(k, k)) / (2*A(k, l));
     double tan_theta;
     if (tau > 0){
-        tan_theta = 1/(tau + std::sqrt(1+std::pow(tau, 2)));
+        tan_theta = 1/(tau + std::sqrt(1 + tau * tau));
     }
     else{
-        tan_theta = 1/(tau - std::sqrt(1+std::pow(tau, 2)));
+        tan_theta = 1/(tau - std::sqrt(1 + tau * tau));
     }
-    double cos_theta = 1/std::sqrt(1+std::pow(tan_theta, 2));
+    double cos_theta = 1/std::sqrt(1 + tan_theta * tan_theta);
     double sin_theta = cos_theta * tan_theta;
     
 
-    // Flop and gather saves 
-    double cos_square = std::pow(cos_theta, 2);
-    double sin_square = std::pow(sin_theta, 2); 
+    // Flop and gather saves  
+    double cos_square = cos_theta * cos_theta;
+    double sin_square = 1.0 - cos_square;
     double cos_sin = cos_theta * sin_theta; 
-
+    
     double A_kk = A(k, k);
     double A_kl = A(k, l);
     double A_ll = A(l, l);
@@ -49,10 +49,10 @@ void jacobi_rotate(arma::mat& A, arma::mat& R, int k, int l){
         double R_ik = R(i,k);  // in case l = k
         double R_il = R(i,l);
         R(i,k) = R_ik * cos_theta - R_il * sin_theta;
-        R(i,l) = R_il * cos_theta - R_ik * sin_theta;
-    }
-    
+        R(i,l) = R_il * cos_theta + R_ik * sin_theta;
+    } 
 }
+    
     
 
 // Jacobi method eigensolver:
