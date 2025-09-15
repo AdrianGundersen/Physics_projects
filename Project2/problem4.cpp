@@ -27,9 +27,10 @@ int main(){
     arma::vec eigenvalues;
     arma::mat eigenvectors;
     arma::eig_sym(eigenvalues, eigenvectors, A);
-    
+    arma::vec eigenvalues_copy = eigenvalues;
     jacobi_eigensolver(A, eps, eigenvalues, R, maxiter, iterations, converged);
     
     eigenvalues.print("Eigenvectors : ");
+    eigenvalues_copy.print("Armadillo sin egenvektor");
 
 }

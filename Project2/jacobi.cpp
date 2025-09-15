@@ -86,4 +86,5 @@ void jacobi_eigensolver(const arma::mat& A_copy, double eps, arma::vec& eigenval
 
     A.print();
     eigenvalues = A.diag();
+    eigenvalues = arma::sort(eigenvalues);
                         }
