@@ -1,5 +1,6 @@
 #include "jacobi.hpp"
 #include "tridiag.hpp"
+#include <cmath>
 
 
 
@@ -11,13 +12,24 @@ int main(){
     int l = 0;
     arma::mat R(N, N);
     R.eye();
-    arma::Mat<double> A = create_tridiagonal(N, a, d);
-    arma::vec eigenval = arma::eig_sym(A);
-    for(int i = 0; i < 1000; i++){
-        max_offdiag_symmetric(A, k, l);
-        jacobi_rotate(A, R, k, l);
-    }
-    A.print();
-    eigenval.print();
+    //maximum iterations
+    int maxiter = 1e6;
+    int iterations = 0;
+
+    // lowest value vanted
+    double eps = 1e-8;
+
+    //argument to se in we converged
+    bool converged = false;
+
+    arma::Mat<double> A = create_tridiagonal(N, d, a);
+    
+    arma::vec eigenvalues;
+    arma::mat eigenvectors;
+    arma::eig_sym(eigenvalues, eigenvectors, A);
+    
+    jacobi_eigensolver(A, eps, eigenvalues, R, maxiter, iterations, converged);
+    
+    eigenvalues.print("Eigenvectors : ");
 
 }
