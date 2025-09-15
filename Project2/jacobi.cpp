@@ -7,7 +7,7 @@
 // - Assumes symmetric matrix, so we only consider k < l
 // - Modifies the input matrices A and R
 void jacobi_rotate(arma::mat& A, arma::mat& R, int k, int l){
-    int n = A.n_rows;
+    int N = A.n_rows;
     // trig varibles
     double tau = (A(l ,l) - A(k, k)) / (2*A(k, l));
     double tan_theta;
@@ -21,27 +21,31 @@ void jacobi_rotate(arma::mat& A, arma::mat& R, int k, int l){
     double sin_theta = cos_theta * tan_theta;
     
 
+    // Flop and gather saves 
+    double cos_square = std::pow(cos_theta, 2);
+    double sin_square = std::pow(sin_theta, 2); 
+    double cos_sin = cos_theta * sin_theta; 
+
+    double A_kk = A(k, k);
+    double A_kl = A(k, l);
+    double A_ll = A(l, l);
+
     // Update A
-    double cos_square = std::pow(cos_theta, 2); // save FLOPSs
-    double sin_square = std::pow(sin_theta, 2); // save FLOPs
-    double cos_sin = cos_theta * sin_theta; // save FLOPs 
-    arma::mat A_temp = A; // not optimal
-    A(k, k) = A_temp(k, k) * cos_square - 2*A_temp(k, l) * cos_sin + A_temp(l, l) * sin_square;
-    A(l, l) = A_temp(l, l) * cos_square + 2*A_temp(k, l) * cos_sin + A_temp(k, k) * sin_square;
+    A(k, k) = A_kk * cos_square - 2*A_kl * cos_sin + A_ll * sin_square;
+    A(l, l) = A_ll * cos_square + 2*A_kl * cos_sin + A_kk * sin_square;
     A(k, l) = A(l, k) = 0.0;
-    for(int i = 0; i < n; i++){
+    for(int i = 0; i < N; i++){
         if (i != k && i != l){
-            double A_ik = A_temp(i, k);
-            double A_il = A_temp(i, l);
+            double A_ik = A(i, k);
+            double A_il = A(i, l);
             A(i, k) = A(k, i) = A_ik * cos_theta - A_il * sin_theta;
             A(i, l) = A(l, i) = A_il * cos_theta + A_ik * sin_theta;
         };
     }
     // update R
-    arma::mat R_temp = R;
-    for (int i = 0; i < n; i++){
-        double R_ik = R_temp(i,k);  // in case l = k
-        double R_il = R_temp(i,l);
+    for (int i = 0; i < N; i++){
+        double R_ik = R(i,k);  // in case l = k
+        double R_il = R(i,l);
         R(i,k) = R_ik * cos_theta - R_il * sin_theta;
         R(i,l) = R_il * cos_theta - R_ik * sin_theta;
     }
