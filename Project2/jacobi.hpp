@@ -1,7 +1,8 @@
 #ifndef JACOBI_HPP
 #define JACOBI_HPP
-
+#include "tridiag.hpp"
 #include <armadillo>
+#include <cmath>
 
 // Performs a single Jacobi rotation, to "rotate away"
 // the off-diagonal element at A(k,l).
@@ -19,5 +20,4 @@ void jacobi_rotate(arma::mat& A, arma::mat& R, int k, int l);
 // - Sets the bool reference "converged" to true if convergence was reached before hitting maxiter
 void jacobi_eigensolver(const arma::mat& A, double eps, arma::vec& eigenvalues, arma::mat& eigenvectors, 
                         const int maxiter, int& iterations, bool& converged);
-
 #endif 
