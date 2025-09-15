@@ -1,4 +1,6 @@
 #include "jacobi.hpp"
+#include "tridiag.hpp"
+#include <iostream>
 
 
 
@@ -61,6 +63,27 @@ void jacobi_rotate(arma::mat& A, arma::mat& R, int k, int l){
 // - Stops if it the number of iterations reaches "maxiter"
 // - Writes the number of iterations to the integer "iterations"
 // - Sets the bool reference "converged" to true if convergence was reached before hitting maxiter
-void jacobi_eigensolver(const arma::mat& A, double eps, arma::vec& eigenvalues, arma::mat& eigenvectors, 
-                        const int maxiter, int& iterations, bool& converged);
+void jacobi_eigensolver(const arma::mat& A_copy, double eps, arma::vec& eigenvalues, arma::mat& eigenvectors, 
+                        const int maxiter, int& iterations, bool& converged){
+    //midletidig A matrise som brukes her
+    arma::mat A = A_copy;
 
+    int k = 0;
+    int l = 0;
+    int n = A.n_rows;
+    double max_val = max_offdiag_symmetric(A, k, l);
+
+
+    while (max_val > eps && iterations < maxiter){
+        max_offdiag_symmetric(A, k, l);
+        jacobi_rotate(A, eigenvectors, k, l);
+        iterations++;
+        
+    }
+    if (max_val == 0){
+        converged = true;
+    }
+
+    A.print();
+    eigenvalues = A.diag();
+                        }
