@@ -30,8 +30,8 @@ double max_offdiag_symmetric(const arma::mat& A, int& k, int& l){
 
     double max_val = std::abs(A(k,l)); // initial max value
 
-    for (int i = 0; i < N; i++){
-        for (int j = i+ 1 ; j < N; j++){ // only look at upper triangle
+    for (int j = 1; j < N; j++){ // columns first for cache efficiency
+        for (int i = 0; i < j; i++){  // i < j ensures upper triangle
             double abs_val = std::abs(A(i, j));
             if (abs_val > max_val){
                 max_val = abs_val;
