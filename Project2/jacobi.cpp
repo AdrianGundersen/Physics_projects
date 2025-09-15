@@ -9,7 +9,7 @@
 void jacobi_rotate(arma::mat& A, arma::mat& R, int k, int l){
     int n = A.n_rows;
     // trig varibles
-    double tau = (A(l ,l) - A(k, k)) / 2*A(k, l);
+    double tau = (A(l ,l) - A(k, k)) / (2*A(k, l));
     double tan_theta;
     if (tau > 0){
         tan_theta = 1/(tau + std::sqrt(1+std::pow(tau, 2)));
@@ -30,15 +30,18 @@ void jacobi_rotate(arma::mat& A, arma::mat& R, int k, int l){
     A(l, l) = A_temp(l, l) * cos_square + 2*A_temp(k, l) * cos_sin + A_temp(k, k) * sin_square;
     A(k, l) = A(l, k) = 0.0;
     for(int i = 0; i < n; i++){
-        if (i != k && i != l);
-            A(i, k) = A(k, i) = A_temp(i, k) * cos_theta - A_temp(i, l) * sin_theta;
-            A(i, l) = A(l, i) = A_temp(i, l) * cos_theta + A(i, k) * sin_theta;
-        
+        if (i != k && i != l){
+            double A_ik = A_temp(i, k);
+            double A_il = A_temp(i, l);
+            A(i, k) = A(k, i) = A_ik * cos_theta - A_il * sin_theta;
+            A(i, l) = A(l, i) = A_il * cos_theta + A_ik * sin_theta;
+        };
     }
     // update R
+    arma::mat R_temp = R;
     for (int i = 0; i < n; i++){
-        double R_ik = R(i,k);  // in case l = k
-        double R_il = R(i,l);
+        double R_ik = R_temp(i,k);  // in case l = k
+        double R_il = R_temp(i,l);
         R(i,k) = R_ik * cos_theta - R_il * sin_theta;
         R(i,l) = R_il * cos_theta - R_ik * sin_theta;
     }

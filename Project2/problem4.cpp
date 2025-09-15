@@ -12,7 +12,6 @@ int main(){
     arma::mat R(N, N);
     R.eye();
     arma::Mat<double> A = create_tridiagonal(N, a, d);
-    double max_value =  max_offdiag_symmetric(A, k, l);
     arma::vec eigenval = arma::eig_sym(A);
     for(int i = 0; i < 1000; i++){
         max_offdiag_symmetric(A, k, l);
