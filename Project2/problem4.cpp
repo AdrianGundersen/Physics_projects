@@ -1,7 +1,7 @@
 #include "jacobi.hpp"
 #include "tridiag.hpp"
 #include <cmath>
-
+#include <iostream>
 
 
 int main(){
@@ -13,7 +13,7 @@ int main(){
     arma::mat R(N, N);
     R.eye();
     //maximum iterations
-    int maxiter = 1e6;
+    int maxiter = 1e8;
     int iterations = 0;
 
     // lowest value vanted
@@ -30,7 +30,18 @@ int main(){
     arma::vec eigenvalues_copy = eigenvalues;
     jacobi_eigensolver(A, eps, eigenvalues, R, maxiter, iterations, converged);
     
-    eigenvalues.print("Eigenvectors : ");
-    eigenvalues_copy.print("Armadillo sin egenvektor");
+    // eigenvalues.print("Eigenvectors : ");
+    // eigenvalues_copy.print("Armadillo sin egenvektor");
+
+
+    // Problem 5
+    for(int i = 5; i <= 1000; i += 50){
+        iterations = 0;
+        arma::mat R(i, i);
+        R.eye();
+        arma::Mat<double> A = create_tridiagonal(i, d, a);
+        jacobi_eigensolver(A, eps, eigenvalues, R, maxiter, iterations, converged);
+        std::cout << i << "\t" << iterations << "\n";
+    }
 
 }

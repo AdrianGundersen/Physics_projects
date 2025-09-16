@@ -75,16 +75,15 @@ void jacobi_eigensolver(const arma::mat& A_copy, double eps, arma::vec& eigenval
 
 
     while (max_val > eps && iterations < maxiter){
-        max_offdiag_symmetric(A, k, l);
+        max_val = max_offdiag_symmetric(A, k, l);
         jacobi_rotate(A, eigenvectors, k, l);
         iterations++;
-        
     }
     if (max_val == 0){
         converged = true;
     }
 
-    A.print();
-    eigenvalues = A.diag();
-    eigenvalues = arma::sort(eigenvalues);
+    // A.print();
+    // eigenvalues = A.diag();
+    // eigenvalues = arma::sort(eigenvalues);
                         }
