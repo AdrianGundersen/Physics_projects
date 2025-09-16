@@ -21,8 +21,12 @@ For Problem `3`:
 g++ -O2 -std=c++20 problem3.cpp tridiag.o -larmadillo -o problem3.exe
 ```
 
-Fro problem '4'
+For problem '4'
+```bash
 g++ problem4.cpp jacobi.cpp tridiag.cpp -o problem4.exe -larmadillo
+g++ -O2 -std=c++20 problem3.cpp tridiag.o -larmadillo -o problem3.exe
+```
+
 
 ### Run
 
