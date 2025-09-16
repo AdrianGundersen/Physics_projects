@@ -84,6 +84,10 @@ void jacobi_eigensolver(const arma::mat& A_copy, double eps, arma::vec& eigenval
     }
 
     // A.print();
-    // eigenvalues = A.diag();
-    // eigenvalues = arma::sort(eigenvalues);
+    eigenvalues = A.diag();
+    arma::uvec order = arma::sort_index(eigenvalues); //uvec hold unsigned ints
+    
+    eigenvalues = eigenvalues(order);
+    eigenvectors = eigenvectors.cols(order);
+
                         }
