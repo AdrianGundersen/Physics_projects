@@ -2,32 +2,48 @@
 
 ## Description
 
+### Project structure
+Project2/
+├─ include/
+│  ├─ jacobi.hpp
+│  └─ tridiag.hpp
+├─ src/
+│  ├─ jacobi.cpp
+│  └─ tridiag.cpp
+├─ problems/
+│  ├─ problem2.cpp
+│  ├─ problem3.cpp
+│  └─ problem4.cpp
+├─ build/                 
+├─ Makefile              
+└─ README.md
 
 ## Usage
 
 ### Compile
 
-Shared object files:
+Build all problems
 ```bash
-g++ -O2 -std=c++20 -c tridiag.cpp -o tridiag.o
-g++ -O2 -std=c++20 -c jacobi.cpp -o jacobi.o
+make
 ```
-For Problem `2`:
 ```bash
-g++ -O2 -std=c++20 problem2.cpp tridiag.o -larmadillo -o problem2.exe
-```
-For Problem `3`:
-```bash
-g++ -O2 -std=c++20 problem3.cpp tridiag.o -larmadillo -o problem3.exe
+Or build a specific problem
+make problem2      # -> build/problem2.exe
+make problem3      # -> build/problem3.exe
+make problem4      # -> build/problem4.exe
 ```
 
-For problem '4'
+Clean objects and executables:
 ```bash
-g++ problem4.cpp jacobi.cpp tridiag.cpp -o problem4.exe -larmadillo
+make clean
 ```
-
 ### Run
-
+```bash
+From Project root:
+./build/problem2.exe
+./build/problem3.exe
+./build/problem4.exe
+```
 
 ### Plot
 
