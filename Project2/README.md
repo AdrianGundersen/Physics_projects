@@ -11,7 +11,6 @@ Shared object files:
 ```bash
 g++ -O2 -std=c++20 -c tridiag.cpp -o tridiag.o
 g++ -O2 -std=c++20 -c jacobi.cpp -o jacobi.o
-
 ```
 For Problem `2`:
 ```bash
