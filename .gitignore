@@ -17,7 +17,6 @@ a.out
 /bin/
 /CMakeFiles/
 CMakeCache.txt
-Makefile
 
 # Editor/IDE files
 .vscode/
