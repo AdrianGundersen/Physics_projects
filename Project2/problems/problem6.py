@@ -5,44 +5,52 @@ import os
 # Sørg for at output-mappen finnes
 os.makedirs("output", exist_ok=True)
 
-# Filstier (to sett med data)
-eigvals_file_11 = "output/problem6_eigenvalues10.csv"
-eigvecs_file_11 = "output/problem6_eigenvectors10.csv"
+# -----------------------------
+# Filstier
+# -----------------------------
+eigvals_num_10 = "output/problem6_eigenvalues10.csv"
+eigvecs_num_10 = "output/problem6_eigenvectors10.csv"
+eigvecs_an_10  = "output/problem6_eigenvectors_analytical10.csv"
 
-eigvals_file_100 = "output/problem6_eigenvalues100.csv"
-eigvecs_file_100 = "output/problem6_eigenvectors_analytical100.csv"
+eigvals_num_100 = "output/problem6_eigenvalues100.csv"
+eigvecs_num_100 = "output/problem6_eigenvectors100.csv"
+eigvecs_an_100  = "output/problem6_eigenvectors_analytical100.csv"
 
+# -----------------------------
 # Last inn data
-eigenvalues_11 = np.loadtxt(eigvals_file_11, delimiter=",")
-eigenvectors_11 = np.loadtxt(eigvecs_file_11, delimiter=",")
+# -----------------------------
+vals_num_10 = np.loadtxt(eigvals_num_10, delimiter=",")
+vecs_num_10 = np.loadtxt(eigvecs_num_10, delimiter=",")
+vecs_an_10  = np.loadtxt(eigvecs_an_10, delimiter=",")
 
-eigenvalues_100 = np.loadtxt(eigvals_file_100, delimiter=",")
-eigenvectors_100 = np.loadtxt(eigvecs_file_100, delimiter=",")
-eigenvectors_100 = eigenvectors_100
+vals_num_100 = np.loadtxt(eigvals_num_100, delimiter=",")
+vecs_num_100 = np.loadtxt(eigvecs_num_100, delimiter=",")
+vecs_an_100  = np.loadtxt(eigvecs_an_100, delimiter=",")
 
-# Setting banderies to 0
-eigenvectors_11[0, :] = 0     
-eigenvectors_11[-1, :] = 0    
-eigenvectors_100[0, :] = 0     
-eigenvectors_100[-1, :] = 0    
+# Sett randverdier = 0
+for arr in (vecs_num_10, vecs_an_10, vecs_num_100, vecs_an_100):
+    arr[0, :]  = 0
+    arr[-1, :] = 0
 
 # X-akse
-x_11 = np.linspace(0, 1, len(eigenvalues_11))
-x_100 = np.linspace(0, 1, len(eigenvalues_100))
+x_10   = np.linspace(0, 1, vecs_num_10.shape[0])
+x_100  = np.linspace(0, 1, vecs_num_100.shape[0])
 
-# Lag subplots side-om-side for egenvektorer
+# -----------------------------
+# Plot 1: Alle egenvektorer side-om-side (som før)
+# -----------------------------
 fig, axes = plt.subplots(1, 2, figsize=(12, 5), sharey=True)
 
-for i in range(eigenvectors_11.shape[1]):
-    axes[0].plot(x_11, eigenvectors_11[:, i], marker="o", label=f"Eigenvector {i+1}")
+for i in range(vecs_num_10.shape[1]):
+    axes[0].plot(x_10, vecs_num_10[:, i], marker="o", label=f"Eigenvector {i+1}")
 axes[0].set_title("n=10 eigenvectors")
 axes[0].set_xlabel(r"$\hat{x}$")
 axes[0].set_ylabel(r"$\vec{v}$")
 axes[0].grid(True)
 axes[0].legend()
 
-for i in range(eigenvectors_100.shape[1]):
-    axes[1].plot(x_100, eigenvectors_100[:, i], marker="o", label=f"Eigenvector {i+1}")
+for i in range(vecs_num_100.shape[1]):
+    axes[1].plot(x_100, vecs_num_100[:, i], marker="o", label=f"Eigenvector {i+1}")
 axes[1].set_title("n=100 eigenvectors")
 axes[1].set_xlabel(r"$\hat{x}$")
 axes[1].grid(True)
@@ -53,16 +61,18 @@ fig.tight_layout()
 fig.savefig("output/eigenvectors_comparison.pdf", bbox_inches="tight")
 plt.show()
 
-# Lag subplots side-om-side for egenverdier
+# -----------------------------
+# Plot 2: Egenverdier side-om-side (som før)
+# -----------------------------
 fig, axes = plt.subplots(1, 2, figsize=(12, 4), sharey=True)
 
-axes[0].stem(np.arange(1, len(eigenvalues_11)+1), eigenvalues_11, basefmt=" ")
-axes[0].set_title("N=11 eigenvalues")
+axes[0].stem(np.arange(1, len(vals_num_10)+1), vals_num_10, basefmt=" ")
+axes[0].set_title("N=10 eigenvalues")
 axes[0].set_xlabel("Index")
 axes[0].set_ylabel("Eigenvalue")
 axes[0].grid(True)
 
-axes[1].stem(np.arange(1, len(eigenvalues_100)+1), eigenvalues_100, basefmt=" ")
+axes[1].stem(np.arange(1, len(vals_num_100)+1), vals_num_100, basefmt=" ")
 axes[1].set_title("N=100 eigenvalues")
 axes[1].set_xlabel("Index")
 axes[1].grid(True)
@@ -70,4 +80,42 @@ axes[1].grid(True)
 fig.suptitle("Comparison of Eigenvalues")
 fig.tight_layout()
 fig.savefig("output/eigenvalues_comparison.pdf", bbox_inches="tight")
+plt.show()
+
+# -----------------------------
+# Plot 3: Numerisk vs analytisk, N=10
+# -----------------------------
+fig, axes = plt.subplots(1, 3, figsize=(15, 4), sharey=True)
+
+for k in range(vecs_num_10.shape[1]):
+    axes[k].plot(x_10, vecs_num_10[:, k], "o-", label="Numerical")
+    axes[k].plot(x_10, vecs_an_10[:, k], "--", label="Analytical")
+    axes[k].set_title(f"N=10, eigenvector {k+1}")
+    axes[k].set_xlabel(r"$\hat{x}$")
+    axes[k].grid(True)
+    if k == 0:
+        axes[k].set_ylabel(r"$v$")
+        axes[k].legend()
+
+fig.tight_layout()
+fig.savefig("output/eigenvectors_compare_N10.pdf", bbox_inches="tight")
+plt.show()
+
+# -----------------------------
+# Plot 4: Numerisk vs analytisk, N=100
+# -----------------------------
+fig, axes = plt.subplots(1, 3, figsize=(15, 4), sharey=True)
+
+for k in range(vecs_num_100.shape[1]):
+    axes[k].plot(x_100, vecs_num_100[:, k], label="Numerical")
+    axes[k].plot(x_100, vecs_an_100[:, k], "--", label="Analytical")
+    axes[k].set_title(f"N=100, eigenvector {k+1}")
+    axes[k].set_xlabel(r"$\hat{x}$")
+    axes[k].grid(True)
+    if k == 0:
+        axes[k].set_ylabel(r"$v$")
+        axes[k].legend()
+
+fig.tight_layout()
+fig.savefig("output/eigenvectors_compare_N100.pdf", bbox_inches="tight")
 plt.show()
