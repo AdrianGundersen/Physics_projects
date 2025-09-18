@@ -6,14 +6,18 @@
 Project2/
 ├─ include/
 │  ├─ jacobi.hpp
-│  └─ tridiag.hpp
+│  ├─ tridiag.hpp
+│  └─ analytical.hpp
 ├─ src/
 │  ├─ jacobi.cpp
-│  └─ tridiag.cpp
+│  ├─ tridiag.cpp
+│  └─ analytical.cpp
 ├─ problems/
 │  ├─ problem2.cpp
 │  ├─ problem3.cpp
-│  └─ problem4.cpp
+│  ├─ problem4.cpp
+│  ├─ problem5.cpp
+│  └─ problem6.cpp
 ├─ build/                 
 ├─ Makefile              
 └─ README.md

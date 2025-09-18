@@ -27,10 +27,18 @@ vals_num_100 = np.loadtxt(eigvals_num_100, delimiter=",")
 vecs_num_100 = np.loadtxt(eigvecs_num_100, delimiter=",")
 vecs_an_100  = np.loadtxt(eigvecs_an_100, delimiter=",")
 
-# Sett randverdier = 0
-for arr in (vecs_num_10, vecs_an_10, vecs_num_100, vecs_an_100):
-    arr[0, :]  = 0
-    arr[-1, :] = 0
+def add_boundaries_zero(vecs):
+    """Legg til null først og sist langs posisjonsaksen"""
+    n, m = vecs.shape  # n = antall punkter, m = antall egenvektorer
+    out = np.zeros((n+2, m))
+    out[1:-1, :] = vecs
+    return out
+
+# Bruk funksjonen på alle egenvektor-matriser
+vecs_num_10  = add_boundaries_zero(vecs_num_10)
+vecs_an_10   = add_boundaries_zero(vecs_an_10)
+vecs_num_100 = add_boundaries_zero(vecs_num_100)
+vecs_an_100  = add_boundaries_zero(vecs_an_100)
 
 # X-akse
 x_10   = np.linspace(0, 1, vecs_num_10.shape[0])
@@ -67,13 +75,13 @@ plt.show()
 fig, axes = plt.subplots(1, 2, figsize=(12, 4), sharey=True)
 
 axes[0].stem(np.arange(1, len(vals_num_10)+1), vals_num_10, basefmt=" ")
-axes[0].set_title("N=10 eigenvalues")
+axes[0].set_title("n=10 eigenvalues")
 axes[0].set_xlabel("Index")
 axes[0].set_ylabel("Eigenvalue")
 axes[0].grid(True)
 
 axes[1].stem(np.arange(1, len(vals_num_100)+1), vals_num_100, basefmt=" ")
-axes[1].set_title("N=100 eigenvalues")
+axes[1].set_title("n=100 eigenvalues")
 axes[1].set_xlabel("Index")
 axes[1].grid(True)
 
@@ -90,7 +98,7 @@ fig, axes = plt.subplots(1, 3, figsize=(15, 4), sharey=True)
 for k in range(vecs_num_10.shape[1]):
     axes[k].plot(x_10, vecs_num_10[:, k], "o-", label="Numerical")
     axes[k].plot(x_10, vecs_an_10[:, k], "--", label="Analytical")
-    axes[k].set_title(f"N=10, eigenvector {k+1}")
+    axes[k].set_title(f"n=10, eigenvector {k+1}")
     axes[k].set_xlabel(r"$\hat{x}$")
     axes[k].grid(True)
     if k == 0:
@@ -109,7 +117,7 @@ fig, axes = plt.subplots(1, 3, figsize=(15, 4), sharey=True)
 for k in range(vecs_num_100.shape[1]):
     axes[k].plot(x_100, vecs_num_100[:, k], label="Numerical")
     axes[k].plot(x_100, vecs_an_100[:, k], "--", label="Analytical")
-    axes[k].set_title(f"N=100, eigenvector {k+1}")
+    axes[k].set_title(f"n=100, eigenvector {k+1}")
     axes[k].set_xlabel(r"$\hat{x}$")
     axes[k].grid(True)
     if k == 0:
