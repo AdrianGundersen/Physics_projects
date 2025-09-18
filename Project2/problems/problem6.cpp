@@ -8,6 +8,8 @@
 #include "tridiag.hpp"
 #include <armadillo>
 #include <iostream>
+#include <filesystem>
+#include <fstream>
 
 int main(){
     int N = 11;
@@ -29,10 +31,21 @@ int main(){
     arma::vec eigenvalues;
     jacobi_eigensolver(A, eps, eigenvalues, R, maxiter, iterations, converged);
 
+    
     for (int i = 0; i < 3 && i < eigenvalues.n_elem; ++i){
         std::cout << "eigenvalue:\n" << eigenvalues(i)
-                  << "\n\neigenvector:\n" << R.col(i) << "\n";
+        << "\n\neigenvector:\n" << R.col(i) << "\n";
     }
+    
+    //write to file
+    namespace fs = std::filesystem;
+    fs::create_directories("output");
+
+    arma::mat R_save = R.cols(0,2);
+    eigenvalues.save("output/problem6_eigenvalues.csv", arma::csv_ascii);
+    R_save.cols(0,2).eval().save("output/problem6_eigenvectors.csv", arma::csv_ascii);
+
+    
     return 0;
     
 }
