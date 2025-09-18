@@ -12,7 +12,7 @@
 #include <fstream>
 
 int main(){
-    int N = 11;
+    int N = 100 - 1;
     double a = 2.0;
     double d = -1.0;
     //maximum iterations
@@ -41,9 +41,9 @@ int main(){
     namespace fs = std::filesystem;
     fs::create_directories("output");
 
-    arma::mat R_save = R.cols(0,2);
-    eigenvalues.save("output/problem6_eigenvalues.csv", arma::csv_ascii);
-    R_save.cols(0,2).eval().save("output/problem6_eigenvectors.csv", arma::csv_ascii);
+    arma::mat R_save = R.cols(0,3);
+    eigenvalues.save("output/problem6_eigenvalues100.csv", arma::csv_ascii);
+    R_save.cols(0,3).eval().save("output/problem6_eigenvectors100.csv", arma::csv_ascii);
 
     
     return 0;
