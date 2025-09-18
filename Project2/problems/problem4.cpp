@@ -30,29 +30,7 @@ int main(){
     arma::vec eigenvalues_copy = eigenvalues;
     jacobi_eigensolver(A, eps, eigenvalues, R, maxiter, iterations, converged);
     
-    // eigenvalues.print("Eigenvectors : ");
-    // eigenvalues_copy.print("Armadillo sin egenvektor");
+    eigenvalues.print("Eigenvectors : ");
+    eigenvalues_copy.print("Armadillo sin egenvektor");
 
-
-    // Problem 5
-    // for(int i = 5; i <= 100; i += 1){
-    //     iterations = 0;
-    //     arma::mat R(i, i);
-    //     R.eye();
-    //     arma::Mat<double> A = create_tridiagonal(i, d, a);
-    //     jacobi_eigensolver(A, eps, eigenvalues, R, maxiter, iterations, converged);
-    //     std::cout << i << "\t" << iterations << "\n";
-    // }
-
-    //roblem 6
-    int N_new = 11; // N = n+1
-    arma::mat R_new(N_new, N_new);
-    R_new.eye();
-    arma::Mat<double> A_new = create_tridiagonal(N_new, d, a);
-    jacobi_eigensolver(A_new, eps, eigenvalues, R_new, maxiter, iterations, converged);
-
-    for(int i =0; i < 3; i++){
-    std::cout << "eigenvalue: \n" << eigenvalues(i) << "\n \n Eigenvector: \n" <<  R_new.col(i) << "\n";
-    }
-    
 }
