@@ -13,8 +13,8 @@
 #include <fstream>
 
 int main(){
-    for (int i : {1,10}){
-        int N = 10*i - 1;
+    for (int n : {1,10}){
+        int N = 10*n - 1;
         double a = 2.0;
         double d = -1.0;
         //maximum iterations
