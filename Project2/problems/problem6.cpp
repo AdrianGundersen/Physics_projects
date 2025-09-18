@@ -1,5 +1,6 @@
 #include "jacobi.hpp"
 #include "tridiag.hpp"
+#include "analytical.hpp"
 #include <cmath>
 #include <iostream>
 
@@ -37,13 +38,20 @@ int main(){
         << "\n\neigenvector:\n" << R.col(i) << "\n";
     }
     
+    arma::mat R_analytical(N,N);
+
+    for (int j = 1; j <= N; ++j){ // j = 1, 2, ..., N
+        arma::vec v_analytical = analytical_eigenvector(N, j);
+        R_analytical.col(j) = v_analytical;
+    }
+    
     //write to file
     namespace fs = std::filesystem;
     fs::create_directories("output");
 
-    arma::mat R_save = R.cols(0,3);
+    arma::mat R_save = R.cols(0,2);
     eigenvalues.save("output/problem6_eigenvalues100.csv", arma::csv_ascii);
-    R_save.cols(0,3).eval().save("output/problem6_eigenvectors100.csv", arma::csv_ascii);
+    R_save.cols(0,2).eval().save("output/problem6_eigenvectors100.csv", arma::csv_ascii);
 
     
     return 0;

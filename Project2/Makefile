@@ -10,8 +10,9 @@ PROB_DIR  := problems
 BUILD_DIR := build
 
 # ---------- Library sources/objects ----------
-LIB_SRCS  := $(SRC_DIR)/tridiag.cpp $(SRC_DIR)/jacobi.cpp
-LIB_OBJS  := $(addprefix $(BUILD_DIR)/,$(notdir $(LIB_SRCS:.cpp=.o)))
+LIB_SRCS  := $(SRC_DIR)/tridiag.cpp $(SRC_DIR)/jacobi.cpp $(SRC_DIR)/analytical.cpp
+LIB_OBJS  := $(patsubst $(SRC_DIR)/%.cpp,$(BUILD_DIR)/%.o,$(LIB_SRCS))
+LIB_DEPS  := $(LIB_OBJS:.o=.d)
 
 # ---------- Problem sources ----------
 P2_SRCS := $(PROB_DIR)/problem2.cpp
@@ -28,6 +29,7 @@ P5_EXE := $(BUILD_DIR)/problem5.exe
 P6_EXE := $(BUILD_DIR)/problem6.exe
 
 .PHONY: all dirs clean problem2 problem3 problem4 problem5 problem6 run2 run3 run4 run5 run6 help
+-include $(LIB_DEPS)
 
 all: dirs $(P2_EXE) $(P3_EXE) $(P4_EXE) $(P5_EXE) $(P6_EXE)
 
@@ -39,21 +41,23 @@ $(BUILD_DIR)/%.o: $(SRC_DIR)/%.cpp | dirs
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
 # ---------- Link rules per problem ----------
-# 2 & 3 use tridiag only
-$(P2_EXE): $(P2_SRCS) $(BUILD_DIR)/tridiag.o | dirs
+# 2 use tridiag + analyctical
+$(P2_EXE): $(P2_SRCS) $(BUILD_DIR)/tridiag.o $(BUILD_DIR)/analytical.o | dirs
 	$(CXX) $(CXXFLAGS) $^ -o $@ $(LDFLAGS)
 
+# 3 use tridiag
 $(P3_EXE): $(P3_SRCS) $(BUILD_DIR)/tridiag.o | dirs
 	$(CXX) $(CXXFLAGS) $^ -o $@ $(LDFLAGS)
 
-# 4, 5, 6 use jacobi + tridiag
+# 4 og 5 use jacobi + tridiag
 $(P4_EXE): $(P4_SRCS) $(BUILD_DIR)/jacobi.o $(BUILD_DIR)/tridiag.o | dirs
 	$(CXX) $(CXXFLAGS) $^ -o $@ $(LDFLAGS)
 
 $(P5_EXE): $(P5_SRCS) $(BUILD_DIR)/jacobi.o $(BUILD_DIR)/tridiag.o | dirs
 	$(CXX) $(CXXFLAGS) $^ -o $@ $(LDFLAGS)
 
-$(P6_EXE): $(P6_SRCS) $(BUILD_DIR)/jacobi.o $(BUILD_DIR)/tridiag.o | dirs
+# 6 use jacobi + tridiag + analyctical
+$(P6_EXE): $(P6_SRCS) $(BUILD_DIR)/jacobi.o $(BUILD_DIR)/tridiag.o $(BUILD_DIR)/analytical.o | dirs
 	$(CXX) $(CXXFLAGS) $^ -o $@ $(LDFLAGS)
 
 # ---------- Convenience aliases ----------
