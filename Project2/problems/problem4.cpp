@@ -22,7 +22,7 @@ int main(){
     //argument to se in we converged
     bool converged = false;
 
-    arma::Mat<double> A = create_tridiagonal(N, d, a);
+    arma::Mat<double> A = create_tridiagonal(N, a, d);
     
     arma::vec eigenvalues;
     arma::mat eigenvectors;

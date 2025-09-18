@@ -28,7 +28,7 @@ int main(){
         bool converged = false;
 
         arma::mat R(N, N, arma::fill::eye);
-        arma::Mat<double> A = create_tridiagonal(N, d, a);
+        arma::Mat<double> A = create_tridiagonal(N, a, d);
         
         arma::vec eigenvalues;
         jacobi_eigensolver(A, eps, eigenvalues, R, maxiter, iterations, converged);
