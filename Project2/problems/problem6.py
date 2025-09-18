@@ -6,11 +6,11 @@ import os
 os.makedirs("output", exist_ok=True)
 
 # Filstier (to sett med data)
-eigvals_file_11 = "output/problem6_eigenvalues.csv"
-eigvecs_file_11 = "output/problem6_eigenvectors.csv"
+eigvals_file_11 = "output/problem6_eigenvalues10.csv"
+eigvecs_file_11 = "output/problem6_eigenvectors10.csv"
 
 eigvals_file_100 = "output/problem6_eigenvalues100.csv"
-eigvecs_file_100 = "output/problem6_eigenvectors100.csv"
+eigvecs_file_100 = "output/problem6_eigenvectors_analytical100.csv"
 
 # Last inn data
 eigenvalues_11 = np.loadtxt(eigvals_file_11, delimiter=",")
