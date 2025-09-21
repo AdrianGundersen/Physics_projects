@@ -65,7 +65,7 @@ fig, axes = plt.subplots(1, 2, figsize=(12, 5), sharey=True)
 
 for i in range(vecs_num_10.shape[1]):
     axes[0].plot(x_10, vecs_num_10[:, i], marker="o", label=f"Eigenvector {i+1}")
-axes[0].set_title("n=10 eigenvectors")
+axes[0].set_title(r"$N=10$ eigenvectors")
 axes[0].set_xlabel(r"$\hat{x}$")
 axes[0].set_ylabel(r"$\vec{v}$")
 axes[0].grid(True)
@@ -73,7 +73,7 @@ axes[0].legend()
 
 for i in range(vecs_num_100.shape[1]):
     axes[1].plot(x_100, vecs_num_100[:, i], marker="o", label=f"Eigenvector {i+1}")
-axes[1].set_title("n=100 eigenvectors")
+axes[1].set_title(r"$n=100$ eigenvectors")
 axes[1].set_xlabel(r"$\hat{x}$")
 axes[1].grid(True)
 axes[1].legend()
@@ -89,13 +89,13 @@ plt.show()
 fig, axes = plt.subplots(1, 2, figsize=(12, 4), sharey=True)
 
 axes[0].stem(np.arange(1, len(vals_num_10)+1), vals_num_10, basefmt=" ")
-axes[0].set_title("n=10 eigenvalues")
+axes[0].set_title(r"$n=10$ eigenvalues")
 axes[0].set_xlabel("Index")
 axes[0].set_ylabel("Eigenvalue")
 axes[0].grid(True)
 
 axes[1].stem(np.arange(1, len(vals_num_100)+1), vals_num_100, basefmt=" ")
-axes[1].set_title("n=100 eigenvalues")
+axes[1].set_title(r"$n=100$ eigenvalues")
 axes[1].set_xlabel("Index")
 axes[1].grid(True)
 
@@ -112,7 +112,7 @@ fig, axes = plt.subplots(1, 3, figsize=(15, 4), sharey=True)
 for k in range(vecs_num_10.shape[1]):
     axes[k].plot(x_10, vecs_num_10[:, k], "o-", label="Numerical")
     axes[k].plot(x_10, vecs_an_10[:, k], "--", label="Analytical")
-    axes[k].set_title(f"n=10, eigenvector {k+1}")
+    axes[k].set_title(r"$N=10$, eigenvector $\{k+1\}$")
     axes[k].set_xlabel(r"$\hat{x}$")
     axes[k].grid(True)
     if k == 0:
@@ -131,7 +131,7 @@ fig, axes = plt.subplots(1, 3, figsize=(15, 4), sharey=True)
 for k in range(vecs_num_100.shape[1]):
     axes[k].plot(x_100, vecs_num_100[:, k], label="Numerical")
     axes[k].plot(x_100, vecs_an_100[:, k], "--", label="Analytical")
-    axes[k].set_title(f"n=100, eigenvector {k+1}")
+    axes[k].set_title(r"$n=100$, eigenvector $\{k+1\}$")
     axes[k].set_xlabel(r"$\hat{x}$")
     axes[k].grid(True)
     if k == 0:
