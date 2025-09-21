@@ -49,8 +49,8 @@ $(P2_EXE): $(P2_SRCS) $(BUILD_DIR)/tridiag.o $(BUILD_DIR)/analytical.o | dirs
 $(P3_EXE): $(P3_SRCS) $(BUILD_DIR)/tridiag.o | dirs
 	$(CXX) $(CXXFLAGS) $^ -o $@ $(LDFLAGS)
 
-# 4 og 5 use jacobi + tridiag
-$(P4_EXE): $(P4_SRCS) $(BUILD_DIR)/jacobi.o $(BUILD_DIR)/tridiag.o | dirs
+# 4 og 5 use jacobi + tridiag + analyctical
+$(P4_EXE): $(P4_SRCS) $(BUILD_DIR)/jacobi.o $(BUILD_DIR)/tridiag.o $(BUILD_DIR)/analytical.o | dirs
 	$(CXX) $(CXXFLAGS) $^ -o $@ $(LDFLAGS)
 
 $(P5_EXE): $(P5_SRCS) $(BUILD_DIR)/jacobi.o $(BUILD_DIR)/tridiag.o | dirs
