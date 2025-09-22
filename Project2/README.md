@@ -1,6 +1,7 @@
 # Project 2
 
 ## Description
+This project implements and analyzes the Jacobi method for computing eigenvalues and eigenvectors of real symmetric matrices, with the buckling-beam problem as the primary application. We compare numerical results against analytical expressions for the tridiagonal stiffness matrix that arises from a second-order finite-difference discretization.
 
 ### Project structure
 ```text
@@ -23,6 +24,16 @@ Project2/
 ├─ Makefile
 └─ README.md
 ```
+
+## Dependencies
+
+- **C++20 compiler** (should also work down to C++17)  
+- **Armadillo**   
+- **Python 3.10+**
+  - `numpy`
+  - `matplotlib`
+
+
 
 ## Usage
 
@@ -65,5 +76,17 @@ make run5
 make run6
 ```
 
-### Plot
+### What each problem does:
+- **Problem 2** — Tests armadillos eigenvalue and eigenvector functions against known analytical values. 
+- **Problem 3** — Finds maximum off-diagonal matrix-element of a symmetrical matrix.
 
+### Plotting
+Problem 5:
+```bash
+python3 /problems/problem5.py
+```
+
+Problem 6:
+```bash
+python3 /problems/problem6.py
+```
