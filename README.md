@@ -9,6 +9,9 @@ This repository contains the solutions to projects from **FYS3150 – Computatio
 
 ---
 
+- [Project 2: Jacobi Rotation Method](./project2)  
+  Solving Buckling-Beam problem using Jacobi Rotation Method.
+---
 ## How to Use
 
 Each folder has it's own `README.md` for usage.
