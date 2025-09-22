@@ -15,8 +15,8 @@
 int main(){
     for (int n : {1,10}){
         int N = 10*n - 1;
-        double a = 2.0;
-        double d = -1.0;
+        double a = -1.0;
+        double d = 2.0;
         //maximum iterations
         int maxiter = 1e8;
         int iterations = 0;
