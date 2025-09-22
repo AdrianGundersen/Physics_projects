@@ -4,12 +4,12 @@ This repository contains the solutions to projects from **FYS3150 – Computatio
 
 ## Contents
 
-- [Project 1: 1D Poisson Solver](./project1)  
+- [Project 1: 1D Poisson Solver](./Project1)  
   Solving the one-dimensional Poisson equation using analytical and numerical methods.
 
 ---
 
-- [Project 2: Jacobi Rotation Method](./project2)  
+- [Project 2: Jacobi Rotation Method](./Project2)  
   Solving Buckling-Beam problem using Jacobi Rotation Method.
 ---
 ## How to Use
