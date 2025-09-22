@@ -3,6 +3,7 @@
 ## Description
 
 ### Project structure
+```text
 Project2/
 ├─ include/
 │  ├─ jacobi.hpp
@@ -18,9 +19,10 @@ Project2/
 │  ├─ problem4.cpp
 │  ├─ problem5.cpp
 │  └─ problem6.cpp
-├─ build/                 
-├─ Makefile              
+├─ build/
+├─ Makefile
 └─ README.md
+```
 
 ## Usage
 
