@@ -77,10 +77,10 @@ make run6
 ```
 
 ### What each problem does:
-- **Problem 2** — Tests armadillos eigenvalue and eigenvector functions against known analytical values. 
-- **Problem 3** — Finds maximum off-diagonal matrix-element of a symmetrical matrix.
-- **Problem 4** — Finds eigenvalues and eigenvactors of a $N\times N$ tridiagonal matrix where $N=6$ satisfying $\textbf{A} \vec7{v} = \lambda \vec{v}$ and compares it to the analytical result.
-- **Problem 5** — Runs the algorythm in problem 4 for different values of N to estimate how the amound of iterations scale. When runs the algorythm for a dense symetric matrix to compare its scaling. 
+- **Problem 2** -- Tests armadillos eigenvalue and eigenvector functions against known analytical values. 
+- **Problem 3** -- Finds maximum off-diagonal matrix-element of a symmetrical matrix.
+- **Problem 4** -- Creates and runs an algorythm to find eigenvalues and eigenvactors of a $N\times N$ tridiagonal matrix where $N=6$ satisfying $\textbf{A} \vec{v} = \lambda \vec{v}$ and compares it to the analytical result.
+- **Problem 5** -- Runs the algorythm in problem 4 for different values of N to estimate how the amound of iterations scale. When runs the algorythm for a dense symetric matrix to compare its scaling. 
 
 ### Plotting
 Problem 5:
