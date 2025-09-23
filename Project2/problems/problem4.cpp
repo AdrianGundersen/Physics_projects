@@ -7,8 +7,9 @@
 
 int main(){
     int N = 6;
-    double a = 2.0;
-    double d = -1.0;
+    double h = 1./(N+1); // step length
+    double a = -1./(h*h); // sub- and superdiagonal elements
+    double d = 2./(h*h);   // diagonal elements
     int k = 0;
     int l = 0;
     arma::mat R(N, N);

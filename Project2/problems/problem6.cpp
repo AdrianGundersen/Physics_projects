@@ -15,8 +15,9 @@
 int main(){
     for (int n : {1,10}){
         int N = 10*n - 1;
-        double a = -1.0;
-        double d = 2.0;
+        double h = 1./(N+1); // step length
+        double a = -1./(h*h); // sub- and superdiagonal elements
+        double d = 2./(h*h);   // diagonal elements
         //maximum iterations
         int maxiter = 1e8;
         int iterations = 0;
