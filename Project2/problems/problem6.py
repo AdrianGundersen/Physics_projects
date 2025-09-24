@@ -1,4 +1,4 @@
-
+# Heavily chatGPT made plots as mentioned in report.
 import os
 import numpy as np
 import matplotlib.pyplot as plt
@@ -67,7 +67,7 @@ for i in range(vecs_num_10.shape[1]):
     axes[0].plot(x_10, vecs_num_10[:, i], marker="o", label=f"Eigenvector {i+1}")
 axes[0].set_title(r"Eigenvectors for $n=10$")
 axes[0].set_xlabel(r"$\hat{x}$")
-axes[0].set_ylabel(r"$\vec{v}$")
+axes[0].set_ylabel(r"$\mathbf{v}$")
 axes[0].grid(True)
 axes[0].legend()
 
@@ -84,25 +84,34 @@ fig.savefig("output/eigenvectors_comparison.pdf", bbox_inches="tight")
 plt.show()
 
 # -----------------------------
-# Plot 2: Egenverdier side-om-side (som før)
+# Plot 2: Egenverdier side-om-side (uavhengige y-skalaer)
 # -----------------------------
-fig, axes = plt.subplots(1, 2, figsize=(12, 4), sharey=True)
+fig, axes = plt.subplots(1, 2, figsize=(12, 4), sharey=False)
 
-axes[0].stem(np.arange(1, len(vals_num_10)+1), vals_num_10, basefmt=" ")
+# Venstre: n=10
+axes[0].stem(np.arange(1, len(vals_num_10) + 1), vals_num_10, basefmt=" ")
 axes[0].set_title(r"Eigenvalues for $n=10$")
 axes[0].set_xlabel("Index")
 axes[0].set_ylabel("Eigenvalue")
 axes[0].grid(True)
+ymin, ymax = np.min(vals_num_10), np.max(vals_num_10)
+pad = 0.05 * (ymax - ymin if ymax > ymin else 1.0)
+axes[0].set_ylim(ymin - pad, ymax + pad)
 
-axes[1].stem(np.arange(1, len(vals_num_100)+1), vals_num_100, basefmt=" ")
+# Høyre: n=100 (egen y-skala)
+axes[1].stem(np.arange(1, len(vals_num_100) + 1), vals_num_100, basefmt=" ")
 axes[1].set_title(r"Eigenvalues for $n=100$")
 axes[1].set_xlabel("Index")
 axes[1].grid(True)
+ymin2, ymax2 = np.min(vals_num_100), np.max(vals_num_100)
+pad2 = 0.05 * (ymax2 - ymin2 if ymax2 > ymin2 else 1.0)
+axes[1].set_ylim(ymin2 - pad2, ymax2 + pad2)
 
 fig.suptitle("Comparison of Eigenvalues")
 fig.tight_layout()
 fig.savefig("output/eigenvalues_comparison.pdf", bbox_inches="tight")
 plt.show()
+
 
 # -----------------------------
 # Plot 3: Numerisk vs analytisk, N=10
@@ -116,7 +125,7 @@ for k in range(vecs_num_10.shape[1]):
     axes[k].set_xlabel(r"$\hat{x}$")
     axes[k].grid(True)
     if k == 0:
-        axes[k].set_ylabel(r"$v$")
+        axes[k].set_ylabel(r"$\mathbf{v}$")
         axes[k].legend()
 
 fig.tight_layout()
@@ -135,7 +144,7 @@ for k in range(vecs_num_100.shape[1]):
     axes[k].set_xlabel(r"$\hat{x}$")
     axes[k].grid(True)
     if k == 0:
-        axes[k].set_ylabel(r"$v$")
+        axes[k].set_ylabel(r"$\mathbf{v}$")
         axes[k].legend()
 
 fig.tight_layout()

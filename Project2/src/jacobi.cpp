@@ -82,8 +82,7 @@ void jacobi_eigensolver(const arma::mat& A_copy, double eps, arma::vec& eigenval
     if (max_val == 0){
         converged = true;
     }
-
-    // A.print();
+    
     eigenvalues = A.diag();
     arma::uvec order = arma::sort_index(eigenvalues); //uvec hold unsigned ints
     
