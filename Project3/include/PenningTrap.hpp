@@ -1,0 +1,34 @@
+// PenningTrap.hpp
+#pragma once
+#include <armadillo>
+#include <vector>
+#include "Particle.hpp"
+
+
+class PenningTrap { 
+    private:
+        double B0; // Magnetic field strength
+        double V0; // Electric potential
+        double d;  // Characteristic dimension
+
+public:
+    std::vector<Particle> particles;  // Store all particle objects
+
+    PenningTrap(double B0, double V0, double d); // constructor
+
+    void add_particle(const Particle& p); // add a particle to trap
+
+    // External fields
+    arma::vec external_E_field(const arma::vec& r) const;
+    arma::vec external_B_field(const arma::vec& r) const;
+
+    // Forces for particle i
+    arma::vec force_external(int i) const;   // force from external fields
+    arma::vec force_particle(int i, int j) const;  // force from j
+    arma::vec total_force(int i) const;      // total force
+
+    // Debugging
+    void print_particles() const; // print all particles
+};
+
+

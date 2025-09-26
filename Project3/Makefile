@@ -1,4 +1,3 @@
-# Made largely by ChatGPT, with slight modifications
 # ---------- Compiler & flags ----------
 CXX      := g++
 CXXFLAGS := -O2 -std=c++20 -Iinclude
@@ -9,8 +8,8 @@ SRC_DIR   := src
 BUILD_DIR := build
 
 # ---------- Sources & objects ----------
-SRCS := src/Particle.cpp src/PenningTrap.cpp main.cpp
-OBJS := $(patsubst %.cpp,build/%.o,$(notdir $(SRCS)))
+SRCS := $(SRC_DIR)/Particle.cpp $(SRC_DIR)/PenningTrap.cpp $(SRC_DIR)/main.cpp
+OBJS := $(patsubst $(SRC_DIR)/%.cpp,$(BUILD_DIR)/%.o,$(SRCS))
 
 # ---------- Executable ----------
 EXE := $(BUILD_DIR)/project3.exe
@@ -23,9 +22,8 @@ dirs:
 	@mkdir -p $(BUILD_DIR)
 
 # Compile object files
-$(BUILD_DIR)/%.o: %.cpp | dirs
+$(BUILD_DIR)/%.o: $(SRC_DIR)/%.cpp | dirs
 	$(CXX) $(CXXFLAGS) -c $< -o $@
-
 
 # Link final executable
 $(EXE): $(OBJS)
