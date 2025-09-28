@@ -1,4 +1,5 @@
-#pragma Once
+// constants.hpp
+#pragma once
 #define CONSTANTS_HPP
 
 namespace constants {
@@ -25,4 +26,7 @@ constexpr double V0_over_d2 = 9.65;  //
 
 // Particle properties
 constexpr double Ca_mass = 40.078 * atomic_mass_unit; // Calcium ion mass
+
+//Integration parameters
+constexpr double dt = 0.01; // Time step
 }

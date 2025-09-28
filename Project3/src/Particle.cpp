@@ -1,4 +1,6 @@
+// Particle.cpp
 #include "Particle.hpp"
+
 
 Particle::Particle(double charge, double mass, 
                    const arma::vec& position, 

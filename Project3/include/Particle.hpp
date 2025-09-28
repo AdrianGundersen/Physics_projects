@@ -1,3 +1,4 @@
+// Particle.hpp
 #pragma once
 #include <armadillo>
 
@@ -5,6 +6,7 @@ class PenningTrap;
 
 class Particle {
     friend class PenningTrap; // PenningTrap can access private
+    friend class Integrator;
 
 private:
     double charge;
