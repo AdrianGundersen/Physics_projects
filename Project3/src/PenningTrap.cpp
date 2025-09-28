@@ -2,6 +2,7 @@
 #include "PenningTrap.hpp"
 #include "Particle.hpp"
 #include "constants.hpp"
+#include "parameters.hpp"
 #include <cmath>
 
 
