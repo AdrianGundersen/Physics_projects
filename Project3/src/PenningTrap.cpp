@@ -60,6 +60,32 @@ arma::vec PenningTrap::total_force(int i) const {
 
 }
 
+// returns the acceleration of the particles at a temperary psoition
+arma::mat PenningTrap::acceleration_all(const arma::mat& R, const arma::mat& V)
+    const {
+    int N = particles.size();
+    arma::mat A(3, N, arma::fill::zeros);
+
+    for (int i = 0; i < N; i++){
+        const Particle& p = particles[i];
+        arma::vec r = R.col(i);
+        arma::vec v = V.col(i);
+
+        arma::vec E = external_E_field(r);
+        arma::vec B = external_B_field(r);
+        arma::vec F = p.charge * (E + arma::cross(v, B));
+
+        for (int j = 0; j < (int)particles.size(); j++) {
+            if (j != i) {
+                arma::vec r_vec = r - R.col(j);
+                double r_norm = arma::norm(r_vec);
+                F += constants::ke * p.charge * particles[j].charge * r_vec / std::pow(r_norm, 3);
+            }
+        }
+        A.col(i) =  F/p.mass;
+}   return A;
+}
+
 // Debugging
 void PenningTrap::print_particles() const {
     for (const Particle& p : particles) {

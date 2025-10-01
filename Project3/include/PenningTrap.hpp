@@ -26,6 +26,7 @@ public:
     arma::vec force_external(int i) const;   // force from external fields
     arma::vec force_particle(int i, int j) const;  // force from j
     arma::vec total_force(int i) const;      // total force
+    arma::mat acceleration_all(const arma::mat& R, const arma::mat& V) const; //temperary acceleration of partivcle
 
     // Debugging
     void print_particles() const; // print all particles
