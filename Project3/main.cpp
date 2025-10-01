@@ -29,7 +29,7 @@ int main() {
 
     trap.print_particles();
     for (int step = 0; step < parameters::N; step++) {
-        Integrator::ForwardEuler(trap, parameters::dt);
+        Integrator::RK4(trap, parameters::dt);
 }
     trap.print_particles();
     return 0;
