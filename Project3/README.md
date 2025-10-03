@@ -38,9 +38,9 @@ Change parameters in include/parameters.hpp
 
 ### Compile
 
-Build all problems
+Build, run and plot all problems
 ```bash
-make
+make all
 ```
 
 Clean objects and executables:
@@ -62,3 +62,8 @@ make run
 - **Example** -
 
 ### Plotting
+Plot all plots
+```bash
+make plot
+```
+
