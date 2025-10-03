@@ -38,6 +38,7 @@ __pycache__/
 *.jpg
 *.jpeg
 *.pdf
+*.gif
 
 # Logs
 *.log
