@@ -11,6 +11,6 @@ constexpr double d  = 500.0;
 
 //Integration parameters
 constexpr double total_time = 50.0; // [µs]
-constexpr int N = 1000000; // Number of integration steps minimum value: 10000
+constexpr int N = 100000; // Number of integration steps minimum value: 10000
 constexpr double dt = total_time / N; // Time step
 }

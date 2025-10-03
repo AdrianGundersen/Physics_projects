@@ -18,6 +18,7 @@ LDFLAGS  := $(LIBS) $(LDFLAGS_$(MODE))
 # ---------- Folders ----------
 SRC_DIR   := src
 BUILD_DIR := build
+PLOT_DIR  := scripts
 OBJ_DIR   := $(BUILD_DIR)/obj
 BIN_DIR   := $(BUILD_DIR)/bin
 
@@ -31,8 +32,9 @@ DEPS      := $(OBJS:.o=.d)
 
 # ---------- Executable ----------
 EXE := $(BIN_DIR)/project3.exe
+PLOT_SCRIPT := $(PLOT_DIR)/plot_pos_vel.py
 
-.PHONY: all clean run debug release sanitize dirs
+.PHONY: all clean run debug release sanitize dirs plot
 
 all: $(EXE)
 
@@ -62,6 +64,10 @@ $(EXE): $(OBJS) | dirs
 
 run: $(EXE)
 	$(EXE) $(ARGS)
+
+plot: 
+	@echo "Generating plots"
+	python3 $(PLOT_SCRIPT)
 
 clean:
 	@rm -rf $(BUILD_DIR)
