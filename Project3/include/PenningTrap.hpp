@@ -30,6 +30,7 @@ public:
 
     // Debugging
     void print_particles() const; // print all particles
+    void write_file(std::ofstream& ofile, double time, int particle_n) const; //write position, velocity and time to file
 };
 
 

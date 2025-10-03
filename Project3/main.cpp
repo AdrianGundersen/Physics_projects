@@ -5,6 +5,8 @@
 #include "integrator.hpp"
 #include "parameters.hpp"
 #include <iostream>
+#include <fstream>
+#include <filesystem>
 
 int main() {
 
@@ -28,9 +30,25 @@ int main() {
     trap.add_particle(p2);
 
     trap.print_particles();
+
+    double time = 0;
+
+    std::filesystem::create_directory("data");
+
+    std::ofstream ofile("data/pos_vel.txt");
+    trap.write_file(ofile, time, 0);
+
     for (int step = 0; step < parameters::N; step++) {
+        time += parameters::dt;
         Integrator::RK4(trap, parameters::dt);
-}
+
+        trap.write_file(ofile, time, 0);
+    }
+    ofile.close();
     trap.print_particles();
+
+    std::cout << "Wrote z position agains time as: data/pos_vel.txt\n";
+    std::cout << parameters::dt << "\n";
+    std::cout << time << "\n";
     return 0;
 }

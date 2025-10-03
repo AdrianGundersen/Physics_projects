@@ -92,3 +92,8 @@ void PenningTrap::print_particles() const {
         p.print();
     }
 }
+
+void PenningTrap::write_file(std::ofstream& ofile, double time, int particle_n) const {
+    const Particle& p = particles[particle_n];
+    p.write_to_file(ofile, time); 
+}
