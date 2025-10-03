@@ -16,16 +16,23 @@ plt.rcParams.update({
     'figure.dpi': 300,
 })
 os.makedirs("data/plot", exist_ok=True)
-data = np.loadtxt("data/pos_vel.txt")
+data1 = np.loadtxt("data/pos_vel_1.txt")
+data2 = np.loadtxt("data/pos_vel_2.txt")
 
-time = data[0,:]
-x_position = data[1, :]
-y_position = data[2, :]
-z_position = data[3, :]
+t1, x1, y1, z1 = data1[:,0], data1[:,1], data1[:,2], data1[:,3]
+t2, x2, y2, z2 = data2[:,0], data2[:,1], data2[:,2], data2[:,3]
 
-x_velocity = data[4, :]
+def plot_component(t1, arr1, t2, arr2, comp_name, ylabel, filename):
+    plt.figure()
+    plt.plot(t1, arr1, label=f"Particle 1 {comp_name}(t)")
+    plt.plot(t2, arr2, label=f"Particle 2 {comp_name}(t)")
+    plt.xlabel("time (s)")
+    plt.ylabel(ylabel)
+    plt.legend()
+    plt.tight_layout()
+    plt.savefig(filename)
+    plt.close()
 
-plt.plot(time, y_position, label="z-position of particle 1")
-plt.xlabel("time")
-plt.ylabel("z-position")
-plt.savefig("data/plot/z_position_vs_time.pdf")
+plot_component(t1, x1, t2, x2, "x", "x-position", "data/plot/x_position_vs_time.pdf")
+plot_component(t1, y1, t2, y2, "y", "y-position", "data/plot/y_position_vs_time.pdf")
+plot_component(t1, z1, t2, z2, "z", "z-position", "data/plot/z_position_vs_time.pdf")

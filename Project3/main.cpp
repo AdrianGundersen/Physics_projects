@@ -35,16 +35,20 @@ int main() {
 
     std::filesystem::create_directory("data");
 
-    std::ofstream ofile("data/pos_vel.txt");
-    trap.write_file(ofile, time, 0);
+    std::ofstream ofile1("data/pos_vel_1.txt");
+    std::ofstream ofile2("data/pos_vel_2.txt");
+    trap.write_file(ofile1, time, 0);
+    trap.write_file(ofile2, time, 1);
 
     for (int step = 0; step < parameters::N; step++) {
         time += parameters::dt;
         Integrator::RK4(trap, parameters::dt);
 
-        trap.write_file(ofile, time, 0);
+        trap.write_file(ofile1, time, 0);
+        trap.write_file(ofile2, time, 1);
     }
-    ofile.close();
+    ofile1.close();
+    ofile2.close();
     trap.print_particles();
 
     std::cout << "Wrote z position agains time as: data/pos_vel.txt\n";

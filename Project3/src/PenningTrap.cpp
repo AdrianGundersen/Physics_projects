@@ -18,7 +18,7 @@ void PenningTrap::add_particle(const Particle& p) {
 // External fields
 arma::vec PenningTrap::external_E_field(const arma::vec& r) const {
     double V0_over_d2 = V0 / (d * d);
-    arma::vec Efield = V0_over_d2 * arma::vec({r(0), r(1), -2 * r(2)}) / 2.;
+    arma::vec Efield = V0_over_d2 * arma::vec({r(0), r(1), -2.0 * r(2)});
     return Efield;
 }
 

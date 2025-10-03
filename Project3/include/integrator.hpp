@@ -2,7 +2,7 @@
 #pragma once
 #define INTEGRATOR_HPP
 #include "PenningTrap.hpp"
-#include <constants.hpp>
+#include "constants.hpp"
 
 class Integrator {
     public:
