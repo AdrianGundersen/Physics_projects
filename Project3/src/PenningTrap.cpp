@@ -15,6 +15,17 @@ void PenningTrap::add_particle(const Particle& p) {
     particles.push_back(p); // add a copy of p to the particles vector
 }
 
+
+void PenningTrap::fill_random(int N, double q, double m, double max_vel) {
+    for (int i = 0; i < N; i++) {
+        arma::vec pos = arma::vec(3).randn() * 0.1 * d;
+        arma::vec vel = arma::vec(3).randn() * max_vel;  
+        Particle p(q, m, pos, vel);
+        add_particle(p);
+    }
+}
+
+
 // External fields
 arma::vec PenningTrap::external_E_field(const arma::vec& r) const {
     if (arma::norm(r) > d) {

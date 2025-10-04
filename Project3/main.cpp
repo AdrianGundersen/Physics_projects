@@ -9,7 +9,7 @@
 #include <filesystem>
 
 int main() {
-
+    arma::arma_rng::set_seed(parameters::seed);
     PenningTrap trap(parameters::B0, parameters::V0, parameters::d, parameters::coulomb_on);
 
 

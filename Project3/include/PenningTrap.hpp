@@ -19,6 +19,8 @@ public:
 
     void add_particle(const Particle& p); // add a particle to trap
 
+    void fill_random(int N, double q, double m, double max_vel); // fill trap with N random particles
+
     // External fields
     arma::vec external_E_field(const arma::vec& r) const;
     arma::vec external_B_field(const arma::vec& r) const;

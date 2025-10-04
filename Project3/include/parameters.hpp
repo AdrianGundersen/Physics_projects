@@ -4,6 +4,10 @@
 #include "constants.hpp"
 
 namespace parameters {
+// Seed
+
+constexpr int seed = 67; // group number
+
 // Default Penning trap parameters
 constexpr double B0 = constants::Tesla;   // Magnetic field strength [T]
 constexpr double V0 = 2.41e6; // Electric potential [V]
