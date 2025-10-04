@@ -61,12 +61,13 @@ arma::vec PenningTrap::total_force(int i) const {
 
 }
 
-// returns the acceleration of the particles at a temperary psoition
+// returns the acceleration of the particles at a temporary position
 arma::mat PenningTrap::acceleration_all(const arma::mat& R, const arma::mat& V)
     const {
     int N = particles.size();
     arma::mat A(3, N, arma::fill::zeros);
 
+    // external acceleration
     for (int i = 0; i < N; i++){
         const Particle& p = particles[i];
         arma::vec r = R.col(i);
@@ -75,16 +76,30 @@ arma::mat PenningTrap::acceleration_all(const arma::mat& R, const arma::mat& V)
         arma::vec E = external_E_field(r);
         arma::vec B = external_B_field(r);
         arma::vec F = p.charge * (E + arma::cross(v, B));
-
-        for (int j = 0; j < N; j++) {
-            if (j != i) {
-                arma::vec r_vec = r - R.col(j);
-                double r_norm = arma::norm(r_vec);
-                r_norm = std::max(r_norm, parameters::EPS); // avoid division by zero
-                F += constants::ke * p.charge * particles[j].charge * r_vec / std::pow(r_norm, 3);
-            }
-        }
         A.col(i) =  F/p.mass;
+    }
+    // coulomb forces (symmetric interaction)
+    for (int i = 0; i < N; i++) {
+        const double inv_mi = 1. / particles[i].mass;
+        const double qi = particles[i].charge;
+
+
+        for (int j = i+1; j < N; j++) {
+            const double inv_mj = 1./particles[j].mass;
+            const double qj = particles[j].charge;
+
+            arma::vec r_vec = R.col(i) - R.col(j);
+            double r_norm = arma::norm(r_vec);
+            r_norm = std::max(r_norm, parameters::EPS); // avoid division by zero
+
+            const double inv_r  = 1.0 / std::sqrt(r_norm);
+            const double inv_r3 = inv_r / r_norm;
+
+            const arma::vec F = (constants::ke * qi * qj * inv_r3) * r_vec; // force on i due to j
+
+            A.col(i) += F * inv_mi;  
+            A.col(j) -= F * inv_mj;  
+        }
 }   return A;
 }
 
