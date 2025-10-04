@@ -4,7 +4,7 @@
 #include "constants.hpp"
 #include "parameters.hpp"
 #include <cmath>
-
+#include <algorithm> 
 
 PenningTrap::PenningTrap(double B0_in, double V0_in, double d_in)
 // Constructor
@@ -43,6 +43,7 @@ arma::vec PenningTrap::force_particle(int i, int j) const {
 
     arma::vec r_vec = pi.position - pj.position;
     double r_norm = arma::norm(r_vec);
+    r_norm = std::max(r_norm, parameters::EPS); // avoid division by zero
 
     // Coulomb force
     return constants::ke * pi.charge * pj.charge * r_vec / std::pow(r_norm, 3);
@@ -75,10 +76,11 @@ arma::mat PenningTrap::acceleration_all(const arma::mat& R, const arma::mat& V)
         arma::vec B = external_B_field(r);
         arma::vec F = p.charge * (E + arma::cross(v, B));
 
-        for (int j = 0; j < (int)particles.size(); j++) {
+        for (int j = 0; j < N; j++) {
             if (j != i) {
                 arma::vec r_vec = r - R.col(j);
                 double r_norm = arma::norm(r_vec);
+                r_norm = std::max(r_norm, parameters::EPS); // avoid division by zero
                 F += constants::ke * p.charge * particles[j].charge * r_vec / std::pow(r_norm, 3);
             }
         }
