@@ -10,7 +10,7 @@
 
 int main() {
 
-    PenningTrap trap(parameters::B0, parameters::V0, parameters::d);
+    PenningTrap trap(parameters::B0, parameters::V0, parameters::d, parameters::coulomb_on);
 
 
     // origin particle

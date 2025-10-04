@@ -6,9 +6,9 @@
 #include <cmath>
 #include <algorithm> 
 
-PenningTrap::PenningTrap(double B0_in, double V0_in, double d_in)
+PenningTrap::PenningTrap(double B0_in, double V0_in, double d_in, bool coulomb_on_in)
 // Constructor
-    : B0(B0_in), V0(V0_in), d(d_in) {} 
+    : B0(B0_in), V0(V0_in), d(d_in), coulomb_on(coulomb_on_in) {} 
 
 // Add a particle
 void PenningTrap::add_particle(const Particle& p) {
@@ -78,29 +78,44 @@ arma::mat PenningTrap::acceleration_all(const arma::mat& R, const arma::mat& V)
         arma::vec F = p.charge * (E + arma::cross(v, B));
         A.col(i) =  F/p.mass;
     }
-    // coulomb forces (symmetric interaction)
-    for (int i = 0; i < N; i++) {
-        const double inv_mi = 1. / particles[i].mass;
-        const double qi = particles[i].charge;
 
+    // Coulomb forces (symmetric interaction)
+    if (coulomb_on) {
+        for (int i = 0; i < N; i++) {
+            const double inv_mi = 1. / particles[i].mass;
+            const double qi = particles[i].charge;
 
-        for (int j = i+1; j < N; j++) {
-            const double inv_mj = 1./particles[j].mass;
-            const double qj = particles[j].charge;
+            for (int j = i + 1; j < N; j++) {
+                const double inv_mj = 1. / particles[j].mass;
+                const double qj = particles[j].charge;
 
-            arma::vec r_vec = R.col(i) - R.col(j);
-            double r_norm = arma::norm(r_vec);
-            r_norm = std::max(r_norm, parameters::EPS); // avoid division by zero
+                arma::vec r_vec = R.col(i) - R.col(j);
+                double r_norm = arma::norm(r_vec);
+                r_norm = std::max(r_norm, parameters::EPS);
 
-            const double inv_r  = 1.0 / std::sqrt(r_norm);
-            const double inv_r3 = inv_r / r_norm;
+                const double inv_r3 = 1.0 / std::pow(r_norm, 3);
+                const arma::vec F = constants::ke * qi * qj * inv_r3 * r_vec;
 
-            const arma::vec F = (constants::ke * qi * qj * inv_r3) * r_vec; // force on i due to j
-
-            A.col(i) += F * inv_mi;  
-            A.col(j) -= F * inv_mj;  
+                A.col(i) += F * inv_mi;
+                A.col(j) -= F * inv_mj;
+            }
         }
-}   return A;
+}
+return A;
+}   
+
+// test functions
+int PenningTrap::number_of_particles() const {
+    int N = particles.size(); 
+    int count = 0; // number of particles in trap
+    for (int i = 0; i < N; i++) {
+        const Particle& p = particles[i];
+        double r_norm = arma::norm(p.position);
+        if (r_norm < d) {
+            count++;
+        }
+    }
+    return count;
 }
 
 // Debugging

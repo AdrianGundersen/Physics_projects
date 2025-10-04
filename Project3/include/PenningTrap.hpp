@@ -9,12 +9,13 @@ class PenningTrap {
     private:
         double B0; // Magnetic field strength
         double V0; // Electric potential
-        double d;  // Characteristic dimension
+        double d;  // Characteristic dimension  
+        bool coulomb_on; // Enable/disable Coulomb interaction
 
 public:
     std::vector<Particle> particles;  // Store all particle objects
 
-    PenningTrap(double B0, double V0, double d); // constructor
+    PenningTrap(double B0, double V0, double d, bool coulomb_on); // constructor
 
     void add_particle(const Particle& p); // add a particle to trap
 
@@ -27,6 +28,9 @@ public:
     arma::vec force_particle(int i, int j) const;  // force from j
     arma::vec total_force(int i) const;      // total force
     arma::mat acceleration_all(const arma::mat& R, const arma::mat& V) const; //temperary acceleration of partivcle
+
+    // test functions
+    int number_of_particles() const; // number of particles in trap
 
     // Debugging
     void print_particles() const; // print all particles
