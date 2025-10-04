@@ -17,12 +17,18 @@ void PenningTrap::add_particle(const Particle& p) {
 
 // External fields
 arma::vec PenningTrap::external_E_field(const arma::vec& r) const {
+    if (arma::norm(r) > d) {
+        return arma::vec({0.0, 0.0, 0.0});  // no field outside the trap
+    }
     double V0_over_d2 = V0 / (d * d);
     arma::vec Efield = V0_over_d2 * arma::vec({r(0), r(1), -2.0 * r(2)});
     return Efield;
 }
 
 arma::vec PenningTrap::external_B_field(const arma::vec& r) const {
+    if (arma::norm(r) > d) {
+        return arma::vec({0.0, 0.0, 0.0});  // no field outside the trap
+    }
     return arma::vec({0.0, 0.0, B0});
 }
 
