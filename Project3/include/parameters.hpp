@@ -20,4 +20,8 @@ constexpr int N = 100000; // Number of integration steps minimum value: 10000
 constexpr double dt = total_time / N; // Time step
 
 constexpr double EPS = 1e-12; // Avoid division by zero
+
+// Multiparticle parameters
+constexpr int N_particles = 100; // Number of particles
+constexpr double maxvel = 40.0; // Maximum initial velocity [µm/µs]
 }

@@ -3,6 +3,8 @@ CXX       ?= g++
 CXXSTD     = -std=c++20
 INC        = -Iinclude
 LIBS       = -larmadillo
+# If your toolchain needs it for std::filesystem, uncomment:
+# LIBS      += -lstdc++fs
 
 # Build type (make MODE=debug | release | sanitize)
 MODE      ?= release
@@ -23,20 +25,27 @@ OBJ_DIR   := $(BUILD_DIR)/obj
 BIN_DIR   := $(BUILD_DIR)/bin
 
 # ---------- Sources & objects ----------
-SRCS_SRC  := $(wildcard $(SRC_DIR)/*.cpp)
-SRCS_MAIN := main.cpp
-# flatten: src/foo.cpp → build/obj/foo.o
-OBJS      := $(patsubst $(SRC_DIR)/%.cpp,$(OBJ_DIR)/%.o,$(SRCS_SRC)) \
-             $(OBJ_DIR)/$(SRCS_MAIN:.cpp=.o)
-DEPS      := $(OBJS:.o=.d)
+SRCS_SRC   := $(wildcard $(SRC_DIR)/*.cpp)              # library/engine sources
+OBJS_COMMON:= $(patsubst $(SRC_DIR)/%.cpp,$(OBJ_DIR)/%.o,$(SRCS_SRC))
 
-# ---------- Executable ----------
-EXE := $(BIN_DIR)/project3.exe
+# Program entry points (in project root)
+ENTRY_FEW  := few_particles.cpp
+ENTRY_N    := N_particles.cpp
+
+OBJ_FEW    := $(OBJ_DIR)/$(notdir $(ENTRY_FEW:.cpp=.o))
+OBJ_N      := $(OBJ_DIR)/$(notdir $(ENTRY_N:.cpp=.o))
+
+DEPS       := $(OBJS_COMMON:.o=.d) $(OBJ_FEW:.o=.d) $(OBJ_N:.o=.d)
+
+# ---------- Executables ----------
+EXE_FEW := $(BIN_DIR)/few_particles.exe
+EXE_N   := $(BIN_DIR)/N_particles.exe
 PLOT_SCRIPT := $(PLOT_DIR)/plot_pos_vel.py
 
-.PHONY: all clean run debug release sanitize dirs plot
+.PHONY: all clean run-few run-n debug release sanitize dirs plot
 
-all: $(EXE)
+# Build both by default
+all: $(EXE_FEW) $(EXE_N)
 
 debug:    MODE=debug
 debug:    clean all
@@ -50,22 +59,30 @@ sanitize: clean all
 dirs:
 	@mkdir -p $(OBJ_DIR) $(BIN_DIR)
 
+# ---------- Compilation rules ----------
 # Compile objects from src/
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp | dirs
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
-# Compile main.cpp from project root
-$(OBJ_DIR)/main.o: main.cpp | dirs
+# Compile entry points in project root
+$(OBJ_DIR)/%.o: %.cpp | dirs
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
-# Link final executable
-$(EXE): $(OBJS) | dirs
+# ---------- Link rules ----------
+$(EXE_FEW): $(OBJS_COMMON) $(OBJ_FEW) | dirs
 	$(CXX) $(CXXFLAGS) $^ -o $@ $(LDFLAGS)
 
-run: $(EXE)
-	$(EXE) $(ARGS)
+$(EXE_N): $(OBJS_COMMON) $(OBJ_N) | dirs
+	$(CXX) $(CXXFLAGS) $^ -o $@ $(LDFLAGS)
 
-plot: 
+# ---------- Convenience targets ----------
+run-few: $(EXE_FEW)
+	$(EXE_FEW) $(ARGS)
+
+run-n: $(EXE_N)
+	$(EXE_N) $(ARGS)
+
+plot:
 	@echo "Generating plots"
 	python3 $(PLOT_SCRIPT)
 
