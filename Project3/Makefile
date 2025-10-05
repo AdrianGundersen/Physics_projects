@@ -25,8 +25,8 @@ OBJ_DIR   := $(BUILD_DIR)/obj
 BIN_DIR   := $(BUILD_DIR)/bin
 
 # ---------- Sources & objects ----------
-SRCS_SRC   := $(wildcard $(SRC_DIR)/*.cpp)              # library/engine sources
-OBJS_COMMON:= $(patsubst $(SRC_DIR)/%.cpp,$(OBJ_DIR)/%.o,$(SRCS_SRC))
+SRCS_SRC    := $(wildcard $(SRC_DIR)/*.cpp)                             # library/engine sources
+OBJS_COMMON := $(patsubst $(SRC_DIR)/%.cpp,$(OBJ_DIR)/%.o,$(SRCS_SRC))
 
 # Program entry points (in project root)
 ENTRY_FEW  := few_particles.cpp
@@ -35,33 +35,40 @@ ENTRY_S    := single_particle.cpp
 
 OBJ_FEW    := $(OBJ_DIR)/$(notdir $(ENTRY_FEW:.cpp=.o))
 OBJ_N      := $(OBJ_DIR)/$(notdir $(ENTRY_N:.cpp=.o))
-OBJ_S     := $(OBJ_DIR)/$(notdir $(ENTRY_S:.cpp=.o))
+OBJ_S      := $(OBJ_DIR)/$(notdir $(ENTRY_S:.cpp=.o))
 
 DEPS       := $(OBJS_COMMON:.o=.d) $(OBJ_FEW:.o=.d) $(OBJ_N:.o=.d) $(OBJ_S:.o=.d)
 
 # ---------- Executables ----------
-EXE_FEW := $(BIN_DIR)/few_particles.exe
-EXE_N   := $(BIN_DIR)/N_particles.exe
-EXE_S   := $(BIN_DIR)/single_particle.exe
-PLOT_FEW := $(PLOT_DIR)/plot_pos_vel.py
-PLOT_SINGLE := $(PLOT_DIR)/plot_single.py
+EXE_FEW    := $(BIN_DIR)/few_particles.exe
+EXE_N      := $(BIN_DIR)/N_particles.exe
+EXE_S      := $(BIN_DIR)/single_particle.exe
+PLOT_FEW   := $(PLOT_DIR)/plot_pos_vel.py
+PLOT_SINGLE:= $(PLOT_DIR)/plot_single.py
 
-.PHONY: all clean run-few run-n run-s debug release sanitize dirs plot
+# ---------- Phony targets ----------
+.PHONY: all clean run-few run-n run-s debug release sanitize dirs plot help print-%
 
-# Build both by default
-all: $(EXE_FEW) $(EXE_N)
+# ---------- Default ----------
+all: $(EXE_FEW) $(EXE_N) ## Build the main executables (few & N) in the selected MODE
 
+# ---------- Build modes ----------
 debug:    MODE=debug
-debug:    clean all
+debug:    clean all ## Rebuild everything with debug flags
 
 release:  MODE=release
-release:  clean all
+release:  clean all ## Rebuild everything with release flags
 
 sanitize: MODE=sanitize
-sanitize: clean all
+sanitize: clean all ## Rebuild with Address/UBSan enabled
 
-dirs:
+# ---------- Utility ----------
+dirs: ## Create build directories if missing
 	@mkdir -p $(OBJ_DIR) $(BIN_DIR)
+
+# Print any variable: make print-VAR (e.g., make print-CXXFLAGS)
+print-%: ## Print a Makefile variable (usage: make print-VARNAME)
+	@printf "%s = %s\n" "$*" "$($*)"
 
 # ---------- Compilation rules ----------
 # Compile objects from src/
@@ -77,27 +84,39 @@ $(EXE_FEW): $(OBJS_COMMON) $(OBJ_FEW) | dirs
 	$(CXX) $(CXXFLAGS) $^ -o $@ $(LDFLAGS)
 
 $(EXE_N): $(OBJS_COMMON) $(OBJ_N) | dirs
-	$(CXX) $(CXXFLAGS) $^ -o $@ $(LDFLAGS) 
+	$(CXX) $(CXXFLAGS) $^ -o $@ $(LDFLAGS)
 
 $(EXE_S): $(OBJS_COMMON) $(OBJ_S) | dirs
-	$(CXX) $(CXXFLAGS) $^ -o $@ $(LDFLAGS) 
+	$(CXX) $(CXXFLAGS) $^ -o $@ $(LDFLAGS)
 
-# ---------- Convenience targets ----------
-run-few: $(EXE_FEW)
+# ---------- Run helpers ----------
+run-few: $(EXE_FEW) ## Run few_particles executable (pass ARGS="..." to forward CLI args)
 	$(EXE_FEW) $(ARGS)
 
-run-n: $(EXE_N)
+run-n: $(EXE_N) ## Run N_particles executable (pass ARGS="...")
 	$(EXE_N) $(ARGS)
 
-run-s: $(EXE_S)
+run-s: $(EXE_S) ## Run single_particle executable (pass ARGS="...")
 	$(EXE_S) $(ARGS)
 
-plot:
+# ---------- Plotting ----------
+plot: ## Generate plots using the Python scripts in scripts/
 	@echo "Generating plots"
 	python3 $(PLOT_FEW)
 	python3 $(PLOT_SINGLE)
 
-clean:
+# ---------- Cleaning ----------
+clean: ## Remove the entire build/ directory
 	@rm -rf $(BUILD_DIR)
 
--include $(DEPS)
+# ---------- Self-documenting help ----------
+# Any target line with a double-hash comment (##) will be picked up by 'make help'.
+help: ## Show this help message with available targets and current config
+	@printf "Usage: make [TARGET] [MODE=debug|release|sanitize] [ARGS=\"...\"]\n\n"
+	@printf "Current configuration:\n"
+	@printf "  MODE     : %s\n" "$(MODE)"
+	@printf "  CXX      : %s\n" "$(CXX)"
+	@printf "  CXXFLAGS : %s\n" "$(CXXFLAGS)"
+	@printf "  LDFLAGS  : %s\n\n" "$(LDFLAGS)"
+	@awk 'BEGIN {FS":.*##"; printf "Available targets:\n"} \
+	     /^[a-zA-Z0-9_\/\.\-%]+:.*##/ {printf "  %-18s %s\n", $$1, $$2}' $(MAKEFILE_LIST)
