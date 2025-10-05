@@ -31,15 +31,18 @@ OBJS_COMMON:= $(patsubst $(SRC_DIR)/%.cpp,$(OBJ_DIR)/%.o,$(SRCS_SRC))
 # Program entry points (in project root)
 ENTRY_FEW  := few_particles.cpp
 ENTRY_N    := N_particles.cpp
+ENTRY_S    := single_particle.cpp
 
 OBJ_FEW    := $(OBJ_DIR)/$(notdir $(ENTRY_FEW:.cpp=.o))
 OBJ_N      := $(OBJ_DIR)/$(notdir $(ENTRY_N:.cpp=.o))
+OBJ_S     := $(OBJ_DIR)/$(notdir $(ENTRY_S:.cpp=.o))
 
-DEPS       := $(OBJS_COMMON:.o=.d) $(OBJ_FEW:.o=.d) $(OBJ_N:.o=.d)
+DEPS       := $(OBJS_COMMON:.o=.d) $(OBJ_FEW:.o=.d) $(OBJ_N:.o=.d) $(OBJ_S:.o=.d)
 
 # ---------- Executables ----------
 EXE_FEW := $(BIN_DIR)/few_particles.exe
 EXE_N   := $(BIN_DIR)/N_particles.exe
+EXE_S   := $(BIN_DIR)/single_particle.exe
 PLOT_SCRIPT := $(PLOT_DIR)/plot_pos_vel.py
 
 .PHONY: all clean run-few run-n debug release sanitize dirs plot
@@ -73,7 +76,10 @@ $(EXE_FEW): $(OBJS_COMMON) $(OBJ_FEW) | dirs
 	$(CXX) $(CXXFLAGS) $^ -o $@ $(LDFLAGS)
 
 $(EXE_N): $(OBJS_COMMON) $(OBJ_N) | dirs
-	$(CXX) $(CXXFLAGS) $^ -o $@ $(LDFLAGS)
+	$(CXX) $(CXXFLAGS) $^ -o $@ $(LDFLAGS) 
+
+$(EXE_S): $(OBJS_COMMON) $(OBJ_S) | dirs
+	$(CXX) $(CXXFLAGS) $^ -o $@ $(LDFLAGS) 
 
 # ---------- Convenience targets ----------
 run-few: $(EXE_FEW)
@@ -81,6 +87,9 @@ run-few: $(EXE_FEW)
 
 run-n: $(EXE_N)
 	$(EXE_N) $(ARGS)
+
+run-s: $(EXE_S)
+	$(EXE_S) $(ARGS)
 
 plot:
 	@echo "Generating plots"
