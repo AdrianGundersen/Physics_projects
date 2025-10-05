@@ -26,39 +26,23 @@ ca_mass = 40.078
 z_0 = 20
 d  = 500.0
 V0 = 2.41e6
-omega_z = np.sqrt(2*q*V0/(ca_mass*d**2))
+z1 = z1
+
+# multiply by 2pi to get rad
+omega_z = np.sqrt(2*q*V0/(ca_mass*d**2)) * (2*np.pi) 
 z_t = z_0*np.cos(omega_z*t1)
 
-# def plot_component(t1, arr1, t2, arr2, comp_name, xlabel, ylabel, filename):
-#     plt.figure()
-#     plt.plot(t1, arr1, alpha=0.8, label=f"Particle 1 {comp_name}")
-#     plt.plot(t2, arr2, alpha=0.8, label=f"Particle 2 {comp_name}")
-#     plt.xlabel(xlabel)
-#     plt.ylabel(ylabel)
-#     plt.legend()
-#     plt.tight_layout()
-#     plt.savefig(filename)
-#     plt.close()
-plt.plot(t1, z1)
-plt.plot(t1, z_t)
-plt.show()
+def plot_component(t1, arr1, t2, arr2, comp_name, xlabel, ylabel, filename):
+    plt.figure()
+    plt.plot(t1, arr1, alpha=0.8, label=f"Simulated {comp_name}")
+    plt.plot(t2, arr2, alpha=0.8, label=f"Analytical {comp_name}")
+    plt.xlabel(xlabel)
+    plt.ylabel(ylabel)
+    plt.legend()
+    plt.tight_layout()
+    plt.savefig(filename)
+    plt.close()
 
-# plot_component(t1, x1, t2, x2, "$x(t)$",
-#     r"$\text{time}~(\mu\text{s})$", r"$x\text{-position}~(\mu\text{m})$",
-#     "data/plot/x_position_vs_time.pdf")
-
-# plot_component(t1, y1, t2, y2, "$y(t)$",
-#     r"$\text{time}~(\mu\text{s})$", r"$y\text{-position}~(\mu\text{m})$",
-#     "data/plot/y_position_vs_time.pdf")
-
-# plot_component(t1, z1, t2, z2, "$z(t)$",
-#     r"$\text{time}~(\mu\text{s})$", r"$z\text{-position}~(\mu\text{m})$",
-#     "data/plot/z_position_vs_time.pdf")
-
-# plot_component(x1, vx1, x2, vx2, "$v_x(x)$",
-#     r"$x\text{-position}~(\mu\text{m})$", r"$v_x~(\mu\text{m}/\mu\text{s})$",
-#     "data/plot/v_x_vs_x.pdf")
-
-# plot_component(z1, vz1, z2, vz2, "$v_z(z)$",
-#     r"$z\text{-position}~(\mu\text{m})$", r"$v_z~(\mu\text{m}/\mu\text{s})$",
-#     "data/plot/v_z_vs_z.pdf")
+plot_component(t1, z1, t1, z_t, "$z(t)$",
+    r"$\text{time}~(\mu\text{s})$", r"$z\text{-position}~(\mu\text{m})$",
+    "data/plot/z_t_vs_analytical.pdf")
