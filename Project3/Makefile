@@ -43,9 +43,10 @@ DEPS       := $(OBJS_COMMON:.o=.d) $(OBJ_FEW:.o=.d) $(OBJ_N:.o=.d) $(OBJ_S:.o=.d
 EXE_FEW := $(BIN_DIR)/few_particles.exe
 EXE_N   := $(BIN_DIR)/N_particles.exe
 EXE_S   := $(BIN_DIR)/single_particle.exe
-PLOT_SCRIPT := $(PLOT_DIR)/plot_pos_vel.py
+PLOT_FEW := $(PLOT_DIR)/plot_pos_vel.py
+PLOT_SINGLE := $(PLOT_DIR)/plot_single.py
 
-.PHONY: all clean run-few run-n debug release sanitize dirs plot
+.PHONY: all clean run-few run-n run-s debug release sanitize dirs plot
 
 # Build both by default
 all: $(EXE_FEW) $(EXE_N)
@@ -93,7 +94,8 @@ run-s: $(EXE_S)
 
 plot:
 	@echo "Generating plots"
-	python3 $(PLOT_SCRIPT)
+	python3 $(PLOT_FEW)
+	python3 $(PLOT_SINGLE)
 
 clean:
 	@rm -rf $(BUILD_DIR)

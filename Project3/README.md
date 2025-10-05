@@ -12,11 +12,17 @@ Project3/
 │  ├─ parameters.hpp
 │  ├─ Particle.hpp
 │  └─ PenningTrap.hpp
+├─ script/
+│  ├─ animate.py
+│  ├─ plot_pos_vel.py
+│  └─plot_single.py
 ├─ src/
 │  ├─ integrator.cpp
 │  ├─ Particle.cpp
 │  └─ PenningTrap.cpp
-├─ main.cpp
+├─ few_particles.cpp
+├─ N_particles.cpp
+├─ single_particle.cpp
 ├─ build/
 ├─ Makefile
 └─ README.md

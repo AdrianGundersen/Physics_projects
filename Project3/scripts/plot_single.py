@@ -29,7 +29,8 @@ V0 = 2.41e6
 z1 = z1
 
 # multiply by 2pi to get rad
-omega_z = np.sqrt(2*q*V0/(ca_mass*d**2)) * (2*np.pi) 
+omega_z = np.sqrt(2*q*V0/(ca_mass*d**2)) 
+phi = omega_z * (2*np.pi) 
 z_t = z_0*np.cos(omega_z*t1)
 
 def plot_component(t1, arr1, t2, arr2, comp_name, xlabel, ylabel, filename):
