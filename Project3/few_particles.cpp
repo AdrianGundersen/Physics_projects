@@ -1,4 +1,4 @@
-// main.cpp
+// few_particles.cpp
 #include "Particle.hpp"
 #include "PenningTrap.hpp"
 #include "constants.hpp"

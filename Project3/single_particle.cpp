@@ -1,4 +1,4 @@
-// main.cpp
+// single_particle.cpp
 #include "Particle.hpp"
 #include "PenningTrap.hpp"
 #include "constants.hpp"
@@ -50,7 +50,7 @@ int main() {
     ofile.close();
     trap.print_particles();
 
-    std::cout << "Wrote z position agains time as: data/pos_vel.txt\n";
+    std::cout << "Wrote single particle agains time and analytical as: data/single_particle.txt\n";
     std::cout << parameters::dt << "\n";
     std::cout << time << "\n";
     return 0;
