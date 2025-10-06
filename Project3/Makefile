@@ -6,16 +6,24 @@ LIBS       = -larmadillo
 # If your toolchain needs it for std::filesystem, uncomment:
 # LIBS      += -lstdc++fs
 
+# OpenMP toggle (set OMP=0 to disable)
+OMP       ?= 1
+ifeq ($(OMP),1)
+  OMPFLAGS = -fopenmp
+else
+  OMPFLAGS =
+endif
+
 # Build type (make MODE=debug | release | sanitize)
 MODE      ?= release
-COMMON    = $(CXXSTD) $(INC) -MMD -MP
+COMMON    = $(CXXSTD) $(INC) -MMD -MP $(OMPFLAGS)
 CXXFLAGS_debug    = -O0 -g3 -fno-omit-frame-pointer
 CXXFLAGS_release  = -O3 -march=native
 CXXFLAGS_sanitize = -O1 -g3 -fsanitize=address,undefined -fno-omit-frame-pointer
 LDFLAGS_sanitize  = -fsanitize=address,undefined
 
 CXXFLAGS := $(COMMON) $(CXXFLAGS_$(MODE))
-LDFLAGS  := $(LIBS) $(LDFLAGS_$(MODE))
+LDFLAGS  := $(LIBS) $(OMPFLAGS) $(LDFLAGS_$(MODE))
 
 # ---------- Folders ----------
 SRC_DIR   := src
@@ -112,9 +120,10 @@ clean: ## Remove the entire build/ directory
 # ---------- Self-documenting help ----------
 # Any target line with a double-hash comment (##) will be picked up by 'make help'.
 help: ## Show this help message with available targets and current config
-	@printf "Usage: make [TARGET] [MODE=debug|release|sanitize] [ARGS=\"...\"]\n\n"
+	@printf "Usage: make [TARGET] [MODE=debug|release|sanitize] [OMP=1|0] [ARGS=\"...\"]\n\n"
 	@printf "Current configuration:\n"
 	@printf "  MODE     : %s\n" "$(MODE)"
+	@printf "  OMP      : %s\n" "$(OMP)"
 	@printf "  CXX      : %s\n" "$(CXX)"
 	@printf "  CXXFLAGS : %s\n" "$(CXXFLAGS)"
 	@printf "  LDFLAGS  : %s\n\n" "$(LDFLAGS)"

@@ -10,6 +10,11 @@
 #include <fstream>
 #include <filesystem>
 #include <iomanip>
+#include <chrono>
+
+#ifdef _OPENMP
+#include <omp.h>
+#endif
 
 int main() {
     arma::arma_rng::set_seed(parameters::seed);
@@ -25,71 +30,88 @@ int main() {
     int steps = static_cast<int>(parameters::total_time / parameters::dt);
 
     std::filesystem::create_directory("data");
-    std::ofstream out("data/fraction_trapped_vs_omega.txt");
-    out << std::fixed << std::setprecision(6);
 
-    // header
-    out << "# omega_V_MHz";
-    for (int i = 0; i < f_list.n_elem; ++i) out << " frac_f" << f_list(i);
-    out << "\n";
+    const int nw = static_cast<int>(omega_V_list.n_elem);
+    const int nf = static_cast<int>(f_list.n_elem);
+
 
     // total number of runs
-    const int total_runs = omega_V_list.n_elem * f_list.n_elem;
-    int run_count = 0;
+    const int total_runs = nw * nf;
     double avg_duration = 0.0;
+
+
+    int done = 0; // number of completed runs
+    double total_elapsed_sec = 0.0; 
+
+
 
     auto global_start = std::chrono::steady_clock::now();
 
+    arma::mat frac(nw, nf, arma::fill::zeros); // store results
+
     // sweep omega_V
-    for (int iw = 0; iw < omega_V_list.n_elem; ++iw) {
-        double omega_MHz = omega_V_list(iw);
-        double omega = omega_MHz * 2.0 * M_PI;   // rad/microsecond
-        out << omega_MHz;
+    std::cout << "Starting simulations. Ready your CPU...\n";
+#pragma omp parallel for collapse(2) schedule(dynamic) // parallelize outer two loops and schedule dynamically for load balancing
+    for (int iw = 0; iw < nw; ++iw) {
+        for (int i = 0; i < nf; ++i) {
+            double omega_MHz = omega_V_list(iw);
+            double omega = omega_MHz * 2.0 * M_PI;   // rad/microsecond
 
-        
-
-        // for each amplitude f run a new trap simulation
-        for (arma::uword i = 0; i < f_list.n_elem; ++i) {
-            run_count++;
             auto start = std::chrono::steady_clock::now();
-            double f = f_list(i);
 
+            double f = f_list(i);
             PenningTrap trap(parameters::B0, parameters::V0, parameters::d, f, coulomb_on);
             trap.fill_random(parameters::N_particles,
                              constants::elementary_charge,
                              constants::atomic_mass_unit,
                              parameters::maxvel);
-                             
-            std::cout << "Run " << run_count << "/" << total_runs
-                      << " (f = " << f
-                      << ", omega_V = " << omega_MHz << " MHz)\n";
 
-                
             double t = 0.0;
             for (int k = 0; k < steps; ++k) {
                 t += parameters::dt;
                 Integrator::RK4(trap, parameters::dt, t, omega);
             }
 
-            double frac = static_cast<double>(trap.number_of_particles()) /
-                          static_cast<double>(parameters::N_particles);
-            out << " " << frac;
+            double frac_i = static_cast<double>(trap.number_of_particles()) /
+                            static_cast<double>(parameters::N_particles);
+            frac(iw, i) = frac_i;
 
             auto end = std::chrono::steady_clock::now();
             std::chrono::duration<double> elapsed = end - start;
 
-            // Update running average
-            avg_duration += (elapsed.count() - avg_duration) / run_count;
-            double remaining = (total_runs - run_count) * avg_duration;
-            std::cout << "  Fraction trapped: N=" << frac << "\n";
-            std::cout << std::fixed << std::setprecision(2)
-                      << "  Duration: " << elapsed.count() << " s"
-                      << ", Estimated remaining: " << remaining / 60.0 << " min\n\n";
-        }
+            #pragma omp atomic // ensure atomic update
+            total_elapsed_sec += elapsed.count();
 
-        out << "\n";
+            int done_now; // 
+            #pragma omp atomic capture // ensure atomic increment and capture
+            done_now = ++done;
+
+            double avg = total_elapsed_sec / done_now; // average duration per run
+            double remaining = avg * (total_runs - done_now); // estimated remaining time
+            #pragma omp critical // ensure only one thread prints at a time
+            {
+                std::cout << "Run " << done_now << "/" << total_runs
+                          << " (f=" << f
+                          << ", omega_V=" << omega_MHz << " MHz)"
+                          << "  Fraction trapped: " << frac_i
+                          << "  Duration: " << std::fixed << std::setprecision(2)
+                          << elapsed.count() << " s"
+                          << "  Estimated remaining: " << std::setprecision(2)
+                          << (remaining / 60.0) << " min\n";
+            }
+        }
     }
 
+    std::ofstream out("data/fraction_trapped_vs_omega.txt");
+    out << std::fixed << std::setprecision(6);
+    out << "# omega_V_MHz";
+    for (int i = 0; i < nf; ++i) out << " frac_f" << f_list(i);
+    out << "\n";
+    for (int iw = 0; iw < nw; ++iw) {
+        out << omega_V_list(iw);
+        for (int i = 0; i < nf; ++i) out << " " << frac(iw, i);
+        out << "\n";
+    }
     out.close();
 
     auto global_end = std::chrono::steady_clock::now();
