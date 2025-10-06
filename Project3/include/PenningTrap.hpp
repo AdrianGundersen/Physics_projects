@@ -17,21 +17,21 @@ class PenningTrap {
 public:
     std::vector<Particle> particles;  // Store all particle objects
 
-    PenningTrap(double B0, double V0, double d, double f, double omega_V, bool coulomb_on); // constructor
+    PenningTrap(double B0, double V0, double d, double f, bool coulomb_on); // constructor
 
     void add_particle(const Particle& p); // add a particle to trap
 
     void fill_random(int N, double q, double m, double max_vel); // fill trap with N random particles
 
     // External fields
-    arma::vec external_E_field(const arma::vec& r, const double& t) const;
+    arma::vec external_E_field(const arma::vec& r, double t = 0.0, double omega_V = 0.0) const;
     arma::vec external_B_field(const arma::vec& r) const;
 
     // Forces for particle i
-    arma::vec force_external(int i, double time) const;   // force from external fields
+    arma::vec force_external(int i, double time, double omega_V = 0.0) const;   // force from external fields
     arma::vec force_particle(int i, int j) const;  // force from j
-    arma::vec total_force(int i, double time) const;      // total force
-    arma::mat acceleration_all(const arma::mat& R, const arma::mat& V, double time) const; //temperary acceleration of partivcle
+    arma::vec total_force(int i, double time, double omega_V = 0.0) const;      // total force
+    arma::mat acceleration_all(const arma::mat& R, const arma::mat& V, double time, double omega_V = 0.0) const; //temperary acceleration of partivcle
 
     // test functions
     int number_of_particles() const; // number of particles in trap

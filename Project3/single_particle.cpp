@@ -10,7 +10,7 @@
 
 int main() {
     arma::arma_rng::set_seed(parameters::seed);
-    PenningTrap trap(parameters::B0, parameters::V0, parameters::d, parameters::frequency, parameters::omega_V, parameters::coulomb_on);
+    PenningTrap trap(parameters::B0, parameters::V0, parameters::d, parameters::frequency, parameters::coulomb_on);
 
 
     // origin particle
@@ -53,5 +53,5 @@ int main() {
     std::cout << "Wrote single particle agains time and analytical as: data/single_particle.txt\n";
     std::cout << parameters::dt << "\n";
     std::cout << time << "\n";
-    return 0;
+    return 0;   
 }

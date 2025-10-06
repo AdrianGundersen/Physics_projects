@@ -10,7 +10,7 @@
 
 int main() {
     arma::arma_rng::set_seed(parameters::seed);
-    PenningTrap trap(parameters::B0, parameters::V0, parameters::d, parameters::frequency, parameters::omega_V, parameters::coulomb_on);
+    PenningTrap trap(parameters::B0, parameters::V0, parameters::d, parameters::frequency, parameters::coulomb_on);
 
 
     // origin particle
