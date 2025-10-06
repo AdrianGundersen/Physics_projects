@@ -16,10 +16,10 @@ void PenningTrap::add_particle(const Particle& p) {
 }
 
 
-void PenningTrap::fill_random(int N, double q, double m, double max_vel) {
+void PenningTrap::fill_random(int N, double q, double m, double pos_scaling, double vel_scaling) {
     for (int i = 0; i < N; i++) {
-        arma::vec pos = arma::vec(3).randn() * 0.1 * d;
-        arma::vec vel = arma::vec(3).randn() * max_vel;  
+        arma::vec pos = arma::vec(3).randn() * pos_scaling * d; // typical pos is pos_scaling * d
+        arma::vec vel = arma::vec(3).randn() * vel_scaling * d; // typical vel is vel_scaling * d / microsecond
         Particle p(q, m, pos, vel);
         add_particle(p);
     }

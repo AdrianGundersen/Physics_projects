@@ -28,7 +28,7 @@ LDFLAGS  := $(LIBS) $(OMPFLAGS) $(LDFLAGS_$(MODE))
 # ---------- Folders ----------
 SRC_DIR   := src
 BUILD_DIR := build
-PLOT_DIR  := scripts
+PLOT_DIR  := scripts         
 OBJ_DIR   := $(BUILD_DIR)/obj
 BIN_DIR   := $(BUILD_DIR)/bin
 
@@ -55,10 +55,10 @@ PLOT_FEW   := $(PLOT_DIR)/plot_pos_vel.py
 PLOT_SINGLE:= $(PLOT_DIR)/plot_single.py
 
 # ---------- Phony targets ----------
-.PHONY: all clean run-few run-n run-s debug release sanitize dirs plot help print-%
+.PHONY: all clean rebuild run-few run-n run-s debug release sanitize dirs plot help print-%
 
 # ---------- Default ----------
-all: $(EXE_FEW) $(EXE_N) ## Build the main executables (few & N) in the selected MODE
+all: $(EXE_FEW) $(EXE_N) $(EXE_S) ## Build all executables (few, N, single) in the selected MODE
 
 # ---------- Build modes ----------
 debug:    MODE=debug
@@ -69,6 +69,10 @@ release:  clean all ## Rebuild everything with release flags
 
 sanitize: MODE=sanitize
 sanitize: clean all ## Rebuild with Address/UBSan enabled
+
+rebuild:  ## Convenience: full clean + build in current MODE
+	$(MAKE) clean
+	$(MAKE) all
 
 # ---------- Utility ----------
 dirs: ## Create build directories if missing
@@ -129,3 +133,6 @@ help: ## Show this help message with available targets and current config
 	@printf "  LDFLAGS  : %s\n\n" "$(LDFLAGS)"
 	@awk 'BEGIN {FS":.*##"; printf "Available targets:\n"} \
 	     /^[a-zA-Z0-9_\/\.\-%]+:.*##/ {printf "  %-18s %s\n", $$1, $$2}' $(MAKEFILE_LIST)
+
+# ---------- Include auto-generated header deps (permanent fix) ----------
+-include $(DEPS)

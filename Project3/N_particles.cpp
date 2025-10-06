@@ -14,6 +14,7 @@
 #include <thread>
 #include <atomic>
 #include <cmath>
+#include <algorithm>  
 
 #ifdef _OPENMP
 #include <omp.h>
@@ -22,12 +23,6 @@
 int main() {
     arma::arma_rng::set_seed(parameters::seed);
 
-    arma::vec f_list = {0.1, 0.4, 0.7};
-
-    // omega_V list in MHz
-    double w_min = 0.20, w_max = 2.50, w_step = 0.01;
-    int n_omega = static_cast<int>((w_max - w_min) / w_step + 1.5);
-    arma::vec omega_V_list = arma::linspace(w_min, w_max, n_omega);
 
     // Extract parameters
     auto sim_params = parameters::multi;
@@ -39,12 +34,18 @@ int main() {
 
     // particle info
     int N_particles = parameters::N_particles; // number of particles
-    double max_vel = parameters::maxvel; // maximum initial velocity [µm/µ
+    double pos_scaling = parameters::pos_scaling; // position scaling factor
+    double vel_scaling = parameters::vel_scaling; // velocity scaling factor
 
     std::filesystem::create_directory("data");
 
-    const int nw = static_cast<int>(omega_V_list.n_elem);
-    const int nf = static_cast<int>(f_list.n_elem);
+
+    // Frequency and amplitude parameters for multi particle simulations
+    arma::vec f_list = parameters::f_list; // Amplitude factors
+    int nf = f_list.n_elem; // number of f values
+    arma::vec omega_V_list = parameters::omega_V_list; // omega_V list in MHz
+    int nw = omega_V_list.n_elem; // number of omega_V values
+
 
 
     // total number of runs
@@ -62,10 +63,23 @@ int main() {
     arma::mat frac(nw, nf, arma::fill::zeros); // store results
 
 
-    std::cout << "Starting simulations. Ready your CPU...\n";
-
+    std::cout << "Starting simulations on " << N_particles << " particles.\n";
+    int total_threads = omp_get_max_threads();
+    int N_threads = std::min(total_threads, parameters::max_threads); // use at most max_threads
+    std::cout << "Using up to " << N_threads << "/" << total_threads << " threads.\n";
+    std::cout << "Total runs: " << total_runs << "\n";
+    std::cout << "Coulomb interaction: " << (coulomb_on ? "ON" : "OFF") << "\n";
+    std::cout << "Ready your CPU...\n";
     
-#pragma omp parallel for collapse(2) schedule(dynamic) // parallelize outer two loops and schedule dynamically for load balancing
+    char response;
+    std::cout << "Proceed with simulation? (y/n): ";
+    std::cin >> response;
+
+    if (response != 'y' && response != 'Y') {
+        std::cout << "Simulation aborted by user.\n";
+        return 0;
+    }
+#pragma omp parallel for num_threads(N_threads) collapse(2) schedule(dynamic) // parallelize outer two loops and schedule dynamically for load balancing
     for (int iw = 0; iw < nw; ++iw) {
         for (int i = 0; i < nf; ++i) {
             double omega_MHz = omega_V_list(iw);
@@ -75,10 +89,10 @@ int main() {
 
             double f = f_list(i);
             PenningTrap trap(parameters::B0, parameters::V0, parameters::d, f, coulomb_on);
-            trap.fill_random(N,
+            trap.fill_random(N_particles,
                              constants::elementary_charge,
                              constants::atomic_mass_unit,
-                             parameters::maxvel);
+                             pos_scaling, vel_scaling);
 
             double t = 0.0;
             for (int k = 0; k < N; ++k) {
@@ -95,13 +109,12 @@ int main() {
 
             #pragma omp atomic // ensure atomic update
             total_elapsed_sec += elapsed.count();
-
             int done_now; // 
             #pragma omp atomic capture // ensure atomic increment and capture
             done_now = ++done;
 
             double avg = total_elapsed_sec / done_now; // average duration per run
-            double remaining = avg * (total_runs - done_now) / 16; // estimated remaining time (/16 comes from assumptions of 16 threads)
+            double remaining = avg * (total_runs - done_now) / N_threads; // estimated remaining time assuming perfect load balancing
             #pragma omp critical // ensure only one thread prints at a time
             {
                 std::cout << "Run " << done_now << "/" << total_runs
