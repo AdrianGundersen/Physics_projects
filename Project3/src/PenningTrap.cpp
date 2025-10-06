@@ -6,9 +6,9 @@
 #include <cmath>
 #include <algorithm> 
 
-PenningTrap::PenningTrap(double B0_in, double V0_in, double d_in, bool coulomb_on_in)
+PenningTrap::PenningTrap(double B0_in, double V0_in, double d_in, double f_in, double omega_V_in, bool coulomb_on_in)
 // Constructor
-    : B0(B0_in), V0(V0_in), d(d_in), coulomb_on(coulomb_on_in) {} 
+    : B0(B0_in), V0(V0_in), d(d_in), f(f_in), omega_V(omega_V_in), coulomb_on(coulomb_on_in) {} 
 
 // Add a particle
 void PenningTrap::add_particle(const Particle& p) {
@@ -27,10 +27,17 @@ void PenningTrap::fill_random(int N, double q, double m, double max_vel) {
 
 
 // External fields
-arma::vec PenningTrap::external_E_field(const arma::vec& r) const {
+arma::vec PenningTrap::external_E_field(const arma::vec& r, const double& t) const {
     if (arma::norm(r) > d) {
         return arma::vec({0.0, 0.0, 0.0});  // no field outside the trap
     }
+    if (f != 0.0) {
+        double V_t = V0 * (1 + f * std::cos(omega_V * t));
+        double V0_over_d2 = V_t / (d * d);
+        arma::vec Efield = V0_over_d2 * arma::vec({r(0), r(1), -2.0 * r(2)});
+        return Efield;
+    }
+
     double V0_over_d2 = V0 / (d * d);
     arma::vec Efield = V0_over_d2 * arma::vec({r(0), r(1), -2.0 * r(2)});
     return Efield;
@@ -44,10 +51,10 @@ arma::vec PenningTrap::external_B_field(const arma::vec& r) const {
 }
 
 // Forces
-arma::vec PenningTrap::force_external(int i) const {
+arma::vec PenningTrap::force_external(int i, double time) const {
     const Particle& p = particles[i];
 
-    arma::vec E = external_E_field(p.position);
+    arma::vec E = external_E_field(p.position, time);
     arma::vec B = external_B_field(p.position);
 
     // Lorentz force
@@ -66,8 +73,8 @@ arma::vec PenningTrap::force_particle(int i, int j) const {
     return constants::ke * pi.charge * pj.charge * r_vec / std::pow(r_norm, 3);
 }
 
-arma::vec PenningTrap::total_force(int i) const {
-    arma::vec F = force_external(i);
+arma::vec PenningTrap::total_force(int i, double time) const {
+    arma::vec F = force_external(i, time);
 
     for (int j = 0; j < (int)particles.size(); j++) {
         if (j != i) {
@@ -79,7 +86,7 @@ arma::vec PenningTrap::total_force(int i) const {
 }
 
 // returns the acceleration of the particles at a temporary position
-arma::mat PenningTrap::acceleration_all(const arma::mat& R, const arma::mat& V)
+arma::mat PenningTrap::acceleration_all(const arma::mat& R, const arma::mat& V, double time)
     const {
     int N = particles.size();
     arma::mat A(3, N, arma::fill::zeros);
@@ -90,7 +97,7 @@ arma::mat PenningTrap::acceleration_all(const arma::mat& R, const arma::mat& V)
         arma::vec r = R.col(i);
         arma::vec v = V.col(i);
 
-        arma::vec E = external_E_field(r);
+        arma::vec E = external_E_field(r, time);
         arma::vec B = external_B_field(r);
         arma::vec F = p.charge * (E + arma::cross(v, B));
         A.col(i) =  F/p.mass;

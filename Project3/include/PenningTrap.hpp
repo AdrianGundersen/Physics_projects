@@ -10,26 +10,28 @@ class PenningTrap {
         double B0; // Magnetic field strength
         double V0; // Electric potential
         double d;  // Characteristic dimension  
+        double f;  // Frequency of time-dependent potential
+        double omega_V; // Angular frequency of time-dependent potential
         bool coulomb_on; // Enable/disable Coulomb interaction
 
 public:
     std::vector<Particle> particles;  // Store all particle objects
 
-    PenningTrap(double B0, double V0, double d, bool coulomb_on); // constructor
+    PenningTrap(double B0, double V0, double d, double f, double omega_V, bool coulomb_on); // constructor
 
     void add_particle(const Particle& p); // add a particle to trap
 
     void fill_random(int N, double q, double m, double max_vel); // fill trap with N random particles
 
     // External fields
-    arma::vec external_E_field(const arma::vec& r) const;
+    arma::vec external_E_field(const arma::vec& r, const double& t) const;
     arma::vec external_B_field(const arma::vec& r) const;
 
     // Forces for particle i
-    arma::vec force_external(int i) const;   // force from external fields
+    arma::vec force_external(int i, double time) const;   // force from external fields
     arma::vec force_particle(int i, int j) const;  // force from j
-    arma::vec total_force(int i) const;      // total force
-    arma::mat acceleration_all(const arma::mat& R, const arma::mat& V) const; //temperary acceleration of partivcle
+    arma::vec total_force(int i, double time) const;      // total force
+    arma::mat acceleration_all(const arma::mat& R, const arma::mat& V, double time) const; //temperary acceleration of partivcle
 
     // test functions
     int number_of_particles() const; // number of particles in trap

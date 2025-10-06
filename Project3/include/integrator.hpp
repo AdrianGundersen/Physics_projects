@@ -6,6 +6,6 @@
 
 class Integrator {
     public:
-    static void ForwardEuler(PenningTrap& trap, double dt);
-    static void RK4(PenningTrap& trap, double dt);
+    static void ForwardEuler(PenningTrap& trap, double dt, double time = 0.0);
+    static void RK4(PenningTrap& trap, double dt, double time = 0.0);
 };

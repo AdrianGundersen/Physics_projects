@@ -17,7 +17,7 @@ int main() {
     std::cout << "Filling Penning trap with " << parameters::N_particles << " particles\n";
 
     arma::arma_rng::set_seed(parameters::seed);
-    PenningTrap trap(parameters::B0, parameters::V0, parameters::d, parameters::coulomb_on);
+    PenningTrap trap(parameters::B0, parameters::V0, parameters::d, parameters::frequency, parameters::omega_V, parameters::coulomb_on);
 
     trap.fill_random(parameters::N_particles, constants::elementary_charge, constants::atomic_mass_unit, parameters::maxvel);
 
@@ -31,7 +31,7 @@ int main() {
 
     for (int step = 0; step < parameters::N; step++) {
         time += parameters::dt;
-        Integrator::RK4(trap, parameters::dt);
+        Integrator::RK4(trap, parameters::dt, time);
         ofile1 << time << " " << trap.number_of_particles() << "\n";
     }
     ofile1.close();

@@ -10,7 +10,7 @@
 
 int main() {
     arma::arma_rng::set_seed(parameters::seed);
-    PenningTrap trap(parameters::B0, parameters::V0, parameters::d, parameters::coulomb_on);
+    PenningTrap trap(parameters::B0, parameters::V0, parameters::d, parameters::frequency, parameters::omega_V, parameters::coulomb_on);
 
 
     // origin particle
@@ -42,7 +42,7 @@ int main() {
 
     for (int step = 0; step < parameters::N; step++) {
         time += parameters::dt;
-        Integrator::RK4(trap, parameters::dt);
+        Integrator::RK4(trap, parameters::dt, time);
 
         trap.write_file(ofile, time, 0);
         // trap.write_file(ofile2, time, 1);
