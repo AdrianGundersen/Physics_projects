@@ -11,6 +11,9 @@
 #include <filesystem>
 #include <iomanip>
 #include <chrono>
+#include <thread>
+#include <atomic>
+#include <cmath>
 
 #ifdef _OPENMP
 #include <omp.h>
@@ -22,12 +25,19 @@ int main() {
     arma::vec f_list = {0.1, 0.4, 0.7};
 
     // omega_V list in MHz
-    double w_min = 0.20, w_max = 2.50, w_step = 0.02;
+    double w_min = 0.20, w_max = 2.50, w_step = 0.01;
     int n_omega = static_cast<int>((w_max - w_min) / w_step + 1.5);
     arma::vec omega_V_list = arma::linspace(w_min, w_max, n_omega);
 
     bool coulomb_on = false;          // off 
-    int steps = static_cast<int>(parameters::total_time / parameters::dt);
+    double dt = parameters::dt_multi; // time step
+    double total_time = parameters::total_time_multi; // total simulation time
+    int N = parameters::N_multi; // number of integration steps
+    
+
+    // particle info
+    int N_particles = parameters::N_particles; // number of particles
+    double max_vel = parameters::maxvel; // maximum initial velocity [µm/µ
 
     std::filesystem::create_directory("data");
 
@@ -49,8 +59,10 @@ int main() {
 
     arma::mat frac(nw, nf, arma::fill::zeros); // store results
 
-    // sweep omega_V
+
     std::cout << "Starting simulations. Ready your CPU...\n";
+
+    
 #pragma omp parallel for collapse(2) schedule(dynamic) // parallelize outer two loops and schedule dynamically for load balancing
     for (int iw = 0; iw < nw; ++iw) {
         for (int i = 0; i < nf; ++i) {
@@ -61,19 +73,19 @@ int main() {
 
             double f = f_list(i);
             PenningTrap trap(parameters::B0, parameters::V0, parameters::d, f, coulomb_on);
-            trap.fill_random(parameters::N_particles,
+            trap.fill_random(N,
                              constants::elementary_charge,
                              constants::atomic_mass_unit,
                              parameters::maxvel);
 
             double t = 0.0;
-            for (int k = 0; k < steps; ++k) {
-                t += parameters::dt;
-                Integrator::RK4(trap, parameters::dt, t, omega);
+            for (int k = 0; k < N; ++k) {
+                t += dt;
+                Integrator::RK4(trap, dt, t, omega);
             }
 
             double frac_i = static_cast<double>(trap.number_of_particles()) /
-                            static_cast<double>(parameters::N_particles);
+                            static_cast<double>(N_particles);
             frac(iw, i) = frac_i;
 
             auto end = std::chrono::steady_clock::now();
@@ -87,7 +99,7 @@ int main() {
             done_now = ++done;
 
             double avg = total_elapsed_sec / done_now; // average duration per run
-            double remaining = avg * (total_runs - done_now); // estimated remaining time
+            double remaining = avg * (total_runs - done_now) / 16; // estimated remaining time (/16 comes from assumptions of 16 threads)
             #pragma omp critical // ensure only one thread prints at a time
             {
                 std::cout << "Run " << done_now << "/" << total_runs

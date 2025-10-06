@@ -12,6 +12,9 @@ int main() {
     arma::arma_rng::set_seed(parameters::seed);
     PenningTrap trap(parameters::B0, parameters::V0, parameters::d, parameters::frequency, parameters::coulomb_on);
 
+    double total_time = parameters::total_time_few; // [µs]
+    double dt = parameters::dt_few; // [µs]
+    int N = parameters::N_few; // number of integration steps
 
     // origin particle
     arma::vec pos = {20.0, 0.0, 20.0};
@@ -40,9 +43,9 @@ int main() {
     trap.write_file(ofile1, time, 0);
     trap.write_file(ofile2, time, 1);
 
-    for (int step = 0; step < parameters::N; step++) {
-        time += parameters::dt;
-        Integrator::RK4(trap, parameters::dt, time);
+    for (int step = 0; step < N; step++) {
+        time += dt;
+        Integrator::RK4(trap, dt, time);
 
         trap.write_file(ofile1, time, 0);
         trap.write_file(ofile2, time, 1);
@@ -52,7 +55,7 @@ int main() {
     trap.print_particles();
 
     std::cout << "Wrote z position agains time as: data/pos_vel.txt\n";
-    std::cout << parameters::dt << "\n";
+    std::cout << dt << "\n";
     std::cout << time << "\n";
     return 0;
 }

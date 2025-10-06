@@ -25,7 +25,7 @@ plt.rcParams.update({
 
 for i, label in enumerate(labels):
     f_value = label.split("f")[-1]
-    plt.plot(omega, frac_data[:, i], marker="o", label=rf"$f = {float(f_value):.1f}$")
+    plt.plot(omega, frac_data[:, i], marker=".", label=rf"$f = {float(f_value):.1f}$")
 
 plt.xlabel(r"$\omega_V$ [MHz]")
 plt.ylabel("Fraction of trapped particles")
@@ -33,4 +33,5 @@ plt.title("Trapping fraction vs. drive frequency")
 plt.grid(True)
 plt.legend()
 plt.tight_layout()
+plt.savefig("data/plot/fraction_trapped_vs_omega.pdf")
 plt.show()
