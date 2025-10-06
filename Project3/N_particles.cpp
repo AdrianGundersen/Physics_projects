@@ -38,7 +38,7 @@ int main() {
     double vel_scaling = parameters::vel_scaling; // velocity scaling factor
 
     std::filesystem::create_directory("data");
-
+    std::string filepath = "data/" + parameters::filename_multi; // output file path
 
     // Frequency and amplitude parameters for multi particle simulations
     arma::vec f_list = parameters::f_list; // Amplitude factors
@@ -129,7 +129,7 @@ int main() {
         }
     }
 
-    std::ofstream out("data/fraction_trapped_vs_omega.txt");
+    std::ofstream out(filepath);
     out << std::fixed << std::setprecision(6);
     out << "# omega_V_MHz";
     for (int i = 0; i < nf; ++i) out << " frac_f" << f_list(i);
@@ -146,6 +146,6 @@ int main() {
 
     std::cout << "All simulations complete.\n";
     std::cout << "Total runtime: " << total_elapsed.count() / 60.0 << " min\n";
-    std::cout << "Saved: data/fraction_trapped_vs_omega.txt\n";
+    std::cout << "Saved: " << filepath << "\n";
     return 0;
 }

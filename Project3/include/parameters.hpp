@@ -24,7 +24,7 @@ struct SimulationParams {
 constexpr int seed = 67; // group number
 
 // Allowed threads for OpenMP
-constexpr int max_threads = 16; // Adjust based on your CPU
+constexpr int max_threads = 8; // Adjust based on your CPU
 
 
 
@@ -60,7 +60,7 @@ inline constexpr SimulationParams few{
 inline constexpr SimulationParams multi{
     500.0,   // total_time_multi [µs]
     40000,   // N_multi
-    false   // coulomb_on_multi 
+    true   // coulomb_on_multi 
 };
 
 // Trap setup
@@ -72,9 +72,14 @@ constexpr double vel_scaling = 0.1; // Velocity scaling factor so typical is vel
 inline const arma::vec f_list = {0.1, 0.4, 0.7}; // Amplitude factors
 
 // omega_V list in MHz
-constexpr double w_min = 0.20, w_max = 2.50, w_step = 0.005;
+constexpr double w_min = 0.2, w_max = 0.8, w_step = 0.01;
 constexpr int n_omega = static_cast<int>((w_max - w_min) / w_step + 1.5); // # of omega_points (+1.5 to avoid rounding issues)
 inline const arma::vec omega_V_list = arma::linspace(w_min, w_max, n_omega);
 
+// filename for output data
+// recommended:
+// const std::string filename_multi = "fraction_trapped_vs_omega.txt";
+
+const std::string filename_multi = "fraction_trapped_vs_omega_zoomed_at_0.5_coloumb_on.txt";
 
 } // namespace parameters

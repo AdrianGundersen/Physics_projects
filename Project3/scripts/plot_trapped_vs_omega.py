@@ -1,8 +1,11 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-data = np.loadtxt("data/fraction_trapped_vs_omega.txt", comments="#")
-with open("data/fraction_trapped_vs_omega.txt") as f:
+filepath1 = "data/fraction_trapped_vs_omega_zoomed_at_0.5_coloumb_off.txt"
+filepath2 = "data/fraction_trapped_vs_omega_zoomed_at_0.5_coloumb_on.txt"
+
+data = np.loadtxt(filepath1, comments="#")
+with open(filepath1) as f:
     header = f.readline().strip().split()
 
 # keep only fraction columns
@@ -33,5 +36,5 @@ plt.title("Trapping fraction vs. drive frequency")
 plt.grid(True)
 plt.legend()
 plt.tight_layout()
-plt.savefig("data/plot/fraction_trapped_vs_omega.pdf")
+plt.savefig("data/plot/zoomed_at_1.4_coloumb_off.pdf")
 plt.show()
