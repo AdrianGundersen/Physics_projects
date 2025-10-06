@@ -12,9 +12,12 @@ int main() {
     arma::arma_rng::set_seed(parameters::seed);
     PenningTrap trap(parameters::B0, parameters::V0, parameters::d, parameters::frequency, parameters::coulomb_on);
 
-    double total_time = parameters::total_time_few; // [µs]
-    double dt = parameters::dt_few; // [µs]
-    int N = parameters::N_few; // number of integration steps
+    // Extract parameters
+    auto sim_params = parameters::few;
+    double total_time = sim_params.total_time;
+    double dt = sim_params.dt;
+    int N = sim_params.N;
+    bool coulomb_on = sim_params.coulomb_on;
 
     // origin particle
     arma::vec pos = {20.0, 0.0, 20.0};

@@ -1,9 +1,22 @@
 // parameters.hpp
 #pragma once
-#define PARAMETERS_HPP
 #include "constants.hpp"
 
 namespace parameters {
+
+struct SimulationParams {
+    double total_time; // Total simulation time [µs]
+    int N;             // Number of integration steps
+    double dt;         // Time step [µs]
+    bool coulomb_on;
+
+    constexpr SimulationParams(double t_time, int n_steps, bool coulomb)
+        : total_time(t_time),
+          N(n_steps),
+          dt(t_time / static_cast<double>(n_steps)),
+          coulomb_on(coulomb) {}
+};
+ 
 // ---- GLOBAL SIMULATION PARAMETERS ----
 // Seed
 constexpr int seed = 67; // group number
@@ -26,26 +39,30 @@ constexpr double EPS = 1e-12; // Avoid division by zero
 
 // SINGLE PARTICLE PARAMETERS
 // Integration time and step
-constexpr double total_time_single = 500.0; // [µs]
-constexpr int N_single = 40000; // Number of integration steps minimum value: 10000
-constexpr double dt_single = total_time_single / N_single; // Time step
-
+inline constexpr SimulationParams single{
+    500.0,  // total_time_single [µs]
+    40000,  // N_single
+    true    // coulomb_on_single
+};
 
 // FEW PARTICLE PARAMETERS
 // Integration time and step
-constexpr double total_time_few = 500.0; // [µs]
-constexpr int N_few = 40000; // Number of integration steps minimum value: 10000
-constexpr double dt_few = total_time_few / N_few; // Time step
-
+inline constexpr SimulationParams few{
+    500.0,  // total_time_few [µs]
+    40000,  // N_few
+    true    // coulomb_on_few
+};
 
 // MULTI PARTICLE PARAMETERS
 // Integration time and step
-constexpr double total_time_multi = 50.0; // [µs]
-constexpr int N_multi = 5000; // Number of integration steps minimum value: 100
-constexpr double dt_multi = total_time_multi / N_multi; // Time step
+inline constexpr SimulationParams multi{
+    500.0,   // total_time_multi [µs]
+    5000,   // N_multi
+    false   // coulomb_on_multi 
+};
 
 // Trap parameters
 constexpr int N_particles = 100; // Number of particles
 constexpr double maxvel = 40.0; // Maximum initial velocity [µm/µs]
 
-}
+} // namespace parameters

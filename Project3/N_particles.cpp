@@ -29,10 +29,12 @@ int main() {
     int n_omega = static_cast<int>((w_max - w_min) / w_step + 1.5);
     arma::vec omega_V_list = arma::linspace(w_min, w_max, n_omega);
 
-    bool coulomb_on = false;          // off 
-    double dt = parameters::dt_multi; // time step
-    double total_time = parameters::total_time_multi; // total simulation time
-    int N = parameters::N_multi; // number of integration steps
+    // Extract parameters
+    auto sim_params = parameters::multi;
+    double dt = sim_params.dt;
+    double total_time = sim_params.total_time;
+    int N = sim_params.N;
+    bool coulomb_on = sim_params.coulomb_on;
     
 
     // particle info
