@@ -89,7 +89,7 @@ arma::vec PenningTrap::total_force(int i, double time, double omega_V) const {
 arma::mat PenningTrap::acceleration_all(const arma::mat& R, const arma::mat& V, double time, double omega_V)
     const {
     int N = particles.size();
-    arma::mat A(3, N, arma::fill::zeros);
+    arma::Mat<double> A(3, N);
 
     // external acceleration
     for (int i = 0; i < N; i++){
@@ -104,26 +104,26 @@ arma::mat PenningTrap::acceleration_all(const arma::mat& R, const arma::mat& V, 
     }
 
     // Coulomb forces (symmetric interaction)
-    if (coulomb_on) {
+    if (coulomb_on && N > 1) {
         const double inv_mi = 1. / particles[0].mass; // assume costante mass
         const double qi = particles[0].charge; // assume costante charge
-        const double qi2 = qi*qi;
         const double ke_q2 = constants::ke * qi*qi;
 
         for (int i = 0; i < N; i++) {
-            arma::vec col_i = R.col(i);
+            const arma::vec col_i = R.col(i);
+            arma::vec  ai = A.col(i);
             for (int j = i + 1; j < N; j++) {
                 // const double inv_mj = 1. / particles[j].mass; // removed due to being equal to the others
                 // const double qj = particles[j].charge;
 
                 arma::vec r_vec = col_i - R.col(j);
-                double r_norm = arma::norm(r_vec);
-                r_norm = std::max(r_norm, parameters::EPS);
-
-                const double inv_r3 = 1.0 / std::pow(r_norm, 3);
-                const arma::vec F = ke_q2 * inv_r3 * r_vec;
-                arma::vec a = F * inv_mi;
-                A.col(i) += a;
+            
+                double r2    = arma::dot(r_vec, r_vec) + parameters::EPS2;    // to save FLOPs, but might cause some more error 
+                double inv_r = 1.0 / std::sqrt(r2);
+                double inv_r3 = inv_r * inv_r * inv_r;    
+                
+                arma::vec a = ke_q2 * inv_r3 * inv_mi * r_vec;
+                ai += a;
                 A.col(j) -= a;
             }
         }

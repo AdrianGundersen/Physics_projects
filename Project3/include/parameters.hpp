@@ -39,6 +39,7 @@ constexpr double omega_V = 0.0; // Angular frequency of time-dependent potential
 
 //Integration parameters
 constexpr double EPS = 1e-12; // Avoid division by zero
+constexpr double EPS2 = EPS*EPS; // Used when finding r2
 
 // ----  SIMULATION PARAMETERS ----
 
