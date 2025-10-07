@@ -40,18 +40,20 @@ int main() {
     double time = 0;
 
     std::filesystem::create_directory("data");
+    Particle par1 = trap.particles[0];
+    Particle par2 = trap.particles[1];
 
     std::ofstream ofile1("data/pos_vel_1.txt");
     std::ofstream ofile2("data/pos_vel_2.txt");
-    trap.write_file(ofile1, time, 0);
-    trap.write_file(ofile2, time, 1);
+
+    par1.write_to_file(ofile1, time, true);
+    par2.write_to_file(ofile2, time, true);
 
     for (int step = 0; step < N; step++) {
         time += dt;
         Integrator::RK4(trap, dt, time);
-
-        trap.write_file(ofile1, time, 0);
-        trap.write_file(ofile2, time, 1);
+        par1.write_to_file(ofile1, time, true);
+        par2.write_to_file(ofile2, time, true);
     }
     ofile1.close();
     ofile2.close();
