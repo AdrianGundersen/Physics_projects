@@ -105,23 +105,26 @@ arma::mat PenningTrap::acceleration_all(const arma::mat& R, const arma::mat& V, 
 
     // Coulomb forces (symmetric interaction)
     if (coulomb_on) {
+        const double inv_mi = 1. / particles[0].mass; // assume costante mass
+        const double qi = particles[0].charge; // assume costante charge
+        const double qi2 = qi*qi;
+        const double ke_q2 = constants::ke * qi*qi;
+
         for (int i = 0; i < N; i++) {
-            const double inv_mi = 1. / particles[i].mass;
-            const double qi = particles[i].charge;
-
+            arma::vec col_i = R.col(i);
             for (int j = i + 1; j < N; j++) {
-                const double inv_mj = 1. / particles[j].mass;
-                const double qj = particles[j].charge;
+                // const double inv_mj = 1. / particles[j].mass; // removed due to being equal to the others
+                // const double qj = particles[j].charge;
 
-                arma::vec r_vec = R.col(i) - R.col(j);
+                arma::vec r_vec = col_i - R.col(j);
                 double r_norm = arma::norm(r_vec);
                 r_norm = std::max(r_norm, parameters::EPS);
 
                 const double inv_r3 = 1.0 / std::pow(r_norm, 3);
-                const arma::vec F = constants::ke * qi * qj * inv_r3 * r_vec;
-
-                A.col(i) += F * inv_mi;
-                A.col(j) -= F * inv_mj;
+                const arma::vec F = ke_q2 * inv_r3 * r_vec;
+                arma::vec a = F * inv_mi;
+                A.col(i) += a;
+                A.col(j) -= a;
             }
         }
 }

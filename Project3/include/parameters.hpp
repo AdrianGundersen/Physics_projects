@@ -24,7 +24,7 @@ struct SimulationParams {
 constexpr int seed = 67; // group number
 
 // Allowed threads for OpenMP
-constexpr int max_threads = 8; // Adjust based on your CPU
+constexpr int max_threads = 14; // Adjust based on your CPU
 
 
 
@@ -60,7 +60,7 @@ inline constexpr SimulationParams few{
 inline constexpr SimulationParams multi{
     500.0,   // total_time_multi [µs]
     40000,   // N_multi
-    true   // coulomb_on_multi 
+    true   // coulomb_on_multi coulumb forces
 };
 
 // Trap setup

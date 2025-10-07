@@ -79,12 +79,13 @@ int main() {
         std::cout << "Simulation aborted by user.\n";
         return 0;
     }
+    
 #pragma omp parallel for num_threads(N_threads) collapse(2) schedule(dynamic) // parallelize outer two loops and schedule dynamically for load balancing
-    for (int iw = 0; iw < nw; ++iw) {
+    for (int iw = 0; iw < nw; ++iw){
+          // rad/microsecond
         for (int i = 0; i < nf; ++i) {
             double omega_MHz = omega_V_list(iw);
-            double omega = omega_MHz * 2.0 * M_PI;   // rad/microsecond
-
+            double omega = omega_MHz * 2.0 * M_PI; 
             auto start = std::chrono::steady_clock::now();
 
             double f = f_list(i);
