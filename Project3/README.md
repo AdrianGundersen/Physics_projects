@@ -1,6 +1,12 @@
-# Project 2
+# Project 3
 
 ## Description
+Simulations for a Penning trap. The code models motion of charged particles in an electromagnetic field. There are three main simulations:
+
+- **Single particle dynamics** with both Forward Euler and RK4 integrators and comparison to analytical result.
+- **Few-particle interactions** with simulation of two particles in the trap.
+- **Parameter sweeps (many particles)** with driving frequency and amplitude added.
+
 
 
 ### Project structure
@@ -30,11 +36,13 @@ Project3/
 
 ## Dependencies
 
-- **C++20 compiler** (should also work down to C++17)  
+- **C++20 compiler**
 - **Armadillo**   
+- **OpenMP**
 - **Python 3.10+**
   - `numpy`
   - `matplotlib`
+
 
 
 
@@ -56,7 +64,9 @@ make clean
 ### Run
 ```bash
 From Project root:
-./build/bin/project3.exe
+./build/bin/single_particle
+./build/bin/few_particles
+./build/bin/N_particles
 ```
 
 Or build, then run:
