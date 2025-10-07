@@ -10,7 +10,8 @@
 
 int main() {
     arma::arma_rng::set_seed(parameters::seed);
-    PenningTrap trap(parameters::B0, parameters::V0, parameters::d, parameters::frequency, parameters::coulomb_on);
+    PenningTrap trap_rk(parameters::B0, parameters::V0, parameters::d, parameters::frequency, parameters::coulomb_on);
+    PenningTrap trap_eu = trap_rk;
 
     // Extract parameters
     auto sim_params = parameters::single;
@@ -23,26 +24,28 @@ int main() {
     arma::vec pos = {20.0, 0.0, 20.0};
     arma::vec vel = {0.0, 25.0, 0.0};
 
-    Particle p(constants::elementary_charge, constants::atomic_mass_unit, pos, vel);
-    trap.add_particle(p);
-
-    trap.print_particles();
+    Particle p1(constants::elementary_charge, constants::atomic_mass_unit, pos, vel);
+    Particle p2 = p1;
+    trap_rk.add_particle(p1);
+    trap_eu.add_particle(p2);
 
     double time = 0;
 
     std::filesystem::create_directory("data");
-
     std::ofstream ofile("data/single_particle.txt");
-    trap.write_file(ofile, time, 0);
 
-    for (int step = 0; step < N; step++) {
+    p1.write_to_file(ofile, time, false);
+    p2.write_to_file(ofile, time, true);
+
+
+    for (int step = 0; step < N; step++){
         time += dt;
-        Integrator::RK4(trap, dt, time);
-
-        trap.write_file(ofile, time, 0);
+        Integrator::RK4(trap_rk, dt, time);
+        Integrator::ForwardEuler(trap_eu, dt, time);
+        p1.write_to_file(ofile, time, false);
+        p2.write_to_file(ofile, time, true);
     }
     ofile.close();
-    trap.print_particles();
 
     std::cout << "Wrote single particle agains time and analytical as: data/single_particle.txt\n";
     std::cout << dt << "\n";

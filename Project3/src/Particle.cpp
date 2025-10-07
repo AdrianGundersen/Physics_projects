@@ -15,9 +15,11 @@ void Particle::print() const {
                 << ", Velocity: [" << velocity.t() << "]" << std::endl;
 }
 
-void Particle::write_to_file(std::ofstream& ofile, double time) const {
+ void Particle::write_to_file(std::ofstream& ofile, double time, bool new_line) const {
     ofile << std::fixed << std::setprecision(12)
     << time << "\t" 
     << position(0) << "\t" << position(1) << "\t" << position(2) << "\t" 
-    << velocity(0) << "\t" << velocity(1) << "\t" << velocity(2) << "\n";
+    << velocity(0) << "\t" << velocity(1) << "\t" << velocity(2);
+    if(new_line){
+        ofile << "\n";}
 }

@@ -19,5 +19,5 @@ private:
              const arma::vec& position, 
              const arma::vec& velocity); // constructor
     void print() const; // print particle info
-    void write_to_file(std::ofstream& ofile, double time) const;
+    void write_to_file(std::ofstream& ofile, double time, bool new_line = true) const;
 };
