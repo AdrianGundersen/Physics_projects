@@ -1,6 +1,5 @@
 // constants.hpp
 #pragma once
-#define CONSTANTS_HPP
 
 namespace constants {
 // Base units
