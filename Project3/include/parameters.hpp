@@ -24,7 +24,7 @@ struct SimulationParams {
 constexpr int seed = 67; // group number
 
 // Allowed threads for OpenMP
-constexpr int max_threads = 12; // Adjust based on your CPU
+constexpr int max_threads = 10; // Adjust based on your CPU
 
 
 
@@ -57,20 +57,20 @@ const std::string filename_single = "single_particle_N" + std::to_string(single.
 
 // FEW PARTICLE PARAMETERS
 inline constexpr SimulationParams few{
-    500.0,  // total_time_few [µs]
+    50.0,  // total_time_few [µs]
     40000,  // N_few
-    true    // coulomb_on_few
+    false    // coulomb_on_few
 };
 
 // filename for output data (if using another naming scheme, update plotting accordingly (not recommended))
-const std::string filename_few0 = "pos_vel_0_N" + std::to_string(few.N) + ".txt"; // particle 0
-const std::string filename_few1 = "pos_vel_1_N" + std::to_string(few.N) + ".txt"; // particle 1
+const std::string filename_few0 = "pos_vel_0_coulomb=" + std::to_string(few.coulomb_on) + "_N" + std::to_string(few.N) + ".txt"; // particle 0
+const std::string filename_few1 = "pos_vel_1_coulomb=" + std::to_string(few.coulomb_on) + "_N" + std::to_string(few.N) + ".txt"; // particle 1
 
 // MULTI PARTICLE PARAMETERS
 inline constexpr SimulationParams multi{
     500.0,   // total_time_multi [µs]
     40000,   // N_multi
-    true   // coulomb_on_multi coulumb forces
+    false   // coulomb_on_multi coulumb forces
 };
 
 // Trap setup
@@ -82,7 +82,7 @@ constexpr double vel_scaling = 0.1; // Velocity scaling factor so typical is vel
 inline const arma::vec f_list = {0.1, 0.4, 0.7}; // Amplitude factors
 
 // omega_V list in MHz
-constexpr double w_min = 0.2, w_max = 0.8, w_step = 0.01; // omega_V range and step
+constexpr double w_min = 0.2, w_max = 0.8, w_step = 0.0005; // omega_V range and step
 constexpr int n_omega = static_cast<int>((w_max - w_min) / w_step + 1.5); // # of omega_points (+1.5 to avoid rounding issues)
 inline const arma::vec omega_V_list = arma::linspace(w_min, w_max, n_omega);
 

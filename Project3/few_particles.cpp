@@ -10,7 +10,7 @@
 
 int main() {
     arma::arma_rng::set_seed(parameters::seed);
-    PenningTrap trap(parameters::B0, parameters::V0, parameters::d, parameters::frequency, parameters::coulomb_on);
+
 
     // Extract parameters
     auto sim_params = parameters::few;
@@ -18,6 +18,8 @@ int main() {
     double dt = sim_params.dt;
     int N = sim_params.N;
     bool coulomb_on = sim_params.coulomb_on;
+
+    PenningTrap trap(parameters::B0, parameters::V0, parameters::d, parameters::frequency, coulomb_on);
 
     // origin particle
     arma::vec pos = {20.0, 0.0, 20.0};
@@ -30,7 +32,7 @@ int main() {
     arma::vec pos2 = {25.0, 25.0, 0.0};
     arma::vec vel2 = {0.0, 40.0, 5.0};
 
-    Particle p2(1.0, 1.0, pos2, vel2);
+    Particle p2(constants::elementary_charge, constants::atomic_mass_unit, pos2, vel2);
 
 
     trap.add_particle(p2);

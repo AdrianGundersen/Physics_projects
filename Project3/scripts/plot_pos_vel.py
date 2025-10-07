@@ -1,9 +1,9 @@
-# Heavily chatGPT made plots as mentioned in report.
+# Heavily ChatGPT-made plots as mentioned in report.
 import os
 import numpy as np
 import matplotlib.pyplot as plt
 
-# Oppdaterer mpl parametere
+# ---- Matplotlib defaults ----
 plt.rcParams.update({
     'font.size': 14,
     'figure.figsize': (6, 4),
@@ -17,40 +17,89 @@ plt.rcParams.update({
 })
 
 os.makedirs("data/plot", exist_ok=True)
-data1 = np.loadtxt("data/pos_vel_0_N40000.txt")
-data2 = np.loadtxt("data/pos_vel_1_N40000.txt")
 
-t1, x1, y1, z1, vx1, vy1, vz1 = data1[:,0], data1[:,1], data1[:,2], data1[:,3], data1[:,4], data1[:,5], data1[:,6]
-t2, x2, y2, z2, vx2, vy2, vz2 = data2[:,0], data2[:,1], data2[:,2], data2[:,3], data2[:,4], data2[:,5], data2[:,6]
+# ---- I/O helpers ----
+def load_posvel(coulomb_flag: int, particle_idx: int, N: int = 40000):
+    path = f"data/pos_vel_{particle_idx}_coulomb={coulomb_flag}_N{N}.txt"
+    arr = np.loadtxt(path)
+    t, x, y, z, vx, vy, vz = (arr[:,0], arr[:,1], arr[:,2], arr[:,3],
+                              arr[:,4], arr[:,5], arr[:,6])
+    return dict(t=t, x=x, y=y, z=z, vx=vx, vy=vy, vz=vz, path=path)
 
-def plot_component(t1, arr1, t2, arr2, comp_name, xlabel, ylabel, filename):
+# Load both particles, with and without Coulomb
+p1_on  = load_posvel(1, 0)
+p2_on  = load_posvel(1, 1)
+p1_off = load_posvel(0, 0)
+p2_off = load_posvel(0, 1)
+
+# ---- Plotting helpers ----
+def mark_start_end(x, y, label_prefix=None):
+    """Add start (○) and end (×) markers to the current axes."""
+    lbl_start = None if label_prefix is None else f"{label_prefix} start"
+    lbl_end   = None if label_prefix is None else f"{label_prefix} end"
+    plt.plot(x[0],  y[0],  marker="o", markersize=6, linestyle="None", label=lbl_start)
+    plt.plot(x[-1], y[-1], marker="x", markersize=6, linestyle="None", label=lbl_end)
+
+def plot_time_series(t1, a1, t2, a2, comp, ylabel, outname, title_suffix="(Coulomb on)"):
     plt.figure()
-    plt.plot(t1, arr1, alpha=0.8, label=f"Particle 1 {comp_name}")
-    plt.plot(t2, arr2, alpha=0.8, label=f"Particle 2 {comp_name}")
-    plt.xlabel(xlabel)
+    plt.plot(t1, a1, alpha=0.9, label=f"Particle 1 {comp}")
+    plt.plot(t2, a2, alpha=0.9, label=f"Particle 2 {comp}")
+    mark_start_end(t1, a1, "P1")
+    mark_start_end(t2, a2, "P2")
+    plt.xlabel(r"$t~(\mu\mathrm{s})$")
     plt.ylabel(ylabel)
+    plt.title(f"Two-particle {comp} vs time {title_suffix}")
     plt.legend()
     plt.tight_layout()
-    plt.savefig(filename)
+    plt.savefig(outname)
     plt.close()
 
+def plot_phase_space(x1, v1, x2, v2, xlabel, ylabel, title, outname):
+    plt.figure()
+    plt.plot(x1, v1, alpha=0.9, label="Particle 1")
+    plt.plot(x2, v2, alpha=0.9, label="Particle 2")
+    mark_start_end(x1, v1, "P1")
+    mark_start_end(x2, v2, "P2")
+    plt.xlabel(xlabel)
+    plt.ylabel(ylabel)
+    plt.title(title)
+    plt.legend()
+    plt.tight_layout()
+    plt.savefig(outname)
+    plt.close()
 
-plot_component(t1, x1, t2, x2, "$x(t)$",
-    r"$\text{time}~(\mu\text{s})$", r"$x\text{-position}~(\mu\text{m})$",
-    "data/plot/x_position_vs_time.pdf")
+# ---- Time-series (Coulomb ON only; names clearer) ----
+plot_time_series(p1_on["t"], p1_on["x"], p2_on["t"], p2_on["x"],
+                 "x-position", r"$x~(\mu\mathrm{m})$",
+                 "data/plot/two_particles_x_vs_time_coulomb_on.pdf")
 
-plot_component(t1, y1, t2, y2, "$y(t)$",
-    r"$\text{time}~(\mu\text{s})$", r"$y\text{-position}~(\mu\text{m})$",
-    "data/plot/y_position_vs_time.pdf")
+plot_time_series(p1_on["t"], p1_on["y"], p2_on["t"], p2_on["y"],
+                 "y-position", r"$y~(\mu\mathrm{m})$",
+                 "data/plot/two_particles_y_vs_time_coulomb_on.pdf")
 
-plot_component(t1, z1, t2, z2, "$z(t)$",
-    r"$\text{time}~(\mu\text{s})$", r"$z\text{-position}~(\mu\text{m})$",
-    "data/plot/z_position_vs_time.pdf")
+plot_time_series(p1_on["t"], p1_on["z"], p2_on["t"], p2_on["z"],
+                 "z-position", r"$z~(\mu\mathrm{m})$",
+                 "data/plot/two_particles_z_vs_time_coulomb_on.pdf")
 
-plot_component(x1, vx1, x2, vx2, "$v_x(x)$",
-    r"$x\text{-position}~(\mu\text{m})$", r"$v_x~(\mu\text{m}/\mu\text{s})$",
-    "data/plot/v_x_vs_x.pdf")
+# ---- Phase space: x–vx and z–vz, with and without Coulomb ----
+# Coulomb ON
+plot_phase_space(p1_on["x"], p1_on["vx"], p2_on["x"], p2_on["vx"],
+                 r"$x~(\mu\mathrm{m})$", r"$v_x~(\mu\mathrm{m}/\mu\mathrm{s})$",
+                 "Phase space (x, v_x), two particles — Coulomb ON",
+                 "data/plot/phase_x_vx_coulomb_on.pdf")
 
-plot_component(z1, vz1, z2, vz2, "$v_z(z)$",
-    r"$z\text{-position}~(\mu\text{m})$", r"$v_z~(\mu\text{m}/\mu\text{s})$",
-    "data/plot/v_z_vs_z.pdf")
+plot_phase_space(p1_on["z"], p1_on["vz"], p2_on["z"], p2_on["vz"],
+                 r"$z~(\mu\mathrm{m})$", r"$v_z~(\mu\mathrm{m}/\mu\mathrm{s})$",
+                 "Phase space (z, v_z), two particles — Coulomb ON",
+                 "data/plot/phase_z_vz_coulomb_on.pdf")
+
+# Coulomb OFF
+plot_phase_space(p1_off["x"], p1_off["vx"], p2_off["x"], p2_off["vx"],
+                 r"$x~(\mu\mathrm{m})$", r"$v_x~(\mu\mathrm{m}/\mu\mathrm{s})$",
+                 "Phase space (x, v_x), two particles — Coulomb OFF",
+                 "data/plot/phase_x_vx_coulomb_off.pdf")
+
+plot_phase_space(p1_off["z"], p1_off["vz"], p2_off["z"], p2_off["vz"],
+                 r"$z~(\mu\mathrm{m})$", r"$v_z~(\mu\mathrm{m}/\mu\mathrm{s})$",
+                 "Phase space (z, v_z), two particles — Coulomb OFF",
+                 "data/plot/phase_z_vz_coulomb_off.pdf")
