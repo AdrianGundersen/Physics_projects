@@ -12,8 +12,10 @@ This repository contains the solutions to projects from **FYS3150 – Computatio
 - [Project 2: Jacobi Rotation Method](./Project2)  
   Solving Buckling-Beam problem using Jacobi Rotation Method.
 
+---
+
 - [Project 3: Penning Trap](./Project3)  
-  .
+  . Solving Penning Trap problem with 4th order Runge-Kutta implementation on a multi-particle system. 
 ---
 
 
