@@ -40,8 +40,8 @@ int main() {
     double time = 0;
 
     std::filesystem::create_directory("data");
-    Particle par1 = trap.particles[0];
-    Particle par2 = trap.particles[1];
+    Particle& par1 = trap.particles[0];
+    Particle& par2 = trap.particles[1];
 
     std::ofstream ofile1("data/pos_vel_1.txt");
     std::ofstream ofile2("data/pos_vel_2.txt");

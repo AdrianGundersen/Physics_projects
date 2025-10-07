@@ -15,8 +15,6 @@ constexpr double ke = 1.38935333e5;
 constexpr double Tesla = 9.64852558e1;   
 constexpr double Volt  = 9.64852558e7; 
 
-// Useful ratio
-constexpr double V0_over_d2 = 9.65;  // 
 
 // Particle properties
 constexpr double Ca_mass = 40.078 * atomic_mass_unit; // Calcium ion mass

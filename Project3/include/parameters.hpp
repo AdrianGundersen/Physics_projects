@@ -24,18 +24,17 @@ struct SimulationParams {
 constexpr int seed = 67; // group number
 
 // Allowed threads for OpenMP
-constexpr int max_threads = 14; // Adjust based on your CPU
+constexpr int max_threads = 12; // Adjust based on your CPU
 
 
 
 // Default Penning trap parameters
 constexpr double B0 = constants::Tesla;   // Magnetic field strength [T]
-constexpr double V0 = 2.41e6; // Electric potential [V]
+constexpr double V0 = 25.0e-3 * constants::Volt; // Electric potential [V]
 constexpr double d  = 500.0;    // Characteristic dimension [µm]
 constexpr bool coulomb_on = true; // Enable/disable Coulomb interaction
 constexpr double frequency = 0.0; // Frequency of time-dependent potential [MHz]    
 constexpr double omega_V = 0.0; // Angular frequency of time-dependent potential [MHz]
-
 
 //Integration parameters
 constexpr double EPS = 1e-12; // Avoid division by zero
@@ -47,7 +46,7 @@ constexpr double EPS2 = EPS*EPS; // Used when finding r2
 inline constexpr SimulationParams single{
     50.0,  // total_time_single [µs]
     40000,  // N_single
-    true    // coulomb_on_single
+    false    // coulomb_on_single
 };
 
 // FEW PARTICLE PARAMETERS
@@ -73,7 +72,7 @@ constexpr double vel_scaling = 0.1; // Velocity scaling factor so typical is vel
 inline const arma::vec f_list = {0.1, 0.4, 0.7}; // Amplitude factors
 
 // omega_V list in MHz
-constexpr double w_min = 0.2, w_max = 0.8, w_step = 0.01;
+constexpr double w_min = 0.2, w_max = 0.8, w_step = 0.0005; // omega_V range and step
 constexpr int n_omega = static_cast<int>((w_max - w_min) / w_step + 1.5); // # of omega_points (+1.5 to avoid rounding issues)
 inline const arma::vec omega_V_list = arma::linspace(w_min, w_max, n_omega);
 

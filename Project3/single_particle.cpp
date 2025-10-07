@@ -35,8 +35,8 @@ int main() {
     std::ofstream ofile("data/single_particle.txt");
 
 
-    Particle rk = trap_rk.particles[0];
-    Particle eu = trap_eu.particles[0];
+    Particle& rk = trap_rk.particles[0];
+    Particle& eu = trap_eu.particles[0];
 
     rk.write_to_file(ofile, time, false);
     eu.write_to_file(ofile, time, true);
