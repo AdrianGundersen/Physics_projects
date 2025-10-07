@@ -94,12 +94,13 @@ arma::mat PenningTrap::acceleration_all(const arma::mat& R, const arma::mat& V, 
     arma::Mat<double> A(3, N);
 
     // external acceleration
+    arma::rowvec r_norms = arma::vecnorm(R);
     for (int i = 0; i < N; i++){
         const Particle& p = particles[i];
         arma::vec r = R.col(i);
         arma::vec v = V.col(i);
 
-        double r_norm = arma::vecnorm(r);
+        double r_norm = r_norms(i);
 
         arma::vec E = external_E_field(r, time, omega_V, r_norm);
         arma::vec B = external_B_field(r, r_norm);
