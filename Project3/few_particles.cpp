@@ -43,8 +43,11 @@ int main() {
     Particle& par1 = trap.particles[0];
     Particle& par2 = trap.particles[1];
 
-    std::ofstream ofile1("data/pos_vel_1.txt");
-    std::ofstream ofile2("data/pos_vel_2.txt");
+    std::string filepath1 = "data/" + parameters::filename_few0;
+    std::string filepath2 = "data/" + parameters::filename_few1;
+
+    std::ofstream ofile1(filepath1);
+    std::ofstream ofile2(filepath2);
 
     par1.write_to_file(ofile1, time, true);
     par2.write_to_file(ofile2, time, true);
@@ -59,7 +62,8 @@ int main() {
     ofile2.close();
     trap.print_particles();
 
-    std::cout << "Wrote z position agains time as: data/pos_vel.txt\n";
+    std::cout << "Wrote positions against time as: "<< filepath1 << "\n";
+    std::cout << "Wrote positions against time as: "<< filepath2 << "\n";
     std::cout << dt << "\n";
     std::cout << time << "\n";
     return 0;

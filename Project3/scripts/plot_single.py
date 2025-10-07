@@ -1,72 +1,103 @@
-# Heavily chatGPT made plots as mentioned in report.
 import os
+import re
+import glob
 import numpy as np
 import matplotlib.pyplot as plt
 
-# ---- Matplotlib defaults (larger, readable in PDFs) ----
 plt.rcParams.update({
-    'font.size': 16,
-    'figure.figsize': (6, 8),   # default; each figure will be 2 rows stacked
-    'axes.titlesize': 18,
-    'axes.labelsize': 16,
-    'xtick.labelsize': 14,
-    'ytick.labelsize': 14,
-    'lines.linewidth': 2.2,
-    'legend.fontsize': 12,
+    'font.size': 15,
+    'figure.figsize': (6, 4.2),
+    'axes.titlesize': 17,
+    'axes.labelsize': 15,
+    'xtick.labelsize': 13,
+    'ytick.labelsize': 13,
+    'lines.linewidth': 2.0,
+    'legend.fontsize': 11,
     'figure.dpi': 300,
 })
 
-# ---- I/O ----
 os.makedirs("data/plot", exist_ok=True)
-data = np.loadtxt("data/single_particle.txt")
 
-# Columns: [t  x_rk  y_rk  z_rk  vx_rk  vy_rk  vz_rk  t_eu  x_eu  y_eu  z_eu  vx_eu  vy_eu  vz_eu]
-t,  x_rk,  y_rk,  z_rk,  vx_rk,  vy_rk,  vz_rk  = data[:,0], data[:,1], data[:,2], data[:,3], data[:,4], data[:,5], data[:,6]
-t_eu, x_eu, y_eu, z_eu, vx_eu, vy_eu, vz_eu = data[:,7], data[:,8], data[:,9], data[:,10], data[:,11], data[:,12], data[:,13]
+files = sorted(
+    glob.glob("data/single_particle_N*.txt"),
+    key=lambda p: int(re.search(r"_N(\d+)\.txt$", p).group(1))
+)
+if not files and os.path.exists("data/single_particle.txt"):
+    files = ["data/single_particle.txt"]
 
-# ---- Analytical z(t) ----
 q = 1.0
 m = 1.0
-z0 = 20.0     # µm
-d = 500.0     # µm
-V0 = 25.0e-3 * 9.64852558e7 # 25mV
+z0 = 20.0
+d = 500.0
+V0 = 25.0e-3 * 9.64852558e7
+omega_z = np.sqrt(2.0 * q * V0 / (m * d**2))
+DEN_TOL = 1e-10
 
-omega_z = np.sqrt(2.0 * q * V0 / (m * d**2))  # rad/µs (given your units)
-z_analytic_rk = z0 * np.cos(omega_z * t)
-z_analytic_eu = z0 * np.cos(omega_z * t_eu)
+def short_N(n):
+    n = int(n)
+    return f"{n//1000}k" if n % 1000 == 0 else str(n)
 
-def stacked_panels(name: str, t_num, z_num, z_an, outfile: str):
-    """
-    Top: numerical vs analytical z(t).
-    Bottom: residuals (numerical - analytical).
-    Stacked vertically for readability in PDFs.
-    """
-    fig, axes = plt.subplots(2, 1, figsize=(6, 8), sharex=True)
-    (ax_top, ax_bot) = axes
+fig_rk, ax_rk = plt.subplots()
+fig_eu, ax_eu = plt.subplots()
+fig_rk_rel, ax_rk_rel = plt.subplots()
+fig_eu_rel, ax_eu_rel = plt.subplots()
 
-    # Top: trajectories
-    ax_top.plot(t_num, z_num, label=f"{name} z(t)")
-    ax_top.plot(t_num, z_an, "--", label="Analytical z(t)")
-    ax_top.set_ylabel(r"$z~(\mu \mathrm{m})$")
-    ax_top.legend(loc="best")
-    ax_top.set_title(f"{name}: z(t) vs analytical")
-    ax_top.grid(True, linestyle=":", linewidth=0.8)
+for path in files:
+    mN = re.search(r"_N(\d+)\.txt$", path)
+    Nsuf = short_N(mN.group(1)) if mN else "N"
 
-    # Bottom: residuals
-    res = z_num - z_an
-    ax_bot.plot(t_num, res, label=f"{name} − Analytical")
-    ax_bot.set_xlabel(r"$\mathrm{time}~(\mu \mathrm{s})$")
-    ax_bot.set_ylabel(r"$\Delta z~(\mu \mathrm{m})$")
-    ax_bot.legend(loc="best")
-    ax_bot.set_title(f"{name}: residuals")
-    ax_bot.grid(True, linestyle="--", linewidth=0.8)
+    data = np.loadtxt(path)
+    t,  z_rk  = data[:,0],  data[:,3]
+    t_eu, z_eu = data[:,7], data[:,10]
 
-    fig.tight_layout()
-    fig.savefig(outfile)
+    z_an_rk = z0 * np.cos(omega_z * t)
+    z_an_eu = z0 * np.cos(omega_z * t_eu)
 
-# ---- Produce figures ----
-stacked_panels("RK4",   t,    z_rk, z_analytic_rk, "data/plot/rk4_z_and_residuals.pdf")
-stacked_panels("Euler", t_eu, z_eu, z_analytic_eu, "data/plot/euler_z_and_residuals.pdf")
+    ax_rk.plot(t, z_rk, alpha=0.9, label=f"RK4 {Nsuf}")
+    ax_eu.plot(t_eu, z_eu, alpha=0.9, label=f"EU {Nsuf}")
 
-plt.show()
-# plt.close("all")
+    mask_rk = np.abs(z_an_rk) > DEN_TOL
+    mask_eu = np.abs(z_an_eu) > DEN_TOL
+    rk_rel = np.abs(z_rk[mask_rk] - z_an_rk[mask_rk]) / np.abs(z_an_rk[mask_rk])
+    eu_rel = np.abs(z_eu[mask_eu] - z_an_eu[mask_eu]) / np.abs(z_an_eu[mask_eu])
+
+    if rk_rel.size:
+        ax_rk_rel.plot(t[mask_rk], rk_rel, alpha=0.9, label=f"RK4 {Nsuf}")
+    if eu_rel.size:
+        ax_eu_rel.plot(t_eu[mask_eu], eu_rel, alpha=0.9, label=f"EU {Nsuf}")
+
+if files:
+    data_ref = np.loadtxt(files[-1])
+    t_ref, t_eu_ref = data_ref[:,0], data_ref[:,7]
+    ax_rk.plot(t_ref, z0*np.cos(omega_z*t_ref), linestyle="--", alpha=0.7, label="Analytic")
+    ax_eu.plot(t_eu_ref, z0*np.cos(omega_z*t_eu_ref), linestyle="--", alpha=0.7, label="Analytic")
+
+ax_rk.set_title("RK4: z(t)")
+ax_rk.set_xlabel(r"$t~(\mu \mathrm{s})$")
+ax_rk.set_ylabel(r"$z~(\mu \mathrm{m})$")
+ax_rk.legend(ncol=3)
+fig_rk.tight_layout()
+fig_rk.savefig("data/plot/rk4_z_vs_time_multiN.pdf")
+
+ax_eu.set_title("Euler: z(t)")
+ax_eu.set_xlabel(r"$t~(\mu \mathrm{s})$")
+ax_eu.set_ylabel(r"$z~(\mu \mathrm{m})$")
+ax_eu.legend(ncol=3)
+fig_eu.tight_layout()
+fig_eu.savefig("data/plot/euler_z_vs_time_multiN.pdf")
+
+ax_rk_rel.set_title(r"RK4: relative error $|z-z_a|/|z_a|$")
+ax_rk_rel.set_xlabel(r"$t~(\mu \mathrm{s})$")
+ax_rk_rel.set_ylabel(r"$|z-z_a|/|z_a|$")
+ax_rk_rel.legend(ncol=3)
+fig_rk_rel.tight_layout()
+fig_rk_rel.savefig("data/plot/rk4_relerr_multiN.pdf")
+
+ax_eu_rel.set_title(r"Euler: relative error $|z-z_a|/|z_a|$")
+ax_eu_rel.set_xlabel(r"$t~(\mu \mathrm{s})$")
+ax_eu_rel.set_ylabel(r"$|z-z_a|/|z_a|$")
+ax_eu_rel.legend(ncol=3)
+fig_eu_rel.tight_layout()
+fig_eu_rel.savefig("data/plot/euler_relerr_multiN.pdf")
+
+plt.close("all")

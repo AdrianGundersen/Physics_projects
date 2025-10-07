@@ -1,3 +1,4 @@
+
 // single_particle.cpp
 #include "Particle.hpp"
 #include "PenningTrap.hpp"
@@ -32,7 +33,8 @@ int main() {
     double time = 0;
 
     std::filesystem::create_directory("data");
-    std::ofstream ofile("data/single_particle.txt");
+    std::string filepath = "data/" + parameters::filename_single;
+    std::ofstream ofile(filepath);
 
 
     Particle& rk = trap_rk.particles[0];

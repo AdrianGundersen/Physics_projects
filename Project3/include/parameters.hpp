@@ -45,9 +45,15 @@ constexpr double EPS2 = EPS*EPS; // Used when finding r2
 // SINGLE PARTICLE PARAMETERS
 inline constexpr SimulationParams single{
     50.0,  // total_time_single [µs]
-    40000,  // N_single
-    false    // coulomb_on_single
+    16000,  // N_single
+    false    // coulomb_on_single (only one particle)
 };
+
+
+// filename for output data (if using another naming scheme, update plotting accordingly (not recommended))
+const std::string filename_single = "single_particle_N" + std::to_string(single.N) + ".txt"; // particle 0
+
+
 
 // FEW PARTICLE PARAMETERS
 inline constexpr SimulationParams few{
@@ -55,6 +61,10 @@ inline constexpr SimulationParams few{
     40000,  // N_few
     true    // coulomb_on_few
 };
+
+// filename for output data (if using another naming scheme, update plotting accordingly (not recommended))
+const std::string filename_few0 = "pos_vel_0_N" + std::to_string(few.N) + ".txt"; // particle 0
+const std::string filename_few1 = "pos_vel_1_N" + std::to_string(few.N) + ".txt"; // particle 1
 
 // MULTI PARTICLE PARAMETERS
 inline constexpr SimulationParams multi{

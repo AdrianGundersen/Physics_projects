@@ -17,8 +17,8 @@ plt.rcParams.update({
 })
 
 os.makedirs("data/plot", exist_ok=True)
-data1 = np.loadtxt("data/pos_vel_1.txt")
-data2 = np.loadtxt("data/pos_vel_2.txt")
+data1 = np.loadtxt("data/pos_vel_0_N40000.txt")
+data2 = np.loadtxt("data/pos_vel_1_N40000.txt")
 
 t1, x1, y1, z1, vx1, vy1, vz1 = data1[:,0], data1[:,1], data1[:,2], data1[:,3], data1[:,4], data1[:,5], data1[:,6]
 t2, x2, y2, z2, vx2, vy2, vz2 = data2[:,0], data2[:,1], data2[:,2], data2[:,3], data2[:,4], data2[:,5], data2[:,6]
