@@ -27,8 +27,8 @@ void PenningTrap::fill_random(int N, double q, double m, double pos_scaling, dou
 
 
 // External fields
-arma::vec PenningTrap::external_E_field(const arma::vec& r, double t, double omega_V) const {
-    if (arma::norm(r) > d) {
+arma::vec PenningTrap::external_E_field(const arma::vec& r, double t, double omega_V, double r_norm) const {
+    if (r_norm > d) {
         return arma::vec({0.0, 0.0, 0.0});  // no field outside the trap
     }
     if (f != 0.0) {
@@ -43,8 +43,8 @@ arma::vec PenningTrap::external_E_field(const arma::vec& r, double t, double ome
     return Efield;
 }
 
-arma::vec PenningTrap::external_B_field(const arma::vec& r) const {
-    if (arma::norm(r) > d) {
+arma::vec PenningTrap::external_B_field(const arma::vec& r, double r_norm) const {
+    if (r_norm > d) {
         return arma::vec({0.0, 0.0, 0.0});  // no field outside the trap
     }
     return arma::vec({0.0, 0.0, B0});
@@ -54,8 +54,10 @@ arma::vec PenningTrap::external_B_field(const arma::vec& r) const {
 arma::vec PenningTrap::force_external(int i, double time, double omega_V) const {
     const Particle& p = particles[i];
 
-    arma::vec E = external_E_field(p.position, time, omega_V);
-    arma::vec B = external_B_field(p.position);
+    double r_norm = arma::vecnorm(p.position);
+
+    arma::vec E = external_E_field(p.position, time, omega_V, r_norm);
+    arma::vec B = external_B_field(p.position, r_norm);
 
     // Lorentz force
     return p.charge * (E + arma::cross(p.velocity, B));
@@ -66,11 +68,11 @@ arma::vec PenningTrap::force_particle(int i, int j) const {
     const Particle& pj = particles[j];
 
     arma::vec r_vec = pi.position - pj.position;
-    double r_norm = arma::norm(r_vec);
+    double r_norm = arma::vecnorm(r_vec);
     r_norm = std::max(r_norm, parameters::EPS); // avoid division by zero
 
     // Coulomb force
-    return constants::ke * pi.charge * pj.charge * r_vec / std::pow(r_norm, 3);
+    return constants::ke * pi.charge * pj.charge * r_vec / (r_norm * r_norm * r_norm);
 }
 
 arma::vec PenningTrap::total_force(int i, double time, double omega_V) const {
@@ -97,39 +99,43 @@ arma::mat PenningTrap::acceleration_all(const arma::mat& R, const arma::mat& V, 
         arma::vec r = R.col(i);
         arma::vec v = V.col(i);
 
-        arma::vec E = external_E_field(r, time, omega_V);
-        arma::vec B = external_B_field(r);
+        double r_norm = arma::vecnorm(r);
+
+        arma::vec E = external_E_field(r, time, omega_V, r_norm);
+        arma::vec B = external_B_field(r, r_norm);
+
         arma::vec F = p.charge * (E + arma::cross(v, B));
         A.col(i) =  F/p.mass;
     }
 
     // Coulomb forces (symmetric interaction)
-    if (coulomb_on && N > 1) {
+    if (coulomb_on && N > 1){
         const double inv_mi = 1. / particles[0].mass; // assume costante mass
         const double qi = particles[0].charge; // assume costante charge
-        const double ke_q2 = constants::ke * qi*qi;
+        const double ke_q2 = constants::ke * qi * qi;
 
         for (int i = 0; i < N; i++) {
             const arma::vec col_i = R.col(i);
             arma::vec  ai = A.col(i);
             for (int j = i + 1; j < N; j++) {
-                // const double inv_mj = 1. / particles[j].mass; // removed due to being equal to the others
+                // const double inv_mj = 1. / particles[j].mass; // removed due to being equal constant
                 // const double qj = particles[j].charge;
 
                 arma::vec r_vec = col_i - R.col(j);
-            
-                double r2    = arma::dot(r_vec, r_vec) + parameters::EPS2;    // to save FLOPs, but might cause some more error 
-                double inv_r = 1.0 / std::sqrt(r2);
-                double inv_r3 = inv_r * inv_r * inv_r;    
+                
+                double r_norm = arma::vecnorm(r_vec);
+                r_norm = std::max(r_norm, parameters::EPS);
+                const double inv_r = 1.0 / r_norm;
+                const double inv_r3 = inv_r * inv_r * inv_r;
                 
                 arma::vec a = ke_q2 * inv_r3 * inv_mi * r_vec;
                 ai += a;
                 A.col(j) -= a;
             }
         }
-}
+    }
 return A;
-}   
+}    
 
 // test functions
 int PenningTrap::number_of_particles() const {
@@ -150,9 +156,4 @@ void PenningTrap::print_particles() const {
     for (const Particle& p : particles) {
         p.print();
     }
-}
-
-void PenningTrap::write_file(std::ofstream& ofile, double time, int particle_n) const {
-    const Particle& p = particles[particle_n];
-    p.write_to_file(ofile, time); 
 }
