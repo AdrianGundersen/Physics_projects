@@ -44,7 +44,7 @@ constexpr double EPS = 1e-12; // Avoid division by zero
 
 // SINGLE PARTICLE PARAMETERS
 inline constexpr SimulationParams single{
-    500.0,  // total_time_single [µs]
+    50.0,  // total_time_single [µs]
     40000,  // N_single
     true    // coulomb_on_single
 };

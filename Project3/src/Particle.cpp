@@ -19,7 +19,7 @@ void Particle::print() const {
     ofile << std::fixed << std::setprecision(12)
     << time << "\t" 
     << position(0) << "\t" << position(1) << "\t" << position(2) << "\t" 
-    << velocity(0) << "\t" << velocity(1) << "\t" << velocity(2);
+    << velocity(0) << "\t" << velocity(1) << "\t" << velocity(2) << "\t";
     if(new_line){
         ofile << "\n";}
 }

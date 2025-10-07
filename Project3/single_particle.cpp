@@ -34,16 +34,20 @@ int main() {
     std::filesystem::create_directory("data");
     std::ofstream ofile("data/single_particle.txt");
 
-    p1.write_to_file(ofile, time, false);
-    p2.write_to_file(ofile, time, true);
+
+    Particle rk = trap_rk.particles[0];
+    Particle eu = trap_eu.particles[0];
+
+    rk.write_to_file(ofile, time, false);
+    eu.write_to_file(ofile, time, true);
 
 
     for (int step = 0; step < N; step++){
         time += dt;
         Integrator::RK4(trap_rk, dt, time);
         Integrator::ForwardEuler(trap_eu, dt, time);
-        p1.write_to_file(ofile, time, false);
-        p2.write_to_file(ofile, time, true);
+        rk.write_to_file(ofile, time, false);
+        eu.write_to_file(ofile, time, true);
     }
     ofile.close();
 
