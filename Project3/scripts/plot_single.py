@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 
 plt.rcParams.update({
     'font.size': 15,
-    'figure.figsize': (6, 4.2),
+    'figure.figsize': (6, 4),
     'axes.titlesize': 17,
     'axes.labelsize': 15,
     'xtick.labelsize': 13,
@@ -30,8 +30,28 @@ m = 1.0
 z0 = 20.0
 d = 500.0
 V0 = 25.0e-3 * 9.64852558e7
+B = 9.64852558e1
 omega_z = np.sqrt(2.0 * q * V0 / (m * d**2))
+omega_0 = q*B/m
 DEN_TOL = 1e-10
+
+def f(t):
+    x0 = 20.0
+    v_0y = 25.0
+
+    disc = omega_0**2 - 2.0 * omega_z**2
+    sqrt_disc = np.sqrt(disc)
+    omega_plus = 0.5 * (omega_0 + sqrt_disc)
+    omega_minus = 0.5 * (omega_0 - sqrt_disc)
+
+    A_plus = (v_0y + omega_minus*x0)/(omega_minus-omega_plus)
+    A_minus = (v_0y + omega_plus*x0)/(omega_minus-omega_plus)
+
+    f_t = A_plus*np.exp(-1j*(omega_plus*t)) + A_minus*np.exp(-1j*(omega_minus*t))
+
+    x = f_t.real
+    y = f_t.imag
+    return x, y
 
 def short_N(n):
     n = int(n)
