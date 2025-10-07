@@ -29,7 +29,7 @@ q = 1.0
 m = 1.0
 z0 = 20.0     # µm
 d = 500.0     # µm
-V0 = 2.41e6   # V
+V0 = 25.0e-3 * 9.64852558e7 # 25mV
 
 omega_z = np.sqrt(2.0 * q * V0 / (m * d**2))  # rad/µs (given your units)
 z_analytic_rk = z0 * np.cos(omega_z * t)
@@ -68,5 +68,5 @@ def stacked_panels(name: str, t_num, z_num, z_an, outfile: str):
 stacked_panels("RK4",   t,    z_rk, z_analytic_rk, "data/plot/rk4_z_and_residuals.pdf")
 stacked_panels("Euler", t_eu, z_eu, z_analytic_eu, "data/plot/euler_z_and_residuals.pdf")
 
-# plt.show()
-plt.close("all")
+plt.show()
+# plt.close("all")
