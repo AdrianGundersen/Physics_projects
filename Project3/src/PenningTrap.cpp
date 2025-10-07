@@ -104,7 +104,7 @@ arma::mat PenningTrap::acceleration_all(const arma::mat& R, const arma::mat& V, 
     }
 
     // Coulomb forces (symmetric interaction)
-    if (coulomb_on) {
+    if (coulomb_on && N > 1) {
         const double inv_mi = 1. / particles[0].mass; // assume costante mass
         const double qi = particles[0].charge; // assume costante charge
         const double ke_q2 = constants::ke * qi*qi;
