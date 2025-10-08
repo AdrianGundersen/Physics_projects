@@ -53,7 +53,7 @@ int main() {
 
     par1.write_to_file(ofile1, time, true);
     par2.write_to_file(ofile2, time, true);
-
+    std::cout << "Starting simulation for N=" << N << " over simulation time t = " << total_time << " microseconds \n";
     for (int step = 0; step < N; step++) {
         time += dt;
         Integrator::RK4(trap, dt, time);
