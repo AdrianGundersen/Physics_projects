@@ -133,6 +133,7 @@ arma::mat PenningTrap::acceleration_all(const arma::mat& R, const arma::mat& V, 
                 ai += a;
                 A.col(j) -= a;
             }
+            A.col(i) = ai;
         }
     }
 return A;
