@@ -121,3 +121,5 @@ fig_eu_rel.tight_layout()
 fig_eu_rel.savefig("data/plot/euler_relerr_multiN.pdf")
 
 plt.close("all")
+
+
