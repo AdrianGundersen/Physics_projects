@@ -55,7 +55,7 @@ void Integrator::RK4(PenningTrap& trap, double dt, double time, double omega_V) 
 
     arma::mat r4 = r0 + k_r3;
     arma::mat v4 = v0 + k_v3;
-    arma::mat a4 = trap.acceleration_all(r4, v4, time, omega_V);
+    arma::mat a4 = trap.acceleration_all(r4, v4, time + dt, omega_V);
     k_r4 = v4 * dt;
     k_v4 = a4 * dt;
 
