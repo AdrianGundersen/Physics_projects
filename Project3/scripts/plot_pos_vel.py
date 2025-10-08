@@ -1,12 +1,21 @@
+# Heavily ChatGPT-made plots as mentioned in report.
 import os
 import re
 import glob
 import numpy as np
 import matplotlib.pyplot as plt
 
+# ---- Matplotlib defaults ----
 plt.rcParams.update({
+    'font.size': 14,
     'font.size': 15,
     'figure.figsize': (6, 4),
+    'axes.titlesize': 16,
+    'axes.labelsize': 14,
+    'xtick.labelsize': 10,
+    'ytick.labelsize': 10,
+    'lines.linewidth': 2,
+    'legend.fontsize': 10,
     'axes.titlesize': 17,
     'axes.labelsize': 15,
     'xtick.labelsize': 13,
@@ -18,127 +27,88 @@ plt.rcParams.update({
 
 os.makedirs("data/plot", exist_ok=True)
 
-files = sorted(
-    glob.glob("data/single_particle_N*.txt"),
-    key=lambda p: int(re.search(r"_N(\d+)\.txt$", p).group(1))
-)
-if not files and os.path.exists("data/single_particle.txt"):
-    files = ["data/single_particle.txt"]
+# ---- I/O helpers ----
+def load_posvel(coulomb_flag: int, particle_idx: int, N: int = 40000):
+    path = f"data/pos_vel_{particle_idx}_coulomb={coulomb_flag}_N{N}.txt"
+    arr = np.loadtxt(path)
+    t, x, y, z, vx, vy, vz = (arr[:,0], arr[:,1], arr[:,2], arr[:,3],
+                              arr[:,4], arr[:,5], arr[:,6])
+    return dict(t=t, x=x, y=y, z=z, vx=vx, vy=vy, vz=vz, path=path)
 
-# ----- Physical parameters (consistent with your trap setup) -----
-q = 1.0
-m = 1.0
-z0 = 20.0
-d = 500.0
-V0 = 25.0e-3 * 9.64852558e7
-B = 9.64852558e1
-omega_z = np.sqrt(2.0 * q * V0 / (m * d**2))
-omega_0 = q * B / m
-DEN_TOL = 1e-10  # avoid division by small analytic values in relative errors
+# Load both particles, with and without Coulomb
+p1_on  = load_posvel(1, 0)
+p2_on  = load_posvel(1, 1)
+p1_off = load_posvel(0, 0)
+p2_off = load_posvel(0, 1)
 
-# ----- Analytic xy-solution builder; returns (x(t), y(t)) -----
-def f(t):
-    # initial conditions for radial motion
-    x0 = 20.0
-    v_0y = 25.0
+# ---- Plotting helpers ----
+def mark_start_end(x, y, label_prefix=None):
+    """Add start (○) and end (×) markers to the current axes."""
+    lbl_start = None if label_prefix is None else f"{label_prefix} start"
+    lbl_end   = None if label_prefix is None else f"{label_prefix} end"
+    plt.plot(x[0],  y[0],  marker="o", markersize=6, linestyle="None", label=lbl_start)
+    plt.plot(x[-1], y[-1], marker="x", markersize=6, linestyle="None", label=lbl_end)
 
-    disc = omega_0**2 - 2.0 * omega_z**2
-    sqrt_disc = np.sqrt(disc)
-    omega_plus = 0.5 * (omega_0 + sqrt_disc)
-    omega_minus = 0.5 * (omega_0 - sqrt_disc)
+def plot_time_series(t1, a1, t2, a2, comp, ylabel, outname, title_suffix="(Coulomb on)"):
+    plt.figure()
+    plt.plot(t1, a1, alpha=0.9, label=f"Particle 1 {comp}")
+    plt.plot(t2, a2, alpha=0.9, label=f"Particle 2 {comp}")
+    mark_start_end(t1, a1, "P1")
+    mark_start_end(t2, a2, "P2")
+    plt.xlabel(r"$t~(\mu\mathrm{s})$")
+    plt.ylabel(ylabel)
+    plt.title(f"Two-particle {comp} vs time {title_suffix}")
+    plt.legend()
+    plt.tight_layout()
+    plt.savefig(outname)
+    plt.close()
 
-    # complex-amplitude solution for f(t) = x + i y
-    A_plus  = (v_0y + omega_minus * x0) / (omega_minus - omega_plus)
-    A_minus = (v_0y + omega_plus  * x0) / (omega_minus - omega_plus)
+def plot_phase_space(x1, v1, x2, v2, xlabel, ylabel, title, outname):
+    plt.figure()
+    plt.plot(x1, v1, alpha=0.9, label="Particle 1")
+    plt.plot(x2, v2, alpha=0.9, label="Particle 2")
+    mark_start_end(x1, v1, "P1")
+    mark_start_end(x2, v2, "P2")
+    plt.xlabel(xlabel)
+    plt.ylabel(ylabel)
+    plt.title(title)
+    plt.legend()
+    plt.tight_layout()
+    plt.savefig(outname)
+    plt.close()
 
-    f_t = A_plus * np.exp(-1j * (omega_plus  * t)) + \
-          A_minus* np.exp(-1j * (omega_minus * t))
+# ---- Time-series (Coulomb ON only; names clearer) ----
+plot_time_series(p1_on["t"], p1_on["x"], p2_on["t"], p2_on["x"],
+                 "x-position", r"$x~(\mu\mathrm{m})$",
+                 "data/plot/two_particles_x_vs_time_coulomb_on.pdf")
 
-    x = f_t.real
-    y = f_t.imag
-    return x, y
+plot_time_series(p1_on["t"], p1_on["y"], p2_on["t"], p2_on["y"],
+                 "y-position", r"$y~(\mu\mathrm{m})$",
+                 "data/plot/two_particles_y_vs_time_coulomb_on.pdf")
 
-def short_N(n):
-    n = int(n)
-    return f"{n//1000}k" if n % 1000 == 0 else str(n)
+plot_time_series(p1_on["t"], p1_on["z"], p2_on["t"], p2_on["z"],
+                 "z-position", r"$z~(\mu\mathrm{m})$",
+                 "data/plot/two_particles_z_vs_time_coulomb_on.pdf")
 
-# ---- Figures ----
-fig_rk, ax_rk = plt.subplots()
-fig_eu, ax_eu = plt.subplots()
-fig_rk_rel_r, ax_rk_rel_r = plt.subplots()
-fig_eu_rel_r, ax_eu_rel_r = plt.subplots()
+# ---- Phase space: x–vx and z–vz, with and without Coulomb ----
+# Coulomb ON
+plot_phase_space(p1_on["x"], p1_on["vx"], p2_on["x"], p2_on["vx"],
+                 r"$x~(\mu\mathrm{m})$", r"$v_x~(\mu\mathrm{m}/\mu\mathrm{s})$",
+                 "Phase space (x, v_x), two particles — Coulomb ON",
+                 "data/plot/phase_x_vx_coulomb_on.pdf")
 
-for path in files:
-    mN = re.search(r"_N(\d+)\.txt$", path)
-    Nsuf = short_N(mN.group(1)) if mN else "N"
+plot_phase_space(p1_on["z"], p1_on["vz"], p2_on["z"], p2_on["vz"],
+                 r"$z~(\mu\mathrm{m})$", r"$v_z~(\mu\mathrm{m}/\mu\mathrm{s})$",
+                 "Phase space (z, v_z), two particles — Coulomb ON",
+                 "data/plot/phase_z_vz_coulomb_on.pdf")
 
-    data = np.loadtxt(path)
-    # Columns: [0 t_rk, 1 x_rk, 2 y_rk, 3 z_rk, 4 vx_rk, 5 vy_rk, 6 vz_rk,
-    #           7 t_eu, 8 x_eu, 9 y_eu, 10 z_eu, 11 vx_eu, 12 vy_eu, 13 vz_eu]
-    t = data[:, 0]
-    x_rk, y_rk, z_rk = data[:, 1], data[:, 2], data[:, 3]
-    t_eu = data[:, 7]
-    x_eu, y_eu, z_eu = data[:, 8], data[:, 9], data[:, 10]
+# Coulomb OFF
+plot_phase_space(p1_off["x"], p1_off["vx"], p2_off["x"], p2_off["vx"],
+                 r"$x~(\mu\mathrm{m})$", r"$v_x~(\mu\mathrm{m}/\mu\mathrm{s})$",
+                 "Phase space (x, v_x), two particles — Coulomb OFF",
+                 "data/plot/phase_x_vx_coulomb_off.pdf")
 
-    # z(t) plots unchanged
-    z_an_rk = z0 * np.cos(omega_z * t)
-    z_an_eu = z0 * np.cos(omega_z * t_eu)
-    ax_rk.plot(t, z_rk, alpha=0.9, label=f"RK4 {Nsuf}")
-    ax_eu.plot(t_eu, z_eu, alpha=0.9, label=f"EU {Nsuf}")
-
-    # ---- NEW: relative error in radial distance r = sqrt(x^2 + y^2) ----
-    r_rk = np.hypot(x_rk, y_rk)
-    r_eu = np.hypot(x_eu, y_eu)
-
-    x_an_rk, y_an_rk = f(t)
-    x_an_eu, y_an_eu = f(t_eu)
-    r_an_rk = np.hypot(x_an_rk, y_an_rk)
-    r_an_eu = np.hypot(x_an_eu, y_an_eu)
-
-    mask_rk_r = r_an_rk > DEN_TOL
-    mask_eu_r = r_an_eu > DEN_TOL
-    rk_rel_r = np.abs(r_rk[mask_rk_r] - r_an_rk[mask_rk_r]) / r_an_rk[mask_rk_r]
-    eu_rel_r = np.abs(r_eu[mask_eu_r] - r_an_eu[mask_eu_r]) / r_an_eu[mask_eu_r]
-
-    if rk_rel_r.size:
-        ax_rk_rel_r.plot(t[mask_rk_r], rk_rel_r, alpha=0.5, label=f"RK4 {Nsuf}")
-    if eu_rel_r.size:
-        ax_eu_rel_r.plot(t_eu[mask_eu_r], eu_rel_r, alpha=0.5, label=f"EU {Nsuf}")
-
-# Add analytic z(t) reference to the z-plots for the densest N
-if files:
-    data_ref = np.loadtxt(files[-1])
-    t_ref, t_eu_ref = data_ref[:, 0], data_ref[:, 7]
-    ax_rk.plot(t_ref, z0 * np.cos(omega_z * t_ref), linestyle="--", alpha=0.7, label="Analytic")
-    ax_eu.plot(t_eu_ref, z0 * np.cos(omega_z * t_eu_ref), linestyle="--", alpha=0.7, label="Analytic")
-
-# ---- Decorate & save ----
-ax_rk.set_title("RK4: z(t)")
-ax_rk.set_xlabel(r"$t~(\mu \mathrm{s})$")
-ax_rk.set_ylabel(r"$z~(\mu \mathrm{m})$")
-ax_rk.legend(ncol=3)
-fig_rk.tight_layout()
-fig_rk.savefig("data/plot/rk4_z_vs_time_multiN.pdf")
-
-ax_eu.set_title("Euler: z(t)")
-ax_eu.set_xlabel(r"$t~(\mu \mathrm{s})$")
-ax_eu.set_ylabel(r"$z~(\mu \mathrm{m})$")
-ax_eu.legend(ncol=3)
-fig_eu.tight_layout()
-fig_eu.savefig("data/plot/euler_z_vs_time_multiN.pdf")
-
-ax_rk_rel_r.set_title(r"RK4: relative radial error $|r-r_a|/|r_a|$")
-ax_rk_rel_r.set_xlabel(r"$t~(\mu \mathrm{s})$")
-ax_rk_rel_r.set_ylabel(r"$|r-r_a|/|r_a|$")
-ax_rk_rel_r.legend(ncol=3)
-fig_rk_rel_r.tight_layout()
-fig_rk_rel_r.savefig("data/plot/rk4_relerr_r_multiN.pdf")
-
-ax_eu_rel_r.set_title(r"Euler: relative radial error $|r-r_a|/|r_a|$")
-ax_eu_rel_r.set_xlabel(r"$t~(\mu \mathrm{s})$")
-ax_eu_rel_r.set_ylabel(r"$|r-r_a|/|r_a|$")
-ax_eu_rel_r.legend(ncol=3)
-fig_eu_rel_r.tight_layout()
-fig_eu_rel_r.savefig("data/plot/euler_relerr_r_multiN.pdf")
-
-plt.close("all")
+plot_phase_space(p1_off["z"], p1_off["vz"], p2_off["z"], p2_off["vz"],
+                 r"$z~(\mu\mathrm{m})$", r"$v_z~(\mu\mathrm{m}/\mu\mathrm{s})$",
+                 "Phase space (z, v_z), two particles — Coulomb OFF",
+                 "data/plot/phase_z_vz_coulomb_off.pdf")
