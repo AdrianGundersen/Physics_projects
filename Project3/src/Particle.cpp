@@ -19,7 +19,11 @@ void Particle::print() const {
     ofile << std::fixed << std::setprecision(12)
     << time << "\t" 
     << position(0) << "\t" << position(1) << "\t" << position(2) << "\t" 
-    << velocity(0) << "\t" << velocity(1) << "\t" << velocity(2) << "\t";
-    if(new_line){
-        ofile << "\n";}
-}
+    << velocity(0) << "\t" << velocity(1) << "\t" << velocity(2);
+
+    if (!new_line) {
+        ofile << '\t';  // append tab if you’ll write more data later on same line
+    } else {
+        ofile << '\n';  
+    }
+ }
