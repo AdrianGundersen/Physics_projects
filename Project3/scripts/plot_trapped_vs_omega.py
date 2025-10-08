@@ -1,8 +1,24 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-filepath1 = "data/fraction_trapped_vs_omega_zoomed_at_0.5_coloumb_off.txt"
+# filenames: data/trapped_w0.200000-2.500000_dw0.005000_N100000.txt
+w_min = 0.200000
+w_max = 2.500000
+w_step = 0.005000
+N = 100000
+
+
+
+filepath1 = f"data/trapped_w{w_min:.6f}-{w_max:.6f}_dw{w_step:.6f}_N{N}.txt" # double precision
+print(filepath1)
+
+"""
+w_min = 0.1
+w_max = 0.5
+w_step = 0.05
+N = 100
 filepath2 = "data/fraction_trapped_vs_omega_zoomed_at_0.5_coloumb_on.txt"
+"""
 
 data = np.loadtxt(filepath1, comments="#")
 with open(filepath1) as f:
