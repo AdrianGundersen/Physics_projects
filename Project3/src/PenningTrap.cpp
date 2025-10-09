@@ -15,6 +15,9 @@ void PenningTrap::add_particle(const Particle& p) {
     particles.push_back(p); // add a copy of p to the particles vector
 }
 
+void PenningTrap::delete_particle(int particle_i) {
+    particles.erase(particles.begin() + particle_i);
+}
 
 void PenningTrap::fill_random(int N, double q, double m, double pos_scaling, double vel_scaling) {
     for (int i = 0; i < N; i++) {
@@ -75,18 +78,6 @@ arma::vec PenningTrap::force_particle(int i, int j) const {
     return constants::ke * pi.charge * pj.charge * r_vec / (r_norm * r_norm * r_norm);
 }
 
-arma::vec PenningTrap::total_force(int i, double time, double omega_V) const {
-    arma::vec F = force_external(i, time, omega_V);
-
-    for (int j = 0; j < (int)particles.size(); j++) {
-        if (j != i) {
-            F += force_particle(i, j);
-        }
-    }
-    return F;
-
-}
-
 // returns the acceleration of the particles at a temporary position
 arma::mat PenningTrap::acceleration_all(const arma::mat& R, const arma::mat& V, double time, double omega_V)
     const {
@@ -115,33 +106,33 @@ arma::mat PenningTrap::acceleration_all(const arma::mat& R, const arma::mat& V, 
 
     // Coulomb forces (symmetric interaction)
     if (coulomb_on && N > 1){
-        double inv_r;
+        double inv_r; // 1/r
         double inv_r3;
-        arma::vec r_vec(3);
-        arma::vec a(3);
+        arma::vec r_vec(3); // distance vector
+        arma::vec a(3); // acceleration vector
 
 
-        const double inv_mi = 1. / particles[0].mass; // assume costante mass
-        const double qi = particles[0].charge; // assume costante charge
-        const double ke_q2 = constants::ke * qi * qi;
+        const double inv_mi = 1. / particles[0].mass; // assume constant mass
+        const double qi = particles[0].charge; // assume constant
+        const double ke_q2 = constants::ke * qi * qi; // useful prefactor
 
         for (int i = 0; i < N; i++) {
-            arma::subview_col<double> col_i = R.col(i);
-            arma::subview_col<double> ai = A.col(i); // makes alias
+            arma::subview_col<double> col_i = R.col(i); // makes alias
+            arma::subview_col<double> ai = A.col(i); // --||--
             for (int j = i + 1; j < N; j++) {
-                // const double inv_mj = 1. / particles[j].mass; // removed due to being equal constant
-                // const double qj = particles[j].charge;
+                //const double inv_mj = 1. / particles[j].mass; // removed due equal mass and charge for all particles
+                //const double qj = particles[j].charge;
 
                 arma::vec r_vec = col_i - R.col(j);
                 
                 double r_norm = arma::vecnorm(r_vec);
-                r_norm = std::max(r_norm, parameters::EPS);
+                r_norm = std::max(r_norm, parameters::EPS); // avoid division by 0
                 const double inv_r = 1.0 / r_norm;
                 const double inv_r3 = inv_r * inv_r * inv_r;
                 
-                arma::vec a = ke_q2 * inv_r3 * inv_mi * r_vec;
-                ai += a;
-                A.col(j) -= a;
+                arma::vec a = ke_q2 * inv_r3 * inv_mi * r_vec; // Coulomb-induced acceleration
+                ai += a; // adds to external acceleration
+                A.col(j) -= a; // symmetry
             }
         }
     }
@@ -149,7 +140,7 @@ return A;
 }    
 
 // test functions
-int PenningTrap::number_of_particles() const {
+int PenningTrap::number_of_particles() {
     int N = particles.size(); 
     int count = 0; // number of particles in trap
     for (int i = 0; i < N; i++) {
@@ -157,7 +148,11 @@ int PenningTrap::number_of_particles() const {
         double r_norm = arma::norm(p.position);
         if (r_norm < d) {
             count++;
+            
         }
+        // else {
+        //     PenningTrap::delete_particle(i);
+        // }
     }
     return count;
 }

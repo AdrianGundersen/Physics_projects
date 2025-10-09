@@ -2,37 +2,40 @@
 #include <armadillo>
 
 void Integrator::ForwardEuler(PenningTrap& trap, double dt, double time, double omega_V) {
-    int N = trap.particles.size();
+    int N = trap.particles.size(); // will return correct number even if particles are removed
     arma::vec new_position(3);
     arma::vec new_velocity(3);
-
-    for (int i = 0; i < N; i++) {
-        Particle& p = trap.particles[i];
-        arma::vec F = trap.total_force(i, time, omega_V);
-        arma::vec acceleration = F / p.mass;
-
-        // Update position and velocity using Forward Euler
-        new_velocity = p.velocity + acceleration * dt;
-        new_position = p.position + p.velocity * dt;
-
-        p.velocity = new_velocity;
-        p.position = new_position;
-    }
-};
-
-void Integrator::RK4(PenningTrap& trap, double dt, double time, double omega_V) {
-    int N = trap.particles.size();
-
-    //temperary copy of current state
     arma::mat r0(3, N);
     arma::mat v0(3, N);
-    for (int i = 0; i < N; i++){
+    for (int i = 0; i < N; i++) {
         Particle& p = trap.particles[i];
         v0.col(i) = p.velocity;
         r0.col(i) = p.position;
+
+    arma::mat a0 = trap.acceleration_all(r0, v0, time, omega_V); // 
+
+    arma::mat r1 = r0 + v0 * dt;
+    arma::mat v1 = v0 + a0 * dt;
+
+    for (int i = 0; i < N; i++) {
+        trap.particles[i].position = r1.col(i);
+        trap.particles[i].velocity = v1.col(i);
+    }
+}
+}
+
+void Integrator::RK4(PenningTrap& trap, double dt, double time, double omega_V) {
+    int N = trap.particles.size(); // will return correct number even if particles are removed
+
+    // temporary copy of current state
+    arma::mat r0(3, N);
+    arma::mat v0(3, N);
+    for (int i = 0; i < N; i++){
+        v0.col(i) = trap.particles[i].velocity;
+        r0.col(i) = trap.particles[i].position;
     }
 
-    //k vectors containing velocity and position
+    // k-vectors containing velocity and position
     arma::mat k_r1(3, N), k_r2(3, N), k_r3(3, N), k_r4(3, N);
     arma::mat k_v1(3, N), k_v2(3, N), k_v3(3, N), k_v4(3, N);
     
@@ -62,9 +65,10 @@ void Integrator::RK4(PenningTrap& trap, double dt, double time, double omega_V) 
     arma::mat new_position = r0 + (k_r1 + 2*k_r2 + 2*k_r3 + k_r4)/6.0;
     arma::mat new_velocity = v0 + (k_v1 + 2*k_v2 + 2*k_v3 + k_v4)/6.0;
 
+
+    // updates all particles
     for (int i = 0; i < N; i++){
-        Particle& p = trap.particles[i];
-        p.position = new_position.col(i);
-        p.velocity = new_velocity.col(i);
+        trap.particles[i].position = new_position.col(i);
+        trap.particles[i].velocity = new_velocity.col(i);
     }
 }

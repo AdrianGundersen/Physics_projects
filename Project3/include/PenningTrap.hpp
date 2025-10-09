@@ -20,6 +20,7 @@ public:
     PenningTrap(double B0, double V0, double d, double f, bool coulomb_on); // constructor
 
     void add_particle(const Particle& p); // add a particle to trap
+    void delete_particle(int particle_i); // delete particle
 
     void fill_random(int N, double q, double m, double pos_scaling, double vel_scaling); // fill trap with N random particles
 
@@ -30,11 +31,10 @@ public:
     // Forces for particle i
     arma::vec force_external(int i, double time, double omega_V = 0.0) const;   // force from external fields
     arma::vec force_particle(int i, int j) const;  // force from j
-    arma::vec total_force(int i, double time, double omega_V = 0.0) const;      // total force
-    arma::mat acceleration_all(const arma::mat& R, const arma::mat& V, double time, double omega_V = 0.0) const; //temperary acceleration of partivcle
+    arma::mat acceleration_all(const arma::mat& R, const arma::mat& V, double time, double omega_V = 0.0) const; // acceleration-matrix with column i being acceleration vector of particle i
 
     // test functions
-    int number_of_particles() const; // number of particles in trap
+    int number_of_particles(); // number of particles in trap (can add option to remove particles)
 
     // Debugging
     void print_particles() const; // print all particles

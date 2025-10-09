@@ -12,7 +12,7 @@ struct SimulationParams {
     double dt;         // Time step [µs]
     bool coulomb_on;
 
-    constexpr SimulationParams(double t_time, int n_steps, bool coulomb)
+    constexpr SimulationParams(double t_time, int n_steps, bool coulomb) // calculates dt so not nescessary argument
         : total_time(t_time),
           N(n_steps),
           dt(t_time / static_cast<double>(n_steps)),
@@ -24,7 +24,7 @@ struct SimulationParams {
 constexpr int seed = 67; // group number
 
 // Allowed threads for OpenMP
-constexpr int max_threads = 10; // Adjust based on your CPU
+constexpr int max_threads = 10; // Adjust based on your CPU (will always cap on maximum number though)
 
 
 
