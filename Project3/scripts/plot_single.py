@@ -49,7 +49,7 @@ def f(t):
 
     # complex-amplitude solution for f(t) = x + i y
     A_plus  = (v_0y + omega_minus * x0) / (omega_minus - omega_plus)
-    A_minus = (v_0y + omega_plus  * x0) / (omega_minus - omega_plus)
+    A_minus = -(v_0y + omega_plus  * x0) / (omega_minus - omega_plus)
 
     f_t = A_plus * np.exp(-1j * (omega_plus  * t)) + \
           A_minus* np.exp(-1j * (omega_minus * t))
