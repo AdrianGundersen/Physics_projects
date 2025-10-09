@@ -117,7 +117,7 @@ arma::mat PenningTrap::acceleration_all(const arma::mat& R, const arma::mat& V, 
 
         for (int i = 0; i < N; i++) {
             const arma::vec col_i = R.col(i);
-            arma::vec  ai = A.col(i);
+            auto ai = A.col(i); // makes alias
             for (int j = i + 1; j < N; j++) {
                 // const double inv_mj = 1. / particles[j].mass; // removed due to being equal constant
                 // const double qj = particles[j].charge;
@@ -133,7 +133,6 @@ arma::mat PenningTrap::acceleration_all(const arma::mat& R, const arma::mat& V, 
                 ai += a;
                 A.col(j) -= a;
             }
-            A.col(i) = ai;
         }
     }
 return A;
