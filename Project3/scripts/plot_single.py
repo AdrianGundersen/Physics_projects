@@ -104,6 +104,8 @@ for path in files:
         ax_rk_rel_r.plot(t[mask_rk_r], rk_rel_r, alpha=0.5, label=f"RK4 {Nsuf}")
     if eu_rel_r.size:
         ax_eu_rel_r.plot(t_eu[mask_eu_r], eu_rel_r, alpha=0.5, label=f"EU {Nsuf}")
+    print(f"max relative error forward euler {path} = {np.max(eu_rel_r)} ")
+    print(f"max relative error RK4           {path} = {np.max(rk_rel_r)} ")
 
 # Add analytic z(t) reference to the z-plots for the densest N
 if files:
