@@ -27,7 +27,7 @@ void PenningTrap::fill_random(int N, double q, double m, double pos_scaling, dou
 
 
 // External fields
-arma::vec PenningTrap::external_E_field(const arma::vec& r, double t, double omega_V, double r_norm) const {
+arma::vec PenningTrap::external_E_field(const arma::vec& r, double& r_norm, double t, double omega_V) const {
     if (r_norm > d) {
         return arma::vec({0.0, 0.0, 0.0});  // no field outside the trap
     }
@@ -43,7 +43,7 @@ arma::vec PenningTrap::external_E_field(const arma::vec& r, double t, double ome
     return Efield;
 }
 
-arma::vec PenningTrap::external_B_field(const arma::vec& r, double r_norm) const {
+arma::vec PenningTrap::external_B_field(const arma::vec& r, double& r_norm) const {
     if (r_norm > d) {
         return arma::vec({0.0, 0.0, 0.0});  // no field outside the trap
     }
@@ -56,7 +56,7 @@ arma::vec PenningTrap::force_external(int i, double time, double omega_V) const 
 
     double r_norm = arma::vecnorm(p.position);
 
-    arma::vec E = external_E_field(p.position, time, omega_V, r_norm);
+    arma::vec E = external_E_field(p.position, r_norm, time, omega_V);
     arma::vec B = external_B_field(p.position, r_norm);
 
     // Lorentz force
@@ -95,14 +95,18 @@ arma::mat PenningTrap::acceleration_all(const arma::mat& R, const arma::mat& V, 
 
     // external acceleration
     arma::rowvec r_norms = arma::vecnorm(R);
+    arma::vec r(3);
+    arma::vec E(3);
+    arma::vec B(3);
+    double r_norm;
     for (int i = 0; i < N; i++){
         const Particle& p = particles[i];
-        arma::vec r = R.col(i);
-        arma::vec v = V.col(i);
+        r = R.col(i);
+        arma::subview_col<double> v = V.col(i);
 
         double r_norm = r_norms(i);
 
-        arma::vec E = external_E_field(r, time, omega_V, r_norm);
+        arma::vec E = external_E_field(r, r_norm, time, omega_V);
         arma::vec B = external_B_field(r, r_norm);
 
         arma::vec F = p.charge * (E + arma::cross(v, B));
@@ -111,13 +115,19 @@ arma::mat PenningTrap::acceleration_all(const arma::mat& R, const arma::mat& V, 
 
     // Coulomb forces (symmetric interaction)
     if (coulomb_on && N > 1){
+        double inv_r;
+        double inv_r3;
+        arma::vec r_vec(3);
+        arma::vec a(3);
+
+
         const double inv_mi = 1. / particles[0].mass; // assume costante mass
         const double qi = particles[0].charge; // assume costante charge
         const double ke_q2 = constants::ke * qi * qi;
 
         for (int i = 0; i < N; i++) {
-            const arma::vec col_i = R.col(i);
-            auto ai = A.col(i); // makes alias
+            arma::subview_col<double> col_i = R.col(i);
+            arma::subview_col<double> ai = A.col(i); // makes alias
             for (int j = i + 1; j < N; j++) {
                 // const double inv_mj = 1. / particles[j].mass; // removed due to being equal constant
                 // const double qj = particles[j].charge;

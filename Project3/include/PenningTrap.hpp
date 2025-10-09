@@ -24,8 +24,8 @@ public:
     void fill_random(int N, double q, double m, double pos_scaling, double vel_scaling); // fill trap with N random particles
 
     // External fields
-    arma::vec external_E_field(const arma::vec& r, double t = 0.0, double omega_V = 0.0, double r_norm = 0.0) const;
-    arma::vec external_B_field(const arma::vec& r, double r_norm) const;
+    arma::vec external_E_field(const arma::vec& r, double& r_norm, double t = 0.0, double omega_V = 0.0) const;
+    arma::vec external_B_field(const arma::vec& r, double& r_norm) const;
 
     // Forces for particle i
     arma::vec force_external(int i, double time, double omega_V = 0.0) const;   // force from external fields
