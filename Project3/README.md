@@ -6,6 +6,7 @@ Simulations for a Penning trap. The code models motion of charged particles in a
 - **Single particle dynamics** with both Forward Euler and RK4 integrators and comparison to analytical result.
 - **Few-particle interactions** with simulation of two particles in the trap.
 - **Parameter sweeps (many particles)** with driving frequency and amplitude added.
+- **Note** Armadillo version 12 or higher is needed due to use of the vecnorm function. 
 
 
 
