@@ -132,7 +132,7 @@ int main() {
 
     std::ofstream out(filepath);
     out << std::fixed << std::setprecision(6);
-    out << "# omega_V_MHz";
+    out << "# omega_V_MHz"; // makes header
     for (int i = 0; i < nf; ++i) out << " frac_f" << f_list(i);
     out << "\n";
     for (int iw = 0; iw < nw; ++iw) {

@@ -51,6 +51,10 @@ int main() {
     std::ofstream ofile1(filepath1);
     std::ofstream ofile2(filepath2);
 
+    // makes headesr
+    ofile1 << "# t x y z vx vy vz" << "\n";
+    ofile2 << "# t x y z vx vy vz" << "\n";
+
     par1.write_to_file(ofile1, time, true);
     par2.write_to_file(ofile2, time, true);
     std::cout << "Starting simulation for N=" << N << " over simulation time t = " << total_time << " microseconds \n";

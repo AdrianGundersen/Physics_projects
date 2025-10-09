@@ -40,6 +40,9 @@ int main() {
     Particle& rk = trap_rk.particles[0];
     Particle& eu = trap_eu.particles[0];
 
+    // make header
+    ofile << "# t rk.x rk.y rk.z rk.vx rk.vy rk.vz eu.x eu.y eu.z eu.vx eu.vy eu.vz";
+
     rk.write_to_file(ofile, time, false);
     eu.write_to_file(ofile, time, true);
 
