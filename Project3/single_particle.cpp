@@ -41,7 +41,7 @@ int main() {
     Particle& eu = trap_eu.particles[0];
 
     // make header
-    ofile << "# t rk.x rk.y rk.z rk.vx rk.vy rk.vz eu.x eu.y eu.z eu.vx eu.vy eu.vz";
+    ofile << "# t rk.x rk.y rk.z rk.vx rk.vy rk.vz eu.x eu.y eu.z eu.vx eu.vy eu.vz" << "\n";
 
     rk.write_to_file(ofile, time, false);
     eu.write_to_file(ofile, time, true);
@@ -56,7 +56,7 @@ int main() {
     }
     ofile.close();
 
-    std::cout << "Wrote single particle agains time and analytical as: data/single_particle.txt\n";
+    std::cout << "Wrote single particle agains time and analytical as:" << filepath << "\n";
     std::cout << dt << "\n";
     std::cout << time << "\n";
     return 0;   
