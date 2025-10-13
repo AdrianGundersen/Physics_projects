@@ -25,14 +25,14 @@ int main() {
     arma::vec pos = {20.0, 0.0, 20.0};
     arma::vec vel = {0.0, 25.0, 0.0};
 
-    Particle p(constants::elementary_charge, constants::atomic_mass_unit, pos, vel);
+    Particle p(constants::elementary_charge, constants::Ca_mass, pos, vel);
     trap.add_particle(p);
 
     // particle to the right
     arma::vec pos2 = {25.0, 25.0, 0.0};
     arma::vec vel2 = {0.0, 40.0, 5.0};
 
-    Particle p2(constants::elementary_charge, constants::atomic_mass_unit, pos2, vel2);
+    Particle p2(constants::elementary_charge, constants::Ca_mass, pos2, vel2);
 
 
     trap.add_particle(p2);

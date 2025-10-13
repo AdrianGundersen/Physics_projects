@@ -53,9 +53,9 @@ def plot_time_series(t1, a1, t2, a2, comp, ylabel, outname, title_suffix="(Coulo
     plt.plot(t2, a2, alpha=0.9, label=f"Particle 2 {comp}")
     mark_start_end(t1, a1, "P1")
     mark_start_end(t2, a2, "P2")
-    plt.xlabel(r"$t~(\mu\mathrm{s})$")
+    plt.xlabel(r"$t~(\text{µ}\mathrm{s})$")
     plt.ylabel(ylabel)
-    plt.title(f"{comp} vs time {title_suffix}")
+    # plt.title(f"{comp} vs time {title_suffix}")
     plt.legend()
     plt.tight_layout()
     plt.savefig(outname)
@@ -69,7 +69,8 @@ def plot_phase_space(x1, v1, x2, v2, xlabel, ylabel, title, outname):
     mark_start_end(x2, v2, "P2")
     plt.xlabel(xlabel)
     plt.ylabel(ylabel)
-    plt.title(title)
+    # plt.title(title)
+    plt.axis("equal")
     plt.legend()
     plt.tight_layout()
     plt.savefig(outname)
@@ -84,10 +85,10 @@ def plot_xy(p1, p2, title, outname):
     plt.plot(p2["x"], p2["y"], alpha=0.9, label="Particle 2")
     mark_start_end(p1["x"], p1["y"], "P1")
     mark_start_end(p2["x"], p2["y"], "P2")
-    plt.xlabel(r"$x~(\mu\mathrm{m})$")
-    plt.ylabel(r"$y~(\mu\mathrm{m})$")
-    plt.title(title)
-    plt.axis("equal")
+    plt.xlabel(r"$x~(\text{µ}\mathrm{m})$")
+    plt.ylabel(r"$y~(\text{µ}\mathrm{m})$")
+    # plt.title(title)
+    plt.gca().set_aspect('equal', adjustable='box') # plt.axis("equal") did not work
     plt.legend()
     plt.tight_layout()
     plt.savefig(outname)
@@ -96,39 +97,39 @@ def plot_xy(p1, p2, title, outname):
 
 # ---- Time-series (Coulomb ON only; names clearer) ----
 plot_time_series(p1_on["t"], p1_on["x"], p2_on["t"], p2_on["x"],
-                 r"$x$-position", r"$x~(\mu\mathrm{m})$",
+                 r"$x$-position", r"$x~(\text{µ}\mathrm{m})$",
                  "data/plot/two_particles_x_vs_time_coulomb_on.pdf")
 
 plot_time_series(p1_on["t"], p1_on["y"], p2_on["t"], p2_on["y"],
-                 r"$y$-position", r"$y~(\mu\mathrm{m})$",
+                 r"$y$-position", r"$y~(\text{µ}\mathrm{m})$",
                  "data/plot/two_particles_y_vs_time_coulomb_on.pdf")
 
 plot_time_series(p1_on["t"], p1_on["z"], p2_on["t"], p2_on["z"],
-                 r"$z$-position", r"$z~(\mu\mathrm{m})$",
+                 r"$z$-position", r"$z~(\text{µ}\mathrm{m})$",
                  "data/plot/two_particles_z_vs_time_coulomb_on.pdf")
 
 # ---- Phase space: x–vx and z–vz, with and without Coulomb ----
 # Coulomb ON
 plot_phase_space(p1_on["x"], p1_on["vx"], p2_on["x"], p2_on["vx"],
-                 r"$x~(\mu\mathrm{m})$", r"$v_x~(\mu\mathrm{m}/\mu\mathrm{s})$",
+                 r"$x~(\text{µ}\mathrm{m})$", r"$v_x~(\text{µ}\mathrm{m}/\text{µ}\mathrm{s})$",
                  r"Phase space for $x$ (Coulomb ON)",
                  "data/plot/phase_x_vx_coulomb_on.pdf")
 
 plot_phase_space(p1_on["z"], p1_on["vz"], p2_on["z"], p2_on["vz"],
-                 r"$z~(\mu\mathrm{m})$", r"$v_z~(\mu\mathrm{m}/\mu\mathrm{s})$",
+                 r"$z~(\text{µ}\mathrm{m})$", r"$v_z~(\text{µ}\mathrm{m}/\text{µ}\mathrm{s})$",
                  r"Phase space for $z$ (Coulomb ON)",
                  "data/plot/phase_z_vz_coulomb_on.pdf")
 
 # Coulomb OFF
 plot_phase_space(p1_off["x"], p1_off["vx"], p2_off["x"], p2_off["vx"],
-                 r"$x~(\mu\mathrm{m})$", r"$v_x~(\mu\mathrm{m}/\mu\mathrm{s})$",
+                 r"$x~(\text{µ}\mathrm{m})$", r"$v_x~(\text{µ}\mathrm{m}/\text{µ}\mathrm{s})$",
                  r"Phase space for $x$ (Coulomb OFF)",
                  "data/plot/phase_x_vx_coulomb_off.pdf")
 
 plot_phase_space(p1_off["z"], p1_off["vz"], p2_off["z"], p2_off["vz"],
-                 r"$z~(\mu\mathrm{m})$", r"$v_z~(\mu\mathrm{m}/\mu\mathrm{s})$",
+                 r"$z~(\text{µ}\mathrm{m})$", r"$v_z~(\text{µ}\mathrm{m}/\text{µ}\mathrm{s})$",
                  r"Phase space for $z$ (Coulomb OFF)",
-                 "data/plot/phase_z_vz_cou  lomb_off.pdf")
+                 "data/plot/phase_z_vz_coulomb_off.pdf")
 
 
 

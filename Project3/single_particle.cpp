@@ -25,7 +25,7 @@ int main() {
     arma::vec pos = {20.0, 0.0, 20.0};
     arma::vec vel = {0.0, 25.0, 0.0};
 
-    Particle p1(constants::elementary_charge, constants::atomic_mass_unit, pos, vel);
+    Particle p1(constants::elementary_charge, constants::Ca_mass, pos, vel);
     Particle p2 = p1;
     trap_rk.add_particle(p1);
     trap_eu.add_particle(p2);

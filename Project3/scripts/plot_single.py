@@ -27,7 +27,7 @@ if not files and os.path.exists("data/single_particle.txt"):
 
 # ----- Physical parameters (consistent with your trap setup) -----
 q = 1.0
-m = 1.0
+m = 40.078 # Ca+
 z0 = 20.0
 d = 500.0
 V0 = 25.0e-3 * 9.64852558e7
@@ -69,6 +69,9 @@ fig_eu, ax_eu = plt.subplots()
 fig_rk_rel_r, ax_rk_rel_r = plt.subplots()
 fig_eu_rel_r, ax_eu_rel_r = plt.subplots() 
 fig_xy_rk, ax_xy_rk = plt.subplots() # plotting xy-plane for rk
+fig_max_eu_rel_r, ax_max_eu_rel_r = plt.subplots() # plotting max eu rel err vs h
+fig_max_rk_rel_r, ax_max_rk_rel_r = plt.subplots() # plotting max rk rel err vs h
+
 
 
 for path in files:
@@ -119,6 +122,14 @@ for path in files:
     ax_rk_rel_r.plot(t[mask_rk_r], rk_rel_r, alpha=0.5, label=f"RK4 {Nsuf}")
     ax_eu_rel_r.plot(t_eu[mask_eu_r], eu_rel_r, alpha=0.5, label=f"EU {Nsuf}")
 
+    h_rk = t[1] - t[0]
+    h_eu = t_eu[1] - t_eu[0]
+    max_rk_rel_r = np.max(rk_rel_r)
+    max_eu_rel_r = np.max(eu_rel_r)
+    ax_max_rk_rel_r.plot(h_rk, max_rk_rel_r, marker="o", color="blue")
+    ax_max_eu_rel_r.plot(h_eu, max_eu_rel_r, marker="o", color="orange")
+
+
     print(f"max relative error forward euler {path} = {np.max(eu_rel_r)} ")
     print(f"max relative error RK4           {path} = {np.max(rk_rel_r)} ")
 
@@ -134,50 +145,71 @@ if files:
 # ---- Decorate & save ----
 """
 ax_rk.set_title("RK4: z(t)")
-ax_rk.set_xlabel(r"$t~(\mu \mathrm{s})$")
-ax_rk.set_ylabel(r"$z~(\mu \mathrm{m})$")
+ax_rk.set_xlabel(r"$t~(\text{µ} \mathrm{s})$")
+ax_rk.set_ylabel(r"$z~(\text{µ} \mathrm{m})$")
 ax_rk.legend(ncol=3)
 fig_rk.tight_layout()
 fig_rk.savefig("data/plot/rk4_z_vs_time_multiN.pdf")
 
 ax_eu.set_title("Euler: z(t)")
-ax_eu.set_xlabel(r"$t~(\mu \mathrm{s})$")
-ax_eu.set_ylabel(r"$z~(\mu \mathrm{m})$")
+ax_eu.set_xlabel(r"$t~(\text{µ} \mathrm{s})$")
+ax_eu.set_ylabel(r"$z~(\text{µ} \mathrm{m})$")
 ax_eu.legend(ncol=3)
 fig_eu.tight_layout()
 fig_eu.savefig("data/plot/euler_z_vs_time_multiN.pdf")
 """
-ax_rk_rel_r.set_title(r"RK4: relative error $|r-r_a|/|r_a|$")
-ax_rk_rel_r.set_xlabel(r"$t~(\mu \mathrm{s})$")
+
+ax_rk_rel_r.set_xlabel(r"$t~(\text{µ} \mathrm{s})$")
 ax_rk_rel_r.set_ylabel(r"$|r-r_a|/|r_a|$")
 ax_rk_rel_r.legend(ncol=3)
 fig_rk_rel_r.tight_layout()
 fig_rk_rel_r.savefig("data/plot/rk4_relerr_r_multiN.pdf")
 
-ax_rk_rel_r.set_title(r"RK4: relative error $|r-r_a|/|r_a|$")
-ax_rk_rel_r.set_xlabel(r"$t~(\mu \mathrm{s})$")
+
+ax_rk_rel_r.set_xlabel(r"$t~(\text{µ} \mathrm{s})$")
 ax_rk_rel_r.set_ylabel(r"$\log\left(|r-r_a|/|r_a|\right)$")
 ax_rk_rel_r.set_yscale("log")
 ax_rk_rel_r.legend(ncol=3)
 fig_rk_rel_r.tight_layout()
 fig_rk_rel_r.savefig("data/plot/rk4_relerr_r_multiN_log.pdf")
 
-ax_eu_rel_r.set_title(r"Euler: relative error $|r-r_a|/|r_a|$")
-ax_eu_rel_r.set_xlabel(r"$t~(\mu \mathrm{s})$")
+ax_eu_rel_r.set_xlabel(r"$t~(\text{µ} \mathrm{s})$")
 ax_eu_rel_r.set_ylabel(r"$|r-r_a|/|r_a|$")
+
 ax_eu_rel_r.legend(ncol=3)
 fig_eu_rel_r.tight_layout()
 fig_eu_rel_r.savefig("data/plot/euler_relerr_r_multiN.pdf")
 
+
+
 # RK4 x–y
-ax_xy_rk.set_title(r"RK4: $x$–$y$ trajectory")
-ax_xy_rk.set_xlabel(r"$x~(\mu \mathrm{m})$")
-ax_xy_rk.set_ylabel(r"$y~(\mu \mathrm{m})$")
-ax_xy_rk.set_xlim(-1,1)
-ax_xy_rk.set_ylim(-19.8,-20.6)
+ax_xy_rk.set_xlabel(r"$x~(\text{µ} \mathrm{m})$")
+ax_xy_rk.set_ylabel(r"$y~(\text{µ} \mathrm{m})$")
 ax_xy_rk.legend(ncol=2)
 fig_xy_rk.tight_layout()
 fig_xy_rk.savefig("data/plot/rk4_xy_multiN.pdf")
+
+
+# Max rel err vs h plots
+ax_max_eu_rel_r.set_xlabel(r"Step size $h~(\text{µ} \mathrm{s})$")
+ax_max_eu_rel_r.set_ylabel(r"Max relative error $\max(|r-r_a|/|r_a|)$")
+# ax_max_eu_rel_r.set_xscale("log")
+# ax_max_eu_rel_r.set_yscale("log")
+ax_max_eu_rel_r.set_axisbelow(True)
+ax_max_eu_rel_r.grid(True, which="both", alpha=0.3, linewidth=0.6)
+fig_max_eu_rel_r.tight_layout()
+fig_max_eu_rel_r.savefig("data/plot/euler_max_relerr_r_vs_h.pdf")
+
+
+ax_max_rk_rel_r.set_xlabel(r"Step size $h~(\text{µ} \mathrm{s})$")
+ax_max_rk_rel_r.set_ylabel(r"Max relative error $\max(|r-r_a|/|r_a|)$")
+# ax_max_rk_rel_r.set_xscale("log")
+# ax_max_rk_rel_r.set_yscale("log")
+ax_max_rk_rel_r.set_axisbelow(True)
+ax_max_rk_rel_r.grid(True, which="both", alpha=0.3, linewidth=0.6)
+fig_max_rk_rel_r.tight_layout()
+fig_max_rk_rel_r.savefig("data/plot/rk4_max_relerr_r_vs_h.pdf")
+
 
 
 # plt.close("all")
