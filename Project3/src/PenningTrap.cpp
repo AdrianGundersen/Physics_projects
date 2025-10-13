@@ -5,6 +5,7 @@
 #include "parameters.hpp"
 #include <cmath>
 #include <algorithm> 
+#include <vector>
 
 PenningTrap::PenningTrap(double B0_in, double V0_in, double d_in, double f_in, bool coulomb_on_in)
 // Constructor
@@ -139,23 +140,13 @@ arma::mat PenningTrap::acceleration_all(const arma::mat& R, const arma::mat& V, 
 return A;
 }    
 
-// test functions
 int PenningTrap::number_of_particles() {
-    int N = particles.size(); 
-    int count = 0; // number of particles in trap
-    for (int i = 0; i < N; i++) {
-        const Particle& p = particles[i];
-        double r_norm = arma::norm(p.position);
-        if (r_norm < d) {
-            count++;
-            
-        }
-        // else {
-        //     PenningTrap::delete_particle(i);
-        // }
-    }
-    return count;
+    std::erase_if(particles, [outside = d](const Particle& p){ // remove if outside the trap
+        return arma::norm(p.position) >= outside;  // all particles outside the trap
+    });
+    return static_cast<int>(particles.size());  // 
 }
+
 
 // Debugging
 void PenningTrap::print_particles() const {
