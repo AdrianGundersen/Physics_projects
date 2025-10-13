@@ -7,9 +7,9 @@
 #include <algorithm> 
 #include <vector>
 
-PenningTrap::PenningTrap(double B0_in, double V0_in, double d_in, double f_in, bool coulomb_on_in)
+PenningTrap::PenningTrap(double B0_in, double V0_in, double d_in, double f_in, bool coulomb_on_in, double omega_V_in)
 // Constructor
-    : B0(B0_in), V0(V0_in), d(d_in), f(f_in), coulomb_on(coulomb_on_in) {} 
+    : B0(B0_in), V0(V0_in), d(d_in), f(f_in), coulomb_on(coulomb_on_in), omega_V(omega_V_in) {} 
 
 // Add a particle
 void PenningTrap::add_particle(const Particle& p) {
@@ -31,7 +31,7 @@ void PenningTrap::fill_random(int N, double q, double m, double pos_scaling, dou
 
 
 // External fields
-arma::vec PenningTrap::external_E_field(const arma::vec& r, double& r_norm, double t, double omega_V) const {
+arma::vec PenningTrap::external_E_field(const arma::vec& r, double& r_norm, double t) const {
     if (r_norm > d) {
         return arma::vec({0.0, 0.0, 0.0});  // no field outside the trap
     }
@@ -55,12 +55,12 @@ arma::vec PenningTrap::external_B_field(const arma::vec& r, double& r_norm) cons
 }
 
 // Forces
-arma::vec PenningTrap::force_external(int i, double time, double omega_V) const {
+arma::vec PenningTrap::force_external(int i, double time) const {
     const Particle& p = particles[i];
 
     double r_norm = arma::vecnorm(p.position);
 
-    arma::vec E = external_E_field(p.position, r_norm, time, omega_V);
+    arma::vec E = external_E_field(p.position, r_norm, time);
     arma::vec B = external_B_field(p.position, r_norm);
 
     // Lorentz force
@@ -80,7 +80,7 @@ arma::vec PenningTrap::force_particle(int i, int j) const {
 }
 
 // returns the acceleration of the particles at a temporary position
-arma::mat PenningTrap::acceleration_all(const arma::mat& R, const arma::mat& V, double time, double omega_V)
+arma::mat PenningTrap::acceleration_all(const arma::mat& R, const arma::mat& V, double time)
     const {
     int N = particles.size();
     arma::Mat<double> A(3, N);
@@ -98,7 +98,7 @@ arma::mat PenningTrap::acceleration_all(const arma::mat& R, const arma::mat& V, 
 
         double r_norm = r_norms(i);
 
-        arma::vec E = external_E_field(r, r_norm, time, omega_V);
+        arma::vec E = external_E_field(r, r_norm, time);
         arma::vec B = external_B_field(r, r_norm);
 
         arma::vec F = p.charge * (E + arma::cross(v, B));

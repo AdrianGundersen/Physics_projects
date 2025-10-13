@@ -12,7 +12,7 @@ void Integrator::ForwardEuler(PenningTrap& trap, double dt, double time, double 
         v0.col(i) = p.velocity;
         r0.col(i) = p.position;
 
-    arma::mat a0 = trap.acceleration_all(r0, v0, time, omega_V); // 
+    arma::mat a0 = trap.acceleration_all(r0, v0, time); // 
 
     arma::mat r1 = r0 + v0 * dt;
     arma::mat v1 = v0 + a0 * dt;
@@ -40,25 +40,25 @@ void Integrator::RK4(PenningTrap& trap, double dt, double time, double omega_V) 
     arma::mat k_v1(3, N), k_v2(3, N), k_v3(3, N), k_v4(3, N);
     
 
-    arma::mat a1 = trap.acceleration_all(r0, v0, time, omega_V);
+    arma::mat a1 = trap.acceleration_all(r0, v0, time);
     k_r1 = v0 * dt;
     k_v1 = a1 * dt;
 
     arma::mat r2 = r0 + 0.5 * k_r1;
     arma::mat v2 = v0 + 0.5 * k_v1;
-    arma::mat a2 = trap.acceleration_all(r2, v2, time + 0.5 * dt, omega_V);
+    arma::mat a2 = trap.acceleration_all(r2, v2, time + 0.5 * dt);
     k_r2 = v2 * dt;
     k_v2 = a2 * dt;
 
     arma::mat r3 = r0 + 0.5 * k_r2;
     arma::mat v3 = v0 + 0.5 * k_v2;
-    arma::mat a3 = trap.acceleration_all(r3, v3, time + 0.5 * dt, omega_V);
+    arma::mat a3 = trap.acceleration_all(r3, v3, time + 0.5 * dt);
     k_r3 = v3 * dt;
     k_v3 = a3 * dt;
 
     arma::mat r4 = r0 + k_r3;
     arma::mat v4 = v0 + k_v3;
-    arma::mat a4 = trap.acceleration_all(r4, v4, time + dt, omega_V);
+    arma::mat a4 = trap.acceleration_all(r4, v4, time + dt);
     k_r4 = v4 * dt;
     k_v4 = a4 * dt;
 

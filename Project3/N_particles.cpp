@@ -89,7 +89,7 @@ int main() {
             auto start = std::chrono::steady_clock::now();
 
             double f = f_list(i);
-            PenningTrap trap(parameters::B0, parameters::V0, parameters::d, f, coulomb_on);
+            PenningTrap trap(parameters::B0, parameters::V0, parameters::d, f, coulomb_on, omega);
             trap.fill_random(N_particles,
                              constants::elementary_charge,
                              constants::atomic_mass_unit,
