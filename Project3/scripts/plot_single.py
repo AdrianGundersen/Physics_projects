@@ -5,6 +5,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 plt.rcParams.update({
+    'font.family': 'serif',
     'font.size': 15,
     'figure.figsize': (6, 4),
     'axes.titlesize': 17,

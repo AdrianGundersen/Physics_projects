@@ -8,6 +8,7 @@ import matplotlib.pyplot as plt
 # ---- Matplotlib defaults ----
 # Adjusted for visibility in reports and due to triple figures in report
 plt.rcParams.update({
+    'font.family': 'serif',
     'font.size': 15,
     'figure.figsize': (6, 4),
     'axes.titlesize': 17,

@@ -31,6 +31,7 @@ omega = data[:, 0]
 frac_data = data[:, 1:]
 
 plt.rcParams.update({
+    'font.family': 'serif',
     "font.size": 14,
     "figure.figsize": (6, 4),
     "axes.titlesize": 16,

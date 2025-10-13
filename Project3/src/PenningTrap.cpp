@@ -141,10 +141,10 @@ return A;
 }    
 
 int PenningTrap::number_of_particles() {
-    std::erase_if(particles, [outside = d](const Particle& p){ // remove if outside the trap
+    std::erase_if(particles, [outside = d](const Particle& p){ // remove if outside the trap requires C++20
         return arma::norm(p.position) >= outside;  // all particles outside the trap
     });
-    return static_cast<int>(particles.size());  // 
+    return static_cast<int>(particles.size());  // remaining inside 
 }
 
 
