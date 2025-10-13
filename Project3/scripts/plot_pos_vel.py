@@ -8,16 +8,17 @@ import matplotlib.pyplot as plt
 # ---- Matplotlib defaults ----
 
 plt.rcParams.update({
-    "font.size": 14,
-    "figure.figsize": (6, 4),
-    "axes.titlesize": 16,
-    "axes.labelsize": 14,
-    "xtick.labelsize": 10,
-    "ytick.labelsize": 10,
-    "lines.linewidth": 2,
-    "legend.fontsize": 10,
-    "figure.dpi": 300,
+    'font.size': 15,
+    'figure.figsize': (6, 4),
+    'axes.titlesize': 17,
+    'axes.labelsize': 15,
+    'xtick.labelsize': 25,
+    'ytick.labelsize': 25,
+    'lines.linewidth': 2.0,
+    'legend.fontsize': 13,
+    'figure.dpi': 300,
 })
+
 
 os.makedirs("data/plot", exist_ok=True)
 
@@ -49,29 +50,31 @@ def mark_start_end(x, y, label_prefix=None):
 
 def plot_time_series(t1, a1, t2, a2, comp, ylabel, outname, title_suffix="(Coulomb on)"):
     plt.figure()
-    plt.plot(t1, a1, alpha=0.9, label=f"Particle 1 {comp}")
-    plt.plot(t2, a2, alpha=0.9, label=f"Particle 2 {comp}")
+    plt.plot(t1, a1, alpha=0.9, label=f"P1 {comp}")
+    plt.plot(t2, a2, alpha=0.9, label=f"P2 {comp}")
     mark_start_end(t1, a1, "P1")
     mark_start_end(t2, a2, "P2")
     plt.xlabel(r"$t~(\text{µ}\mathrm{s})$")
     plt.ylabel(ylabel)
     # plt.title(f"{comp} vs time {title_suffix}")
-    plt.legend()
+    plt.legend(bbox_to_anchor=(0, 1.02, 1, 0.2), loc="lower left",
+                mode="expand", borderaxespad=0, ncol=3)
     plt.tight_layout()
     plt.savefig(outname)
     plt.close()
 
 def plot_phase_space(x1, v1, x2, v2, xlabel, ylabel, title, outname):
     plt.figure()
-    plt.plot(x1, v1, alpha=0.9, label="Particle 1")
-    plt.plot(x2, v2, alpha=0.9, label="Particle 2")
+    plt.plot(x1, v1, alpha=0.9, label="P1")
+    plt.plot(x2, v2, alpha=0.9, label="P2")
     mark_start_end(x1, v1, "P1")
     mark_start_end(x2, v2, "P2")
     plt.xlabel(xlabel)
     plt.ylabel(ylabel)
     # plt.title(title)
     plt.axis("equal")
-    plt.legend()
+    plt.legend(bbox_to_anchor=(0, 1.02, 1, 0.2), loc="lower left",
+                mode="expand", borderaxespad=0, ncol=3)
     plt.tight_layout()
     plt.savefig(outname)
     plt.close()
@@ -81,15 +84,15 @@ print((p1_off["x"]),(p1_off["vx"]))
 def plot_xy(p1, p2, title, outname):
     """Plot x–y trajectory for both particles."""
     plt.figure()
-    plt.plot(p1["x"], p1["y"], alpha=0.9, label="Particle 1")
-    plt.plot(p2["x"], p2["y"], alpha=0.9, label="Particle 2")
+    plt.plot(p1["x"], p1["y"], alpha=0.9, label="P1")
+    plt.plot(p2["x"], p2["y"], alpha=0.9, label="P2")
     mark_start_end(p1["x"], p1["y"], "P1")
     mark_start_end(p2["x"], p2["y"], "P2")
     plt.xlabel(r"$x~(\text{µ}\mathrm{m})$")
     plt.ylabel(r"$y~(\text{µ}\mathrm{m})$")
     # plt.title(title)
     plt.gca().set_aspect('equal', adjustable='box') # plt.axis("equal") did not work
-    plt.legend()
+    plt.legend(bbox_to_anchor=(1.04, 1), borderaxespad=0)
     plt.tight_layout()
     plt.savefig(outname)
     plt.close()

@@ -47,6 +47,8 @@ def f(t):
     omega_plus = 0.5 * (omega_0 + sqrt_disc)
     omega_minus = 0.5 * (omega_0 - sqrt_disc)
 
+    print(omega_plus/omega_minus)
+
     # complex-amplitude solution for f(t) = x + i y
     A_plus  = (v_0y + omega_minus * x0) / (omega_minus - omega_plus)
     A_minus = -(v_0y + omega_plus  * x0) / (omega_minus - omega_plus)
@@ -161,7 +163,8 @@ fig_eu.savefig("data/plot/euler_z_vs_time_multiN.pdf")
 
 ax_rk_rel_r.set_xlabel(r"$t~(\text{µ} \mathrm{s})$")
 ax_rk_rel_r.set_ylabel(r"$|r-r_a|/|r_a|$")
-ax_rk_rel_r.legend(ncol=3)
+ax_rk_rel_r.legend(bbox_to_anchor=(0, 1.02, 1, 0.2), loc="lower left",
+                mode="expand", borderaxespad=0, ncol=3)
 fig_rk_rel_r.tight_layout()
 fig_rk_rel_r.savefig("data/plot/rk4_relerr_r_multiN.pdf")
 
@@ -169,14 +172,16 @@ fig_rk_rel_r.savefig("data/plot/rk4_relerr_r_multiN.pdf")
 ax_rk_rel_r.set_xlabel(r"$t~(\text{µ} \mathrm{s})$")
 ax_rk_rel_r.set_ylabel(r"$\log\left(|r-r_a|/|r_a|\right)$")
 ax_rk_rel_r.set_yscale("log")
-ax_rk_rel_r.legend(ncol=3)
+ax_rk_rel_r.legend(bbox_to_anchor=(0, 1.02, 1, 0.2), loc="lower left",
+                mode="expand", borderaxespad=0, ncol=3)
 fig_rk_rel_r.tight_layout()
 fig_rk_rel_r.savefig("data/plot/rk4_relerr_r_multiN_log.pdf")
 
 ax_eu_rel_r.set_xlabel(r"$t~(\text{µ} \mathrm{s})$")
 ax_eu_rel_r.set_ylabel(r"$|r-r_a|/|r_a|$")
 
-ax_eu_rel_r.legend(ncol=3)
+ax_eu_rel_r.legend(bbox_to_anchor=(0, 1.02, 1, 0.2), loc="lower left",
+                mode="expand", borderaxespad=0, ncol=3)
 fig_eu_rel_r.tight_layout()
 fig_eu_rel_r.savefig("data/plot/euler_relerr_r_multiN.pdf")
 
@@ -185,7 +190,8 @@ fig_eu_rel_r.savefig("data/plot/euler_relerr_r_multiN.pdf")
 # RK4 x–y
 ax_xy_rk.set_xlabel(r"$x~(\text{µ} \mathrm{m})$")
 ax_xy_rk.set_ylabel(r"$y~(\text{µ} \mathrm{m})$")
-ax_xy_rk.legend(ncol=2)
+ax_xy_rk.legend()
+ax_xy_rk.set_aspect('equal')
 fig_xy_rk.tight_layout()
 fig_xy_rk.savefig("data/plot/rk4_xy_multiN.pdf")
 
