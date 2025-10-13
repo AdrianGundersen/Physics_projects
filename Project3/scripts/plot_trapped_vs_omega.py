@@ -48,7 +48,7 @@ for i, label in enumerate(labels):
 
 plt.xlabel(r"$\omega_V$ [MHz]")
 plt.ylabel("Fraction of trapped particles")
-plt.title("Trapping fraction vs. drive frequency")
+# plt.title("Trapping fraction vs. drive frequency")
 plt.grid(True)
 plt.legend()
 plt.tight_layout()

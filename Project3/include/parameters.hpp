@@ -58,7 +58,7 @@ const std::string filename_single = "single_particle_N" + std::to_string(single.
 // FEW PARTICLE PARAMETERS
 inline constexpr SimulationParams few{
     50.0,  // total_time_few [µs]
-    100000,  // N_few
+    10000,  // N_few
     false    // coulomb_on_few
 };
 
@@ -69,8 +69,8 @@ const std::string filename_few1 = "pos_vel_1_coulomb=" + std::to_string(few.coul
 // MULTI PARTICLE PARAMETERS
 inline constexpr SimulationParams multi{
     500.0,   // total_time_multi [µs]
-    100000,   // N_multi
-    false   // coulomb_on_multi coulumb forces
+    40000,   // N_multi
+    true   // coulomb_on_multi coulumb forces
 };
 
 // Trap setup
@@ -82,7 +82,7 @@ constexpr double vel_scaling = 0.1; // Velocity scaling factor so typical is vel
 inline const arma::vec f_list = {0.1, 0.4, 0.7}; // Amplitude factors
 
 // omega_V list in MHz
-constexpr double w_min = 0.2, w_max = 2.5, w_step = 0.005; // omega_V range and step
+constexpr double w_min = 1.0, w_max = 1.7, w_step = 0.001; // omega_V range and step
 constexpr int n_omega = static_cast<int>((w_max - w_min) / w_step + 1.5); // # of omega_points (+1.5 to avoid rounding issues)
 inline const arma::vec omega_V_list = arma::linspace(w_min, w_max, n_omega);
 

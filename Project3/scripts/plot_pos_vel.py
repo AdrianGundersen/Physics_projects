@@ -6,16 +6,16 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 # ---- Matplotlib defaults ----
-
+# Adjusted for visibility in reports and due to triple figures in report
 plt.rcParams.update({
     'font.size': 15,
     'figure.figsize': (6, 4),
     'axes.titlesize': 17,
-    'axes.labelsize': 15,
-    'xtick.labelsize': 25,
-    'ytick.labelsize': 25,
+    'axes.labelsize': 20,
+    'xtick.labelsize': 12,
+    'ytick.labelsize': 12,
     'lines.linewidth': 2.0,
-    'legend.fontsize': 13,
+    'legend.fontsize': 17,
     'figure.dpi': 300,
 })
 

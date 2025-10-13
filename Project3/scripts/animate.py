@@ -3,8 +3,8 @@ import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
 
 # ---- Last inn data for begge partikler ----
-data1 = np.loadtxt("data/pos_vel_1.txt")
-data2 = np.loadtxt("data/pos_vel_2.txt")
+data1 = np.loadtxt("data/pos_vel_0_coulomb=1_N10000.txt")
+data2 = np.loadtxt("data/pos_vel_1_coulomb=1_N10000.txt")
 
 t  = data1[:,0]   # antar begge har samme tid
 x1 = data1[:,1]
@@ -34,6 +34,8 @@ point2, = ax.plot([], [], 'bo', label="Particle 2")
 trail2, = ax.plot([], [], 'b-', lw=1, alpha=0.5)
 
 ax.legend()
+
+
 
 # ---- Oppdateringsfunksjon ----
 def update(fr):

@@ -75,6 +75,10 @@ fig_max_eu_rel_r, ax_max_eu_rel_r = plt.subplots() # plotting max eu rel err vs 
 fig_max_rk_rel_r, ax_max_rk_rel_r = plt.subplots() # plotting max rk rel err vs h
 
 
+H_RK, ERR_RK = [], []
+H_EU, ERR_EU = [], []
+
+
 
 for path in files:
     mN = re.search(r"_N(\d+)\.txt$", path) # searches for files matching the naming convention
@@ -128,8 +132,16 @@ for path in files:
     h_eu = t_eu[1] - t_eu[0]
     max_rk_rel_r = np.max(rk_rel_r)
     max_eu_rel_r = np.max(eu_rel_r)
-    ax_max_rk_rel_r.plot(h_rk, max_rk_rel_r, marker="o", color="blue")
-    ax_max_eu_rel_r.plot(h_eu, max_eu_rel_r, marker="o", color="orange")
+    ax_max_rk_rel_r.plot(h_rk, max_rk_rel_r, marker="o")
+    ax_max_eu_rel_r.plot(h_eu, max_eu_rel_r, marker="o")
+
+    H_RK.append(h_rk)
+    ERR_RK.append(max_rk_rel_r)
+    H_EU.append(h_eu)
+    ERR_EU.append(max_eu_rel_r)
+
+    print(f"max relative error forward euler {path} = {np.max(eu_rel_r)} ")
+    print(f"max relative error RK4           {path} = {np.max(rk_rel_r)} ")
 
 
     print(f"max relative error forward euler {path} = {np.max(eu_rel_r)} ")
@@ -196,27 +208,47 @@ fig_xy_rk.tight_layout()
 fig_xy_rk.savefig("data/plot/rk4_xy_multiN.pdf")
 
 
-# Max rel err vs h plots
+
+
 ax_max_eu_rel_r.set_xlabel(r"Step size $h~(\text{µ} \mathrm{s})$")
 ax_max_eu_rel_r.set_ylabel(r"Max relative error $\max(|r-r_a|/|r_a|)$")
-# ax_max_eu_rel_r.set_xscale("log")
-# ax_max_eu_rel_r.set_yscale("log")
+ax_max_eu_rel_r.set_xscale("log")
+ax_max_eu_rel_r.set_yscale("log")
 ax_max_eu_rel_r.set_axisbelow(True)
 ax_max_eu_rel_r.grid(True, which="both", alpha=0.3, linewidth=0.6)
-fig_max_eu_rel_r.tight_layout()
-fig_max_eu_rel_r.savefig("data/plot/euler_max_relerr_r_vs_h.pdf")
-
 
 ax_max_rk_rel_r.set_xlabel(r"Step size $h~(\text{µ} \mathrm{s})$")
 ax_max_rk_rel_r.set_ylabel(r"Max relative error $\max(|r-r_a|/|r_a|)$")
-# ax_max_rk_rel_r.set_xscale("log")
-# ax_max_rk_rel_r.set_yscale("log")
+ax_max_rk_rel_r.set_xscale("log")
+ax_max_rk_rel_r.set_yscale("log")
 ax_max_rk_rel_r.set_axisbelow(True)
 ax_max_rk_rel_r.grid(True, which="both", alpha=0.3, linewidth=0.6)
+
+# Loglog linear regression
+H_EU = np.array(H_EU, dtype=float)
+ERR_EU = np.array(ERR_EU, dtype=float)
+H_RK = np.array(H_RK, dtype=float)
+ERR_RK = np.array(ERR_RK, dtype=float)
+
+def fit_and_overlay(ax, hs, errs, label_prefix, out_png):
+    mask = (hs > 0) & (errs > 0)
+    if np.count_nonzero(mask) >= 2:
+        x = np.log(hs[mask])
+        y = np.log(errs[mask])
+        a, b = np.polyfit(x, y, 1)
+        h_line = np.linspace(hs[mask].min(), hs[mask].max(), 100)
+        err_line = np.exp(b) * h_line**a
+        ax.plot(h_line, err_line, linestyle="--", alpha=0.9, label=f"{label_prefix} fit: slope ≈ {a:.2f}")
+        print(f"{label_prefix} log–log fit: slope={a:.4f}, intercept={b:.4f}")
+    fig = ax.get_figure()
+    ax.legend()
+    fig.tight_layout()
+    fig.savefig(out_png)
+
+fit_and_overlay(ax_max_eu_rel_r, H_EU, ERR_EU, "Euler", "data/plot/euler_max_relerr_r_vs_h.png")
+fit_and_overlay(ax_max_rk_rel_r, H_RK, ERR_RK, "RK4",  "data/plot/rk4_max_relerr_r_vs_h.png")
+
+fig_max_eu_rel_r.tight_layout()
+fig_max_eu_rel_r.savefig("data/plot/euler_max_relerr_r_vs_h.pdf")
 fig_max_rk_rel_r.tight_layout()
 fig_max_rk_rel_r.savefig("data/plot/rk4_max_relerr_r_vs_h.pdf")
-
-
-
-# plt.close("all")
-# plt.show()
