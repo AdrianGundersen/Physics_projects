@@ -199,11 +199,11 @@ fig_rk_rel_r.savefig("data/plot/rk4_relerr_r_multiN_log.pdf")
 
 ax_eu_rel_r.set_xlabel(r"$t~(\text{µ} \mathrm{s})$")
 ax_eu_rel_r.set_ylabel(r"$|r-r_a|/|r_a|$")
-
+ax_eu_rel_r.set_yscale("log")
 ax_eu_rel_r.legend(bbox_to_anchor=(0, 1.02, 1, 0.2), loc="lower left",
                 mode="expand", borderaxespad=0, ncol=3)
 fig_eu_rel_r.tight_layout()
-fig_eu_rel_r.savefig("data/plot/euler_relerr_r_multiN.pdf")
+fig_eu_rel_r.savefig("data/plot/euler_relerr_r_multiN_log.pdf")
 
 
 

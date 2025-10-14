@@ -140,3 +140,17 @@ plot_phase_space(p1_off["z"], p1_off["vz"], p2_off["z"], p2_off["vz"],
 # ---- XY Trajectories ----
 plot_xy(p1_on, p2_on, r"XY trajectory (Coulomb ON)",  "data/plot/xy_traj_coulomb_on.pdf")
 plot_xy(p1_off, p2_off, r"XY trajectory (Coulomb OFF)", "data/plot/xy_traj_coulomb_off.pdf")
+
+# plot cover page
+p1_on_cover = load_posvel(1, 0, N=1000000) # coulomb on, particle 0, longer run
+p2_on_cover = load_posvel(1, 1, N=1000000) # coulomb on, particle 1, longer run
+
+plt.figure()
+plt.plot(p1_on_cover["x"], p1_on_cover["y"], alpha=0.9, label="P1")
+plt.plot(p2_on_cover["x"], p2_on_cover["y"], alpha=0.9, label="P2")
+plt.axis('equal')
+plt.xlabel(r"$x~(\text{µ}\mathrm{m})$")
+plt.ylabel(r"$y~(\text{µ}\mathrm{m})$")
+plt.tight_layout()
+plt.savefig("data/plot/xy_traj_coulomb_on_cover.pdf")
+plt.close()
