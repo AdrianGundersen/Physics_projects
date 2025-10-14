@@ -3,11 +3,11 @@ import matplotlib.pyplot as plt
 import os
 
 # filenames: data/trapped_w0.200000-2.500000_dw0.005000_N100000.txt
-w_min = 0.200000
-w_max = 2.500000
-w_step = 0.005000
+w_min = 2.070000
+w_max = 2.180000
+w_step = 0.000500
 N = 40000
-C = 0 # coulomb on/off 0/1
+C = 1 # coulomb on/off 0/1
 
 
 plt.rcParams.update({
@@ -23,12 +23,18 @@ plt.rcParams.update({
     "figure.dpi": 300,
 })
 
+plot_both = False  # set False to plot only filepath1
 
-filepath1 = f"data/trapped_w{w_min:.6f}-{w_max:.6f}_dw{w_step:.6f}_N{N}_C{C}.txt" # double precision
+if plot_both == False:
+    w_min =  0.200000
+    w_max =  2.500000
+    w_step = 0.005000
+    C = 0 # coulomb on/off 0/1
+    filepath1 = f"data/trapped_w{w_min:.6f}-{w_max:.6f}_dw{w_step:.6f}_N{N}.txt" # double precision
 
-
-filepath2 = f"data/trapped_w{w_min:.6f}-{w_max:.6f}_dw{w_step:.6f}_N{N}_C{C-1}.txt" # comment out if only one file
-plot_both = True  # set False to plot only filepath1
+else: 
+    filepath1 = f"data/trapped_w{w_min:.6f}-{w_max:.6f}_dw{w_step:.6f}_N{N}_C{C}.txt" # double precision
+    filepath2 = f"data/trapped_w{w_min:.6f}-{w_max:.6f}_dw{w_step:.6f}_N{N}_C{C-1}.txt" # comment out if only one file
 
 def load_file(path):
     data = np.loadtxt(path, comments="#")
@@ -58,9 +64,9 @@ DEN_TOL = 1e-10  # avoid division by small analytic values in relative errors
 
 sources = []
 if os.path.exists(filepath1):
-    sources.append((filepath1, ""))  # suffix for legend
+    sources.append((filepath1, "(C=1)"))  # suffix for legend
 if plot_both and os.path.exists(filepath2) and filepath2 != filepath1:
-    sources.append((filepath2, " (alt)"))
+    sources.append((filepath2, "(C=0)"))
 
 markers = ["o", "s", "^", "D", "x", "v", "P", "*"]
 linestyles = ["-", "--"]
@@ -85,6 +91,10 @@ plt.grid(True, which="both", alpha=0.3, linewidth=0.6, linestyle="--")
 plt.legend(ncol=1)
 plt.tight_layout()
 
-outname = "data/plot/full_trapped.pdf" if len(sources) == 1 else "data/plot/full_trapped_combined.pdf"
+outname_prefix = f"data/plot/trapped_w{w_min:.6f}-{w_max:.6f}_dw{w_step:.6f}_N{N}_C{C}"
+outname = outname_prefix + ".pdf" if not plot_both else outname_prefix + "_both.pdf"
 os.makedirs(os.path.dirname(outname), exist_ok=True)
 plt.savefig(outname)
+print(f"Saved file to {outname}")
+if plot_both == False:
+    plt.show()
