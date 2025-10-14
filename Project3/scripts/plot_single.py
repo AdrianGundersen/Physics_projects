@@ -157,12 +157,19 @@ if files:
     x_an_ref, y_an_ref = f(t_ref)
     ax_xy_rk.plot(x_an_ref, y_an_ref, linestyle="--", alpha=0.8, color="black", label="Analytic")
 
+    # vertical lines at multiples of Tz
+    Tz = 2*np.pi/omega_z
+    tmin, tmax = t_ref.min(), t_ref.max()
+    n0 = int(np.floor(tmin / Tz))
+    n1 = int(np.ceil(tmax / Tz))
+    ticks_Tz = (np.arange(n0, n1+1) * Tz)
+    for tt in ticks_Tz[(ticks_Tz >= tmin) & (ticks_Tz <= tmax)]:
+        ax_rk.axvline(tt, linestyle=":", alpha=0.4)
+
 # ---- Decorate & save ----
 ax_rk.set_title("RK4: z(t)")
 ax_rk.set_xlabel(r"$t~(\text{µ} \mathrm{s})$")
 ax_rk.set_ylabel(r"$z~(\text{µ} \mathrm{m})$")
-ax_rk.axvline(2*np.pi/omega_z, color="k", linestyle="--", alpha=0.7, label=r"$2\pi/\omega_z$")
-ax_rk.axvline(4*np.pi/omega_z, color="r", linestyle="--", alpha=0.7, label=r"$4\pi/\omega_z$")
 ax_rk.legend(ncol=3)
 fig_rk.tight_layout()
 fig_rk.savefig("data/plot/rk4_z_vs_time_multiN.pdf")
