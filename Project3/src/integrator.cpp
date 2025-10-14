@@ -1,7 +1,7 @@
 #include "integrator.hpp"
 #include <armadillo>
 
-void Integrator::ForwardEuler(PenningTrap& trap, double dt, double time, double omega_V) {
+void Integrator::ForwardEuler(PenningTrap& trap, double dt, double time) {
     int N = trap.particles.size(); // will return correct number even if particles are removed
     arma::vec new_position(3);
     arma::vec new_velocity(3);
@@ -24,7 +24,7 @@ void Integrator::ForwardEuler(PenningTrap& trap, double dt, double time, double 
 }
 }
 
-void Integrator::RK4(PenningTrap& trap, double dt, double time, double omega_V) {
+void Integrator::RK4(PenningTrap& trap, double dt, double time) {
     int N = trap.particles.size(); // will return correct number even if particles are removed
 
     // temporary copy of current state

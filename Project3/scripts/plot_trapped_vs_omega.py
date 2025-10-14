@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 w_min = 0.200000
 w_max = 2.500000
 w_step = 0.005000
-N = 100000
+N = 40000
 
 
 
@@ -43,6 +43,26 @@ plt.rcParams.update({
     "figure.dpi": 300,
 })
 
+
+# ----- Physical parameters (consistent with your trap setup) -----
+q = 1.0
+m = 40.078 # Ca+
+z0 = 20.0
+d = 500.0
+V0 = 25.0e-3 * 9.64852558e7
+B = 9.64852558e1
+omega_z = np.sqrt(2.0 * q * V0 / (m * d**2))
+omega_0 = q * B / m
+disc = omega_0**2 - 2.0 * omega_z**2
+sqrt_disc = np.sqrt(disc)
+omega_plus = 0.5 * (omega_0 + sqrt_disc)
+omega_minus = 0.5 * (omega_0 - sqrt_disc)
+
+DEN_TOL = 1e-10  # avoid division by small analytic values in relative errors
+
+
+
+
 for i, label in enumerate(labels):
     f_value = label.split("f")[-1]
     plt.plot(omega, frac_data[:, i], marker=".", label=rf"$f = {float(f_value):.1f}$")
@@ -50,6 +70,9 @@ for i, label in enumerate(labels):
 plt.xlabel(r"$\omega_V$ [MHz]")
 plt.ylabel("Fraction of trapped particles")
 # plt.title("Trapping fraction vs. drive frequency")
+plt.axvline(omega_plus, color="k", linestyle="--", label=r"$\omega_+$")
+plt.axvline(omega_minus, color="r", linestyle="--", label=r"$\omega_-$")
+plt.axvline(omega_z, color="g", linestyle="--", label=r"$\omega_z$")
 plt.grid(True)
 plt.legend()
 plt.tight_layout()

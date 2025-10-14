@@ -82,10 +82,9 @@ int main() {
     
 #pragma omp parallel for num_threads(N_threads) collapse(2) schedule(dynamic) // parallelize outer two loops and schedule dynamically for load balancing
     for (int iw = 0; iw < nw; ++iw){
-          // rad/microsecond
         for (int i = 0; i < nf; ++i) {
             double omega_MHz = omega_V_list(iw);
-            double omega = omega_MHz * 2.0 * M_PI; 
+            double omega = omega_MHz; //* 2.0 * M_PI; 
             auto start = std::chrono::steady_clock::now();
 
             double f = f_list(i);
@@ -98,7 +97,7 @@ int main() {
             double t = 0.0;
             for (int k = 0; k < N; ++k) {
                 t += dt;
-                Integrator::RK4(trap, dt, t, omega);
+                Integrator::RK4(trap, dt, t);
             }
 
             double frac_i = static_cast<double>(trap.number_of_particles()) /
