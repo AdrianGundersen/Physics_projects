@@ -70,7 +70,7 @@ const std::string filename_few1 = "pos_vel_1_coulomb=" + std::to_string(few.coul
 inline constexpr SimulationParams multi{
     500.0,   // total_time_multi [µs]
     40000,   // N_multi
-    false   // coulomb_on_multi coulumb forces
+    true   // coulomb_on_multi coulumb forces
 };
 
 // Trap setup
@@ -82,16 +82,16 @@ constexpr double vel_scaling = 0.1; // Velocity scaling factor so typical is vel
 inline const arma::vec f_list = {0.1, 0.4, 0.7}; // Amplitude factors
 
 // omega_V list in MHz
-constexpr double w_min = 0.2, w_max = 2.5, w_step = 0.001; // omega_V range and step
+constexpr double w_min = 1.38, w_max = 1.44, w_step = 0.0005; // omega_V range and step
 constexpr int n_omega = static_cast<int>((w_max - w_min) / w_step + 1.5); // # of omega_points (+1.5 to avoid rounding issues)
 inline const arma::vec omega_V_list = arma::linspace(w_min, w_max, n_omega);
 
 // filename for output data
-// recommended:
+// recommended: data/trapped_w1.380000-1.440000_dw0.000100_N40000.txt
 
 const std::string filename_multi = 
     std::string("trapped_w") + std::to_string(w_min) + "-" + std::to_string(w_max) +
-    "_dw" + std::to_string(w_step) + "_N" + std::to_string(multi.N) + ".txt";
+    "_dw" + std::to_string(w_step) + "_N" + std::to_string(multi.N) + "_C" + std::to_string(multi.coulomb_on) + ".txt";
 
 
 } // namespace parameters
