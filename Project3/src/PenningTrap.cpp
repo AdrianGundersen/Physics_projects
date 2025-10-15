@@ -154,6 +154,7 @@ arma::vec PenningTrap::total_energy() const {
     const double micro = 1.0e-6;
     const double d_m = d*micro;
     const double V0_over_d2 = (25e-3) / (d_m * d_m); // v0 / d^2
+    const double k_e = 8.9875517923e9;   // 1/4pi * epsilon_0
 
     arma::vec kinetic_energies(N);
     arma::vec EPotential(N);            // U = qV(x,y,z)
@@ -175,7 +176,7 @@ arma::vec PenningTrap::total_energy() const {
         double inv_r; // 1/r
         double r_norm;
         const double qi = particles[0].charge * e; // assume constant
-        const double ke_q2 = constants::ke * qi * qi; // useful prefactor
+        const double ke_q2 = k_e * qi * qi; // useful prefactor
 
         for (int i = 0; i < N; i++) {
             for (int j = i + 1; j < N; j++) {
@@ -192,9 +193,9 @@ arma::vec PenningTrap::total_energy() const {
                 coulumb_potential(j) += 0.5 * U;
 
         }}}
-    std::cout   << "Kitetic:  " << arma::norm(kinetic_energies) << " J" << "\n" 
-                << "Electric: " << arma::norm(EPotential) << " J" << "\n" 
-                << "Coulumb:  " << arma::norm(coulumb_potential)<< " J" << "\n";
+    std::cout   << "Kitetic:  " << arma::sum(kinetic_energies) << " J" << "\n" 
+                << "Electric: " << arma::sum(EPotential) << " J" << "\n" 
+                << "Coulumb:  " << arma::sum(coulumb_potential)<< " J" << "\n";
     arma::vec total_energy = kinetic_energies + EPotential + coulumb_potential;
 
     return total_energy;
