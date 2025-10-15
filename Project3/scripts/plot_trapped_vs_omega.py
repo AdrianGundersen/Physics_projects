@@ -3,11 +3,11 @@ import matplotlib.pyplot as plt
 import os
 
 # filenames: data/trapped_w0.200000-2.500000_dw0.005000_N100000.txt
-w_min = 2.070000
-w_max = 2.180000
-w_step = 0.000500
+w_min = 0.200000
+w_max =  2.5000000
+w_step = 0.020000
 N = 40000
-C = 1 # coulomb on/off 0/1
+C = 0 # coulomb on/off 0/1
 
 
 plt.rcParams.update({
@@ -26,15 +26,11 @@ plt.rcParams.update({
 plot_both = False  # set False to plot only filepath1
 
 if plot_both == False:
-    w_min =  0.200000
-    w_max =  2.500000
-    w_step = 0.005000
-    C = 0 # coulomb on/off 0/1
-    filepath1 = f"data/trapped_w{w_min:.6f}-{w_max:.6f}_dw{w_step:.6f}_N{N}.txt" # double precision
+    filepath1 = f"data/trapped_w{w_min:.6f}-{w_max:.6f}_dw{w_step:.6f}_N{N}_C{C}.txt" # double precision
 
 else: 
-    filepath1 = f"data/trapped_w{w_min:.6f}-{w_max:.6f}_dw{w_step:.6f}_N{N}_C{C}.txt" # double precision
-    filepath2 = f"data/trapped_w{w_min:.6f}-{w_max:.6f}_dw{w_step:.6f}_N{N}_C{C-1}.txt" # comment out if only one file
+    filepath1 = f"data/trapped_w{w_min:.6f}-{w_max:.6f}_dw{w_step:.6f}_N{N}_C{1}.txt" # double precision
+    filepath2 = f"data/trapped_w{w_min:.6f}-{w_max:.6f}_dw{w_step:.6f}_N{N}_C{0}.txt" # comment out if only one file
 
 def load_file(path):
     data = np.loadtxt(path, comments="#")
@@ -87,6 +83,9 @@ for si, (path, suff) in enumerate(sources):
 
 plt.xlabel(r"$\omega_V$ [MHz]")
 plt.ylabel("Fraction of trapped particles")
+plt.axvline(omega_z *2, linestyle=":", color="gray", label=r"$2\omega_z$")
+plt.axvline(omega_z, linestyle="--", color="gray", label=r"$\omega_z$")
+plt.axvline(2*omega_z/3, linestyle="--", color="gray", label=r"$\frac{2}{3}\omega_z$")
 plt.grid(True, which="both", alpha=0.3, linewidth=0.6, linestyle="--")
 plt.legend(ncol=1)
 plt.tight_layout()
