@@ -86,11 +86,10 @@ int main() {
     for (int iw = 0; iw < nw; ++iw){
         for (int i = 0; i < nf; ++i) {
             double omega_MHz = omega_V_list(iw);
-            double omega = omega_MHz * 2.0 * M_PI; 
             auto start = std::chrono::steady_clock::now();
 
             double f = f_list(i);
-            PenningTrap trap(parameters::B0, parameters::V0, parameters::d, f, coulomb_on, omega);
+            PenningTrap trap(parameters::B0, parameters::V0, parameters::d, f, coulomb_on, omega_MHz);
             trap.fill_random(N_particles,
                              charge,
                              mass,
