@@ -19,6 +19,8 @@ int main() {
     int N = sim_params.N;
     bool coulomb_on = sim_params.coulomb_on;
 
+    std::cout << "\nCoulumb forces: " << coulomb_on <<"\n";
+
     PenningTrap trap(parameters::B0, parameters::V0, parameters::d, parameters::frequency, coulomb_on);
 
     // origin particle
@@ -37,7 +39,12 @@ int main() {
 
     trap.add_particle(p2);
 
-    trap.print_particles();
+    //trap.print_particles();
+
+    arma::vec ek = trap.total_energy();
+    double tot_ek = arma::norm(ek,2);
+    std::cout << "Total kinetic energy: " << tot_ek << " J" << "\n";
+    //std::cout << "Energies of the particles: "<< ek.t()<< " J" <<"\n";
 
     double time = 0;
 
@@ -57,7 +64,7 @@ int main() {
 
     par1.write_to_file(ofile1, time, true);
     par2.write_to_file(ofile2, time, true);
-    std::cout << "Starting simulation for N=" << N << " over simulation time t = " << total_time << " microseconds \n";
+    std::cout << "\nStarting simulation for N=" << N << " over simulation time t = " << total_time << " microseconds \n";
     for (int step = 0; step < N; step++) {
         time += dt;
         Integrator::RK4(trap, dt, time);
@@ -66,7 +73,12 @@ int main() {
     }
     ofile1.close();
     ofile2.close();
-    trap.print_particles();
+    //trap.print_particles();
+
+    ek = trap.total_energy();
+    tot_ek = arma::norm(ek,2);
+    std::cout << "Total energy: " << tot_ek << " J" <<"\n";
+    //std::cout << "Energies of the particles: "<< ek<< " J" <<"\n";
 
     std::cout << "Wrote positions against time as: "<< filepath1 << "\n";
     std::cout << "Wrote positions against time as: "<< filepath2 << "\n";

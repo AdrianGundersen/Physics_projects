@@ -147,6 +147,58 @@ int PenningTrap::number_of_particles() {
     return static_cast<int>(particles.size());  // remaining inside 
 }
 
+arma::vec PenningTrap::total_energy() const {
+    const int N = particles.size();
+    const double e = 1.602176634e-19;
+    const double amu = 1.66053906660e-27;
+    const double micro = 1.0e-6;
+    const double d_m = d*micro;
+    const double V0_over_d2 = (25e-3) / (d_m * d_m); // v0 / d^2
+
+    arma::vec kinetic_energies(N);
+    arma::vec EPotential(N);            // U = qV(x,y,z)
+    arma::vec coulumb_potential(N);     // U = 1/4pi epsilon_0 * q1*q2 / |r| 
+    
+
+    for (int i = 0; i<N; i++) {
+        const Particle& p = particles[i];
+        arma::vec r = p.position * micro;
+        double particle_charge = p.charge * e;
+
+        kinetic_energies(i) = 0.5 * p.mass * amu * arma::dot(p.velocity, p.velocity);
+        EPotential(i) =  0.5 * particle_charge * V0_over_d2 * (2 * r(2)*r(2) - r(0)*r(0) - r(1)*r(1));
+    }
+
+    //coulumb potential
+    double coulumb;
+    if (coulomb_on && N > 1){
+        double inv_r; // 1/r
+        double r_norm;
+        const double qi = particles[0].charge * e; // assume constant
+        const double ke_q2 = constants::ke * qi * qi; // useful prefactor
+
+        for (int i = 0; i < N; i++) {
+            for (int j = i + 1; j < N; j++) {
+                const Particle& pi = particles[i];
+                const Particle& pj = particles[j];
+
+                arma::vec diff = (pi.position - pj.position) * micro;
+                double r_norm = arma::norm(diff, 2);
+                r_norm = std::max(r_norm, parameters::EPS * micro); // avoid division by 0
+
+                double U = ke_q2 / r_norm;
+
+                coulumb_potential(i) += 0.5 * U;
+                coulumb_potential(j) += 0.5 * U;
+
+        }}}
+    std::cout   << "Kitetic:  " << arma::norm(kinetic_energies) << " J" << "\n" 
+                << "Electric: " << arma::norm(EPotential) << " J" << "\n" 
+                << "Coulumb:  " << arma::norm(coulumb_potential)<< " J" << "\n";
+    arma::vec total_energy = kinetic_energies + EPotential + coulumb_potential;
+
+    return total_energy;
+}
 
 // Debugging
 void PenningTrap::print_particles() const {

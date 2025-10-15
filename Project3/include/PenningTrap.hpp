@@ -37,6 +37,7 @@ public:
     int number_of_particles(); // number of particles in trap (can add option to remove particles)
 
     // Debugging
+    arma::vec total_energy() const;
     void print_particles() const; // print all particles
 };
 
