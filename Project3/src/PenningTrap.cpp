@@ -37,8 +37,8 @@ arma::vec PenningTrap::external_E_field(const arma::vec& r, double& r_norm, doub
     }
     if (f != 0.0) {
         double V_t = V0 * (1 + f * std::cos(omega_V * t));
-        double V0_over_d2 = V_t / (d * d);
-        arma::vec Efield = V0_over_d2 * arma::vec({r(0), r(1), -2.0 * r(2)});
+        double Vt_over_d2 = V_t / (d * d);
+        arma::vec Efield = Vt_over_d2 * arma::vec({r(0), r(1), -2.0 * r(2)});
         return Efield;
     }
 
@@ -141,6 +141,7 @@ return A;
 }    
 
 int PenningTrap::number_of_particles() {
+    // also removes particles outside the trap (should maybe rename or be optional)
     std::erase_if(particles, [outside = d](const Particle& p){ // remove if outside the trap requires C++20
         return arma::norm(p.position) >= outside;  // all particles outside the trap
     });

@@ -34,6 +34,8 @@ int main() {
 
     // particle info
     int N_particles = parameters::N_particles; // number of particles
+    double mass = constants::Ca_mass; // mass of particles
+    double charge = constants::elementary_charge; // charge of particles
     double pos_scaling = parameters::pos_scaling; // position scaling factor
     double vel_scaling = parameters::vel_scaling; // velocity scaling factor
 
@@ -84,14 +86,14 @@ int main() {
     for (int iw = 0; iw < nw; ++iw){
         for (int i = 0; i < nf; ++i) {
             double omega_MHz = omega_V_list(iw);
-            double omega = omega_MHz; //* 2.0 * M_PI; 
+            double omega = omega_MHz * 2.0 * M_PI; 
             auto start = std::chrono::steady_clock::now();
 
             double f = f_list(i);
             PenningTrap trap(parameters::B0, parameters::V0, parameters::d, f, coulomb_on, omega);
             trap.fill_random(N_particles,
-                             constants::elementary_charge,
-                             constants::atomic_mass_unit,
+                             charge,
+                             mass,
                              pos_scaling, vel_scaling);
 
             double t = 0.0;

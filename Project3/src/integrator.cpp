@@ -3,8 +3,6 @@
 
 void Integrator::ForwardEuler(PenningTrap& trap, double dt, double time) {
     int N = trap.particles.size(); // will return correct number even if particles are removed
-    arma::vec new_position(3);
-    arma::vec new_velocity(3);
     arma::mat r0(3, N);
     arma::mat v0(3, N);
     for (int i = 0; i < N; i++) {
