@@ -48,9 +48,9 @@ int main() {
 
 
     for (int step = 0; step < N; step++){
-        time += dt;
         Integrator::RK4(trap_rk, dt, time);
         Integrator::ForwardEuler(trap_eu, dt, time);
+        time += dt;
         rk.write_to_file(ofile, time, false);
         eu.write_to_file(ofile, time, true);
     }
