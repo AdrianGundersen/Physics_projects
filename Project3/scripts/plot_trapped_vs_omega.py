@@ -4,10 +4,11 @@ import os
 
 # filenames: data/trapped_w0.200000-2.500000_dw0.005000_N100000.txt
 w_min = 0.200000
-w_max =  2.5000000
-w_step = 0.020000
+w_max =  0.28000000
+w_step = 0.00050000
 N = 40000
-C = 0 # coulomb on/off 0/1
+C = 1 # coulomb on/off 0/1
+plot_both = True  # set False to plot only filepath1
 
 
 plt.rcParams.update({
@@ -22,8 +23,6 @@ plt.rcParams.update({
     "legend.fontsize": 10,
     "figure.dpi": 300,
 })
-
-plot_both = False  # set False to plot only filepath1
 
 if plot_both == False:
     filepath1 = f"data/trapped_w{w_min:.6f}-{w_max:.6f}_dw{w_step:.6f}_N{N}_C{C}.txt" # double precision
@@ -81,11 +80,16 @@ for si, (path, suff) in enumerate(sources):
         ls = linestyles[si % len(linestyles)]
         plt.plot(omega, frac_data[:, i], linestyle=ls, marker=".", label=rf"$f={float(f_value):.1f}$" + suff)
 
+omega_2_z = 2 * omega_z
+resonance_candidates = [omega_2_z / i for i in range(1, 7) if w_min <= omega_2_z / i <= w_max]
+
+
+
 plt.xlabel(r"$\omega_V$ [MHz]")
 plt.ylabel("Fraction of trapped particles")
-plt.axvline(omega_z *2, linestyle=":", color="gray", label=r"$2\omega_z$")
-plt.axvline(omega_z, linestyle="--", color="gray", label=r"$\omega_z$")
-plt.axvline(2*omega_z/3, linestyle="--", color="gray", label=r"$\frac{2}{3}\omega_z$")
+for cand in resonance_candidates:
+    plt.axvline(cand, linestyle=":", alpha=0.5)
+    
 plt.grid(True, which="both", alpha=0.3, linewidth=0.6, linestyle="--")
 plt.legend(ncol=1)
 plt.tight_layout()
