@@ -31,7 +31,13 @@ public:
     // Forces for particle i
     arma::vec force_external(int i, double time) const;   // force from external fields
     arma::vec force_particle(int i, int j) const;  // force from j
-    arma::mat acceleration_all(const arma::mat& R, const arma::mat& V, double time) const; // acceleration-matrix with column i being acceleration vector of particle i
+
+    /* 
+    - Calculates the acceleration caused by the electric- and magnetic field
+    - Calculates the acceleration due to the Coulomb interactions
+    - Returns a matrix A, acceleration vector for a particle p is the columns of A
+    */
+    arma::mat acceleration_all(const arma::mat& R, const arma::mat& V, double time) const;
 
     // test functions
     int number_of_particles(); // number of particles in trap (can add option to remove particles)
