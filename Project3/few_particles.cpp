@@ -42,7 +42,7 @@ int main() {
     //trap.print_particles();
 
     arma::vec ek = trap.total_energy();
-    double tot_ek = arma::norm(ek,2);
+    double tot_ek = arma::sum(ek);
     std::cout << "Total kinetic energy: " << tot_ek << " J" << "\n";
     //std::cout << "Energies of the particles: "<< ek.t()<< " J" <<"\n";
 
@@ -76,7 +76,7 @@ int main() {
     //trap.print_particles();
 
     ek = trap.total_energy();
-    tot_ek = arma::norm(ek,2);
+    tot_ek = arma::sum(ek);
     std::cout << "Total energy: " << tot_ek << " J" <<"\n";
     //std::cout << "Energies of the particles: "<< ek<< " J" <<"\n";
 
