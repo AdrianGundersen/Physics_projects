@@ -96,8 +96,8 @@ int main() {
 
             double t = 0.0;
             for (int k = 0; k < N; ++k) {
-                t += dt;
                 Integrator::RK4(trap, dt, t);
+                t += dt;
             }
 
             double frac_i = static_cast<double>(trap.number_of_particles()) /
