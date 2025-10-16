@@ -129,6 +129,13 @@ Have to run the simulations first to generate data files. Then run the python sc
 ```bash
 python3 scripts/plot_single.py
 ```
+Requirements to replicate plots in the report:
+- `plot_single.py` run `make run-s` for step sizes $N=4000, 8000, 16000, 32000$, with total time $50\mu s$.
+- `plot_pos_vel.py` run `make run-few` for step size $N=40{,}000$, total time $50\mu s$ with and without coulumb interactions. 
+- `plot_trapped_vs_omega.py` first run `make run-few` for step size $N=40{,}000$, total time $500\mu s$ without coulumb interactions Change the window for $\omega_V$ to `w_min = 0.2, w_min = 0.2, w_max = 2.5, w_step = 0.001`. Then in `plot_trapped_vs_omega.py` set enter the variables for the window $\omega_V$. To run narrow windows eneter window parameters end set `w_step = 0.0005` and run `make run-few` with and without coulumb forces. 
+
+
+
 Remember also to change filenames and change the parameters in the scripts to match those in parameters.hpp.
 
 

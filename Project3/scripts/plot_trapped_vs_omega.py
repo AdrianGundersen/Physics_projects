@@ -3,11 +3,14 @@ import matplotlib.pyplot as plt
 import os
 
 # filenames: data/trapped_w0.200000-2.500000_dw0.005000_N100000.txt
+# Enter the values form prameters.hpp or the filename
 w_min =  2.100000
 w_max =  2.290000
 w_step = 0.000500
 N = 40000
 C = 1 # coulomb on/off 0/1
+
+
 plot_both = True  # set False to plot only filepath1
 
 
