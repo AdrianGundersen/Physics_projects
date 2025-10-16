@@ -64,9 +64,7 @@ Change parameters in
 ```bash
 include/parameters.hpp 
 ```
-as needed. The parameters are well documented in the file.
-
-
+All paremeters are well documented in file. 
 
 
 ### Compile
@@ -121,23 +119,31 @@ make OMP=0
 ```
 
 
-### What different scripts do:
-- **Example** -
-
 ### Plotting
-Have to run the simulations first to generate data files. Then run the python scripts in the scripts/ folder to generate plots and animations. Example:
+Have to run the simulations first to generate data files. Then run the python scripts in the scripts/ folder to generate plots and animations.
+Remember also to change filenames and change the parameters in the scripts to match those in parameters.hpp.
 ```bash
 python3 scripts/plot_single.py
 ```
 Requirements to replicate plots in the report:
 - `plot_single.py` run `make run-s` for step sizes $N=4000, 8000, 16000, 32000$, with total time $50\mu s$.
 - `plot_pos_vel.py` run `make run-few` for step size $N=40{,}000$, total time $50\mu s$ with and without coulumb interactions. 
-- `plot_trapped_vs_omega.py` first run `make run-few` for step size $N=40{,}000$, total time $500\mu s$ without coulumb interactions for the window $\omega_V\in[0.20,2.50]\,\mathrm{MHz}$. Then in `plot_trapped_vs_omega.py` enter the variables for the window $\omega_V$. 
-*  To run narrow windows set `w_step = 0.0005` with $\omega_V\$ as in figure captions. Then run `make run-few` with and without coulumb forces. Set `plot_both = True` in script. 
+- `plot_trapped_vs_omega.py` first run `make run-few` for step size $N=40{,}000$, total time $500\mu s$ without Coulumb interactions for the window $\omega_V\in[0.20,2.50]\,\mathrm{MHz}$. Then in `plot_trapped_vs_omega.py` enter the variables for the window $\omega_V$. 
+*  To run narrow windows set `w_step = 0.0005` with $\omega_V\$ as in figure captions. Then run `make run-few` with and without Coulumb forces. Set `plot_both = True` in script. 
 
 
+### Example usage:
 
-Remember also to change filenames and change the parameters in the scripts to match those in parameters.hpp.
+```bash
+python3 scripts/plot_single.py
+```
+```bash
+make run-s
+```
+
+
+### What different scripts do:
+
 
 
 | Script | Description | Input | Output |
