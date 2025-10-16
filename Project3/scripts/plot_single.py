@@ -167,14 +167,12 @@ if files:
         ax_rk.axvline(tt, linestyle=":", alpha=0.4)
 
 # ---- Decorate & save ----
-ax_rk.set_title("RK4: z(t)")
 ax_rk.set_xlabel(r"$t~(\text{µ} \mathrm{s})$")
 ax_rk.set_ylabel(r"$z~(\text{µ} \mathrm{m})$")
 ax_rk.legend(ncol=3)
 fig_rk.tight_layout()
 fig_rk.savefig("data/plot/rk4_z_vs_time_multiN.pdf")
 
-ax_eu.set_title("Euler: z(t)")
 ax_eu.set_xlabel(r"$t~(\text{µ} \mathrm{s})$")
 ax_eu.set_ylabel(r"$z~(\text{µ} \mathrm{m})$")
 ax_eu.legend(ncol=3)
@@ -217,14 +215,14 @@ fig_xy_rk.savefig("data/plot/rk4_xy_multiN.pdf")
 
 
 ax_max_eu_rel_r.set_xlabel(r"Step size $h~(\text{µ} \mathrm{s})$")
-ax_max_eu_rel_r.set_ylabel(r"$\max_{t\in[0,T]}(|r_t-r_a|/|r_a|)$")
+ax_max_eu_rel_r.set_ylabel(r"$\max(|r_t-r_a|/|r_a|)$")
 ax_max_eu_rel_r.set_xscale("log")
 ax_max_eu_rel_r.set_yscale("log")
 ax_max_eu_rel_r.set_axisbelow(True)
 ax_max_eu_rel_r.grid(True, which="both", alpha=0.3, linewidth=0.6, linestyle="--")
 
 ax_max_rk_rel_r.set_xlabel(r"Step size $h~(\text{µ} \mathrm{s})$")
-ax_max_rk_rel_r.set_ylabel(r"$\max_{t\in[0,T]}(|r_t-r_a|/|r_a|)$")
+ax_max_rk_rel_r.set_ylabel(r"$\max(|r_t-r_a|/|r_a|)$")
 ax_max_rk_rel_r.set_xscale("log")
 ax_max_rk_rel_r.set_yscale("log")
 ax_max_rk_rel_r.set_axisbelow(True)
@@ -258,4 +256,4 @@ fig_max_eu_rel_r.tight_layout()
 fig_max_eu_rel_r.savefig("data/plot/euler_max_relerr_r_vs_h.pdf")
 fig_max_rk_rel_r.tight_layout()
 fig_max_rk_rel_r.savefig("data/plot/rk4_max_relerr_r_vs_h.pdf")
-plt.show()
+#plt.show()
