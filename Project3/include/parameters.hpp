@@ -24,7 +24,7 @@ struct SimulationParams {
 constexpr int seed = 67; // group number
 
 // Allowed threads for OpenMP
-constexpr int max_threads = 10; // Adjust based on your CPU (will always cap on maximum number though)
+constexpr int max_threads = 24; // Adjust based on your CPU (will always cap on maximum number though)
 
 
 

@@ -148,8 +148,11 @@ int PenningTrap::number_of_particles() {
     return static_cast<int>(particles.size());  // remaining inside 
 }
 
+// Calculatng total energy of the particles in SI units
 arma::vec PenningTrap::total_energy() const {
     const int N = particles.size();
+
+    //constants to ceonvert  to SI units
     const double e = 1.602176634e-19;
     const double amu = 1.66053906660e-27;
     const double micro = 1.0e-6;
@@ -157,15 +160,15 @@ arma::vec PenningTrap::total_energy() const {
     const double V0_over_d2 = (25e-3) / (d_m * d_m); // v0 / d^2
     const double k_e = 8.9875517923e9;   // 1/4pi * epsilon_0
 
-    arma::vec kinetic_energies(N);
-    arma::vec EPotential(N);            // U = qV(x,y,z)
-    arma::vec coulumb_potential(N);     // U = 1/4pi epsilon_0 * q1*q2 / |r| 
+    arma::vec kinetic_energies(N);      // Kinetic energy
+    arma::vec EPotential(N);            // Electical potential
+    arma::vec coulumb_potential(N);     // Coulumb potential
     
 
     for (int i = 0; i<N; i++) {
         const Particle& p = particles[i];
-        arma::vec r = p.position * micro;
-        double particle_charge = p.charge * e;
+        arma::vec r = p.position * micro;       //position to SI units
+        double particle_charge = p.charge * e;  //Charge to SI units
 
         kinetic_energies(i) = 0.5 * p.mass * amu * arma::dot(p.velocity, p.velocity);
         EPotential(i) =  0.5 * particle_charge * V0_over_d2 * (2 * r(2)*r(2) - r(0)*r(0) - r(1)*r(1));
@@ -174,22 +177,23 @@ arma::vec PenningTrap::total_energy() const {
     //coulumb potential
     double coulumb;
     if (coulomb_on && N > 1){
-        double inv_r; // 1/r
         double r_norm;
         const double qi = particles[0].charge * e; // assume constant
-        const double ke_q2 = k_e * qi * qi; // useful prefactor
+        const double ke_q2 = k_e * qi * qi; // 1/(4pi * epsilon_0) * q_1*q_2
 
         for (int i = 0; i < N; i++) {
             for (int j = i + 1; j < N; j++) {
+                //calling two particles
                 const Particle& pi = particles[i];
                 const Particle& pj = particles[j];
 
-                arma::vec diff = (pi.position - pj.position) * micro;
-                double r_norm = arma::norm(diff, 2);
+                arma::vec diff = (pi.position - pj.position) * micro;   //distance between
+                double r_norm = arma::norm(diff, 2);    
                 r_norm = std::max(r_norm, parameters::EPS * micro); // avoid division by 0
 
-                double U = ke_q2 / r_norm;
+                double U = ke_q2 / r_norm;  //coulumb potential
 
+                // ginving each particle half the potential
                 coulumb_potential(i) += 0.5 * U;
                 coulumb_potential(j) += 0.5 * U;
 

@@ -39,11 +39,18 @@ public:
     */
     arma::mat acceleration_all(const arma::mat& R, const arma::mat& V, double time) const;
 
+    /*
+    - Calculates the kinetick energy
+    - Calculates the Electrical potential in the trap
+    - Calculates the coulumb potential between the particles
+    - Returning a vector with the Total energy of each particle
+    */
+    arma::vec total_energy() const;
+
     // test functions
     int number_of_particles(); // number of particles in trap (can add option to remove particles)
 
     // Debugging
-    arma::vec total_energy() const;
     void print_particles() const; // print all particles
 };
 
