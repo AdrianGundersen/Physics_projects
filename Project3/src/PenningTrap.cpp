@@ -148,17 +148,15 @@ int PenningTrap::number_of_particles() {
     return static_cast<int>(particles.size());  // remaining inside 
 }
 
-// Calculatng total energy of the particles in SI units
+// Calculatng total energy of the particles
 arma::vec PenningTrap::total_energy() const {
     const int N = particles.size();
 
-    //constants to ceonvert  to SI units
-    const double e = 1.602176634e-19;
-    const double amu = 1.66053906660e-27;
-    const double micro = 1.0e-6;
-    const double d_m = d*micro;
-    const double V0_over_d2 = (25e-3) / (d_m * d_m); // v0 / d^2
-    const double k_e = 8.9875517923e9;   // 1/4pi * epsilon_0
+    //constants 
+    const double e = constants::elementary_charge; 
+    const double amu = constants::atomic_mass_unit; 
+    const double V0_over_d2 = (V0) / (d * d); // v0 / d^2
+    const double k_e = constants::ke; //8.9875517923e9;   // 1/4pi * epsilon_0
 
     arma::vec kinetic_energies(N);      // Kinetic energy
     arma::vec EPotential(N);            // Electical potential
@@ -167,7 +165,7 @@ arma::vec PenningTrap::total_energy() const {
 
     for (int i = 0; i<N; i++) {
         const Particle& p = particles[i];
-        arma::vec r = p.position * micro;       //position to SI units
+        arma::vec r = p.position;       //position to SI units
         double particle_charge = p.charge * e;  //Charge to SI units
 
         kinetic_energies(i) = 0.5 * p.mass * amu * arma::dot(p.velocity, p.velocity);
@@ -187,9 +185,9 @@ arma::vec PenningTrap::total_energy() const {
                 const Particle& pi = particles[i];
                 const Particle& pj = particles[j];
 
-                arma::vec diff = (pi.position - pj.position) * micro;   //distance between
+                arma::vec diff = (pi.position - pj.position);   //distance between
                 double r_norm = arma::norm(diff, 2);    
-                r_norm = std::max(r_norm, parameters::EPS * micro); // avoid division by 0
+                r_norm = std::max(r_norm, parameters::EPS); // avoid division by 0
 
                 double U = ke_q2 / r_norm;  //coulumb potential
 
@@ -198,9 +196,9 @@ arma::vec PenningTrap::total_energy() const {
                 coulumb_potential(j) += 0.5 * U;
 
         }}}
-    std::cout   << "Kitetic:  " << arma::sum(kinetic_energies) << " J" << "\n" 
-                << "Electric: " << arma::sum(EPotential) << " J" << "\n" 
-                << "Coulumb:  " << arma::sum(coulumb_potential)<< " J" << "\n";
+    std::cout   << "Kitetic:  " << arma::sum(kinetic_energies) << " u (m/s)^2" << "\n" 
+                << "Electric: " << arma::sum(EPotential) << " u (m/s)^2" << "\n" 
+                << "Coulumb:  " << arma::sum(coulumb_potential)<< " u (m/s)^2" << "\n";
     arma::vec total_energy = kinetic_energies + EPotential + coulumb_potential;
 
     return total_energy;

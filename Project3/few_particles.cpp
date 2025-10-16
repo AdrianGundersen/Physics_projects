@@ -43,7 +43,7 @@ int main() {
 
     arma::vec ek = trap.total_energy();
     double tot_ek = arma::sum(ek);
-    std::cout << "Total kinetic energy: " << tot_ek << " J" << "\n";
+    std::cout << "Total energy: " << tot_ek << " m^2/(s^2*u)" << "\n";
     //std::cout << "Energies of the particles: "<< ek.t()<< " J" <<"\n";
 
     double time = 0;
@@ -77,7 +77,7 @@ int main() {
 
     ek = trap.total_energy();
     tot_ek = arma::sum(ek);
-    std::cout << "Total energy: " << tot_ek << " J" <<"\n";
+    std::cout << "Total energy: " << tot_ek << " u (m/s)^2" <<"\n";
     //std::cout << "Energies of the particles: "<< ek<< " J" <<"\n";
 
     std::cout << "Wrote positions against time as: "<< filepath1 << "\n";
