@@ -131,7 +131,7 @@ Requirements to replicate plots in the report:
 - `plot_single.py` run `make run-s` for step sizes $N=4000, 8000, 16000, 32000$, with total time $50\mu s$.
 - `plot_pos_vel.py` run `make run-few` for step size $N=40{,}000$, total time $50\mu s$ with and without coulumb interactions. 
 - `plot_trapped_vs_omega.py` first run `make run-few` for step size $N=40{,}000$, total time $500\mu s$ without Coulumb interactions for the window $\omega_V\in[0.20,2.50]\,\mathrm{MHz}$. Then in `plot_trapped_vs_omega.py` enter the variables for the window $\omega_V$. 
-- Narrow windows set \texttt{w_step = 0.0005} with $\omega_V\$ as in figure captions. Then run `make run-few` with and without Coulumb forces. Set \texttt{plot_both = True} in script. 
+- Narrow windows set `w_step = 0.0005` with $\omega_V\$ as in figure captions. Then run `make run-few` with and without Coulumb forces. Set `plot_both = True` in script. 
 
 
 ### Example usage:
