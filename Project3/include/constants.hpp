@@ -14,6 +14,7 @@ constexpr double ke = 1.38935333e5;
 // Derived units
 constexpr double Tesla = 9.64852558e1;   
 constexpr double Volt  = 9.64852558e7; 
+constexpr double Joule = atomic_mass_unit * (micrometer * micrometer) / (microsecond * microsecond);
 
 
 // Particle properties

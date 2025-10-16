@@ -10,7 +10,7 @@
 
 int main() {
     arma::arma_rng::set_seed(parameters::seed);
-
+    double energy_unitless_to_eV = 1.66054e-27 / 1.602176634e-19; // u (m/s)^2 to eV
 
     // Extract parameters
     auto sim_params = parameters::few;
@@ -43,7 +43,7 @@ int main() {
 
     arma::vec ek = trap.total_energy();
     double tot_ek = arma::sum(ek);
-    std::cout << "Total energy: " << tot_ek << " m^2/(s^2*u)" << "\n";
+    std::cout << "Total energy: " << tot_ek << " u (m/s)^2 or " << tot_ek * energy_unitless_to_eV << " eV\n";
     //std::cout << "Energies of the particles: "<< ek.t()<< " J" <<"\n";
 
     double time = 0;
@@ -77,7 +77,10 @@ int main() {
 
     ek = trap.total_energy();
     tot_ek = arma::sum(ek);
-    std::cout << "Total energy: " << tot_ek << " u (m/s)^2" <<"\n";
+
+
+
+    std::cout << "Total energy: " << tot_ek << " u (m/s)^2 or " << tot_ek * energy_unitless_to_eV << " eV\n";
     //std::cout << "Energies of the particles: "<< ek<< " J" <<"\n";
 
     std::cout << "Wrote positions against time as: "<< filepath1 << "\n";
