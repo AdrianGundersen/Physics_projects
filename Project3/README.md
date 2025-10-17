@@ -38,7 +38,7 @@ $$
 \mathbf F_i^{\text{Lorentz}} = q_i\left(\mathbf E + \mathbf v_i \times \mathbf B\right)
 $$
 
-**Coulomb (pair \(i \leftarrow j\))**
+**Coulomb (from particle \(j\) to \(i\))**
 
 $$
 \mathbf r_{ij} = \mathbf r_i - \mathbf r_j,\quad
