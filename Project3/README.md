@@ -43,7 +43,7 @@ $$
 $$
 \mathbf r_{ij} = \mathbf r_i - \mathbf r_j,\quad
 r_{ij} = \lVert \mathbf r_{ij} \rVert,\quad
-\mathbf F_{ij} = k_e\,\frac{q_i q_j}{r_{ij}^3}\,\mathbf r_{ij}, \qquad j\neq i
+\mathbf F_{ij} = k_e\frac{q_i q_j}{r_{ij}^3}\mathbf r_{ij}, \qquad j\neq i
 $$
 
 **Total & equation of motion**
@@ -51,7 +51,7 @@ $$
 $$
 \mathbf F_i = \mathbf F_i^{\text{Lorentz}} + \sum_{j\ne i} \mathbf F_{ij}
 \quad\Rightarrow\quad
-m_i\,\ddot{\mathbf r}_i = \mathbf F_i
+m_i\ddot{\mathbf r}_i = \mathbf F_i
 $$
 
 ---
