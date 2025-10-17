@@ -92,6 +92,7 @@ plt.xlabel(r"$\omega_V$ [MHz]")
 plt.ylabel("Fraction of trapped particles")
 for cand in resonance_candidates:
     plt.axvline(cand, linestyle=":", alpha=0.5)
+plt.axvline(omega_plus-omega_minus, linestyle=":", alpha=0.5, color="gray")
     
 plt.grid(True, which="both", alpha=0.3, linewidth=0.6, linestyle="--")
 plt.legend(ncol=1)
