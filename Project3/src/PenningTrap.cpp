@@ -20,6 +20,7 @@ void PenningTrap::delete_particle(int particle_i) {
     particles.erase(particles.begin() + particle_i);
 }
 
+// Fill the trap with random particles
 void PenningTrap::fill_random(int N, double q, double m, double pos_scaling, double vel_scaling) {
     for (int i = 0; i < N; i++) {
         arma::vec pos = arma::vec(3).randn() * pos_scaling * d; // typical pos is pos_scaling * d
@@ -47,6 +48,7 @@ arma::vec PenningTrap::external_E_field(const arma::vec& r, double& r_norm, doub
     return Efield;
 }
 
+// Magnetic field
 arma::vec PenningTrap::external_B_field(const arma::vec& r, double& r_norm) const {
     if (r_norm > d) {
         return arma::vec({0.0, 0.0, 0.0});  // no field outside the trap
@@ -54,7 +56,7 @@ arma::vec PenningTrap::external_B_field(const arma::vec& r, double& r_norm) cons
     return arma::vec({0.0, 0.0, B0});
 }
 
-// Forces
+// Forces on the particle from the trtap
 arma::vec PenningTrap::force_external(int i, double time) const {
     const Particle& p = particles[i];
 
@@ -67,11 +69,12 @@ arma::vec PenningTrap::force_external(int i, double time) const {
     return p.charge * (E + arma::cross(p.velocity, B));
 }
 
+// Force on particle i from particle j, Not used since integrated into acceleration all
 arma::vec PenningTrap::force_particle(int i, int j) const {
     const Particle& pi = particles[i];
     const Particle& pj = particles[j];
 
-    arma::vec r_vec = pi.position - pj.position;
+    arma::vec r_vec = pi.position - pj.position; // distance vector
     double r_norm = arma::vecnorm(r_vec);
     r_norm = std::max(r_norm, parameters::EPS); // avoid division by zero
 
@@ -91,18 +94,19 @@ arma::mat PenningTrap::acceleration_all(const arma::mat& R, const arma::mat& V, 
     arma::vec E(3);
     arma::vec B(3);
     double r_norm;
+    // loop over particles
     for (int i = 0; i < N; i++){
         const Particle& p = particles[i];
         arma::subview_col<double> r = R.col(i);
         arma::subview_col<double> v = V.col(i); // alias
 
-        double r_norm = r_norms(i);
+        double r_norm = r_norms(i); 
 
         arma::vec E = external_E_field(r, r_norm, time);
         arma::vec B = external_B_field(r, r_norm);
 
-        arma::vec F = p.charge * (E + arma::cross(v, B));
-        A.col(i) =  F/p.mass;
+        arma::vec F = p.charge * (E + arma::cross(v, B)); // Lorentz force
+        A.col(i) =  F/p.mass; // accleration 
     }
 
     // Coulomb forces (symmetric interaction)
