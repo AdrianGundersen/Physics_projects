@@ -28,7 +28,7 @@ LDFLAGS  := $(LIBS) $(OMPFLAGS) $(LDFLAGS_$(MODE))
 # ---------- Folders ----------
 SRC_DIR   := src
 BUILD_DIR := build
-PLOT_DIR  := scripts         
+PLOT_DIR  := scripts
 OBJ_DIR   := $(BUILD_DIR)/obj
 BIN_DIR   := $(BUILD_DIR)/bin
 
@@ -53,6 +53,7 @@ EXE_N      := $(BIN_DIR)/N_particles.exe
 EXE_S      := $(BIN_DIR)/single_particle.exe
 PLOT_FEW   := $(PLOT_DIR)/plot_pos_vel.py
 PLOT_SINGLE:= $(PLOT_DIR)/plot_single.py
+PLOT_N 	   := $(PLOT_DIR)/plot_trapped_vs_omega.py
 
 # ---------- Phony targets ----------
 .PHONY: all clean rebuild run-few run-n run-s debug release sanitize dirs plot help print-%
@@ -112,10 +113,14 @@ run-s: $(EXE_S) ## Run single_particle executable (pass ARGS="...")
 	$(EXE_S) $(ARGS)
 
 # ---------- Plotting ----------
-plot: ## Generate plots using the Python scripts in scripts/
-	@echo "Generating plots"
+plot-few: ## Generate plots using the Python scripts in scripts/
 	python3 $(PLOT_FEW)
+
+plot-s: 
 	python3 $(PLOT_SINGLE)
+
+plot-n: 
+	python3 $(PLOT_N)
 
 # ---------- Cleaning ----------
 clean: ## Remove the entire build/ directory
