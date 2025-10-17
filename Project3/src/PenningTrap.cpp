@@ -93,7 +93,7 @@ arma::mat PenningTrap::acceleration_all(const arma::mat& R, const arma::mat& V, 
     double r_norm;
     for (int i = 0; i < N; i++){
         const Particle& p = particles[i];
-        r = R.col(i);
+        arma::subview_col<double> r = R.col(i);
         arma::subview_col<double> v = V.col(i); // alias
 
         double r_norm = r_norms(i);

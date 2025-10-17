@@ -10,10 +10,10 @@ plt.rcParams.update({
     'figure.figsize': (6, 4),
     'axes.titlesize': 17,
     'axes.labelsize': 15,
-    'xtick.labelsize': 13,
-    'ytick.labelsize': 13,
+    'xtick.labelsize': 10,
+    'ytick.labelsize': 10,
     'lines.linewidth': 2.0,
-    'legend.fontsize': 11,
+    'legend.fontsize': 10,
     'figure.dpi': 300,
 })
 

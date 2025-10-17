@@ -40,7 +40,6 @@ p2_off = load_posvel(0, 1)
 print(p1_off["t"])
 
 
-
 # ---- Plotting helpers ----
 def mark_start_end(x, y, label_prefix=None):
     """Add start (o) and end (x) markers to the current axes."""
