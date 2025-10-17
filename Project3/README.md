@@ -20,10 +20,10 @@ $$
 \mathbf{B} = B_0 \,\hat{\mathbf z}
 $$
 
-**Quadrupole potential with drive**
+**Potential and electric field**
 
 $$
-V(\mathbf r,t) = V_0\!\left(z^2 - \frac{x^2 + y^2}{2}\right)\!\left(1 + f\cos(\omega_V t)\right),
+V(\mathbf r,t) = V_0\left(z^2 - \frac{x^2 + y^2}{2}\right)\left(1 + f\cos(\omega_V t)\right),
 \qquad
 \mathbf E(\mathbf r,t) = -\nabla V(\mathbf r,t)
 $$
