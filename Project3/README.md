@@ -10,8 +10,19 @@ Simulations for a Penning trap. The code models motion of charged particles in a
 - **Parallelization (OpenMP)** — Multi-core acceleration for systems with many particles.
 
 
+## Physical Model
 
-## Project structure
+Fields:
+Magnetic field: \( \mathbf{B} = B_0 \hat{z} \)
+Electric potential: \( V(\mathbf{r}, t) = V_0 \left( z^2 - \frac{x^2 + y^2}{2} \right) \left( 1 + f \cos(\omega_V t) \right) \)
+
+Forces on particle i:
+- Lorentz force: \( \mathbf{F}_i = q_i \left( \mathbf{E} + \mathbf{v}_i \times \mathbf{B} \right) \)
+- Coulomb interaction: \( \mathbf{F}_{ij} = k_e \frac{q_i q_j}{r_{ij}^3} \mathbf{r}_{ij} \)
+- Total force: \( \mathbf{F}_i^{\text{total}} = \mathbf{F}_i + \sum_{j \neq i} \mathbf{F}_{ij} \)
+
+
+## Project Structure
 ```text
 Project3/
 ├─ include/
