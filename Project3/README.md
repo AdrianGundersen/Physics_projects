@@ -200,7 +200,7 @@ make run-s
 | `plot_pos_vel.py` | Plots positions and velocities of multiple particles | Few/N-particle data files | Phase space and trajectory plots |
 | `plot_trapped_vs_omega.py` | Plots trapped fraction vs driving frequency | Parameter sweep results | Stability diagrams |
 | `floquet_table.py` | Generates a Floquet/Mathieu stability table | Parameters inside | LaTeX-formatted stability tables |
-| `animate.py` | Creates animations of particle motion | Positional data files | `.gif` or `.mp4` animations |
+| `animate.py` | Creates animations of particle motion (mainly used for debugging)| Positional data files | `.gif` or `.mp4` animations |
 
 
 ## Future work
