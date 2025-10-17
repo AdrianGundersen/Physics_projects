@@ -15,8 +15,12 @@ This repository contains the solutions to projects from **FYS3150 – Computatio
 ---
 
 - [Project 3: Penning Trap](./Project3)  
-  . Solving Penning Trap problem with 4th order Runge-Kutta implementation on a multi-particle system. 
+  Solving Penning Trap problem with 4th order Runge-Kutta implementation on a multi-particle system. 
 ---
+- [Project 4: The Ising Model](./Project4)  
+  
+---
+
 
 
 ## How to Use
