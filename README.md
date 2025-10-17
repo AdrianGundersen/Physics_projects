@@ -21,7 +21,8 @@ This repository contains the solutions to projects from **FYS3150 – Computatio
   
 ---
 
-
+- [Rapports](./Rapports)  
+  Contains all the reports for the projects in PDF format.
 
 ## How to Use
 
