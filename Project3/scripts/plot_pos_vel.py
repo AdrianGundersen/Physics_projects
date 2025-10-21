@@ -23,6 +23,47 @@ plt.rcParams.update({
 
 os.makedirs("data/plot", exist_ok=True)
 
+# ----- Physical parameters ------
+q = 1.0
+m = 40.078 # Ca+
+z0 = 20.0
+d = 500.0
+V0 = 25.0e-3 * 9.64852558e7
+B = 9.64852558e1
+omega_z = np.sqrt(2.0 * q * V0 / (m * d**2))
+omega_0 = q * B / m
+DEN_TOL = 1e-10  # avoid division by small analytic values in relative errors
+
+
+def f(t, return_R=False):
+    # initial conditions for radial motion
+    x0 = 20.0
+    v_0y = 25.0
+
+    disc = omega_0**2 - 2.0 * omega_z**2
+    sqrt_disc = np.sqrt(disc)
+    omega_plus = 0.5 * (omega_0 + sqrt_disc)
+    omega_minus = 0.5 * (omega_0 - sqrt_disc)
+
+    print(omega_plus/omega_minus)
+
+    # complex-amplitude solution for f(t) = x + i y
+    A_plus  = (v_0y + omega_minus * x0) / (omega_minus - omega_plus)
+    A_minus = -(v_0y + omega_plus  * x0) / (omega_minus - omega_plus)
+    print(f"A_plus: {A_plus}, A_minus: {A_minus}")
+    R_plus = np.abs(np.abs(A_plus) + np.abs(A_minus))
+    R_minus = np.abs(np.abs(A_plus) - np.abs(A_minus))
+    print(f"R_plus: {R_plus}, R_minus: {R_minus}")
+    f_t = A_plus * np.exp(-1j * (omega_plus  * t)) + \
+          A_minus* np.exp(-1j * (omega_minus * t))
+
+    x = f_t.real
+    y = f_t.imag
+    if return_R:
+        return x, y, R_plus, R_minus
+    else:
+        return x, y
+
 # ---- I/O helpers ----
 def load_posvel(coulomb_flag: int, particle_idx: int, N: int = 100000): # assumes recommended naming
     path = f"data/pos_vel_{particle_idx}_coulomb={coulomb_flag}_N{N}.txt"
@@ -86,6 +127,17 @@ def plot_xy(p1, p2, title, outname):
     plt.figure()
     plt.plot(p1["x"], p1["y"], alpha=0.9, label="P1")
     plt.plot(p2["x"], p2["y"], alpha=0.9, label="P2")
+
+    # plot circle at R_plus and R_minus
+    _, _, R_plus, R_minus = f(0, return_R=True)
+    theta = np.linspace(0, 2 * np.pi, 100)
+    x_circle_plus = R_plus * np.cos(theta)
+    y_circle_plus = R_plus * np.sin(theta)
+    plt.plot(x_circle_plus, y_circle_plus, linestyle="--", color="gray", alpha=0.4, label=r"$R_{+}$")
+    x_circle_minus = R_minus * np.cos(theta)
+    y_circle_minus = R_minus * np.sin(theta)
+    plt.plot(x_circle_minus, y_circle_minus, linestyle="--", color="black", alpha=0.4, label=r"$R_{-}$")
+
     mark_start_end(p1["x"], p1["y"], "P1")
     mark_start_end(p2["x"], p2["y"], "P2")
     plt.xlabel(r"$x~(\text{µ}\mathrm{m})$")

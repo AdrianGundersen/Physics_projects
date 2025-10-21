@@ -4,14 +4,14 @@ import os
 
 # filenames: data/trapped_w0.200000-2.500000_dw0.005000_N100000.txt
 # Enter the values form prameters.hpp or the filename
-w_min =  2.100000
-w_max =  2.290000
-w_step = 0.000500
+w_min =  0.200000
+w_max =  2.50000
+w_step = 0.00100
 N = 40000
-C = 1 # coulomb on/off 0/1
+C = 0 # coulomb on/off 0/1
 
 
-plot_both = True  # set False to plot only filepath1
+plot_both = False  # set False to plot only filepath1
 
 
 plt.rcParams.update({
@@ -57,6 +57,7 @@ disc = omega_0**2 - 2.0 * omega_z**2
 sqrt_disc = np.sqrt(disc)
 omega_plus = 0.5 * (omega_0 + sqrt_disc)
 omega_minus = 0.5 * (omega_0 - sqrt_disc)
+print(f"omega_plus: {omega_plus}, omega_minus: {omega_minus}, omega_z: {omega_z}, omega_0: {omega_0}")
 
 DEN_TOL = 1e-10  # avoid division by small analytic values in relative errors
 

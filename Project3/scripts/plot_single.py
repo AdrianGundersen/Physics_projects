@@ -38,7 +38,7 @@ omega_0 = q * B / m
 DEN_TOL = 1e-10  # avoid division by small analytic values in relative errors
 
 # ----- Analytic xy-solution builder; returns (x(t), y(t)) -----
-def f(t):
+def f(t, return_R=False):
     # initial conditions for radial motion
     x0 = 20.0
     v_0y = 25.0
@@ -53,13 +53,21 @@ def f(t):
     # complex-amplitude solution for f(t) = x + i y
     A_plus  = (v_0y + omega_minus * x0) / (omega_minus - omega_plus)
     A_minus = -(v_0y + omega_plus  * x0) / (omega_minus - omega_plus)
-
+    print(f"A_plus: {A_plus}, A_minus: {A_minus}")
+    R_plus = np.abs(np.abs(A_plus) + np.abs(A_minus))
+    R_minus = np.abs(np.abs(A_plus) - np.abs(A_minus))
+    print(f"R_plus: {R_plus}, R_minus: {R_minus}")
     f_t = A_plus * np.exp(-1j * (omega_plus  * t)) + \
           A_minus* np.exp(-1j * (omega_minus * t))
 
     x = f_t.real
     y = f_t.imag
-    return x, y
+    if return_R:
+        return x, y, R_plus, R_minus
+    else:
+        return x, y
+
+
 
 def short_N(n):
     # For naming eg. 32k
