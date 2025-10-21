@@ -175,18 +175,21 @@ if files:
         ax_rk.axvline(tt, linestyle=":", alpha=0.4)
 
 # ---- Decorate & save ----
+# RK z–t
 ax_rk.set_xlabel(r"$t~(\text{µ} \mathrm{s})$")
 ax_rk.set_ylabel(r"$z~(\text{µ} \mathrm{m})$")
 ax_rk.legend(ncol=3)
 fig_rk.tight_layout()
 fig_rk.savefig("data/plot/rk4_z_vs_time_multiN.pdf")
 
+# Euler z–t
 ax_eu.set_xlabel(r"$t~(\text{µ} \mathrm{s})$")
 ax_eu.set_ylabel(r"$z~(\text{µ} \mathrm{m})$")
 ax_eu.legend(ncol=3)
 fig_eu.tight_layout()
 fig_eu.savefig("data/plot/euler_z_vs_time_multiN.pdf")
 
+# RK relative error r–t
 ax_rk_rel_r.set_xlabel(r"$t~(\text{µ} \mathrm{s})$")
 ax_rk_rel_r.set_ylabel(r"$|r-r_a|/|r_a|$")
 ax_rk_rel_r.legend(bbox_to_anchor=(0, 1.02, 1, 0.2), loc="lower left",
@@ -195,16 +198,17 @@ fig_rk_rel_r.tight_layout()
 fig_rk_rel_r.savefig("data/plot/rk4_relerr_r_multiN.pdf")
 
 
-ax_rk_rel_r.set_xlabel(r"$t~(\text{µ} \mathrm{s})$")
-ax_rk_rel_r.set_ylabel(r"$\log\left(|r-r_a|/|r_a|\right)$")
-ax_rk_rel_r.set_yscale("log")
-ax_rk_rel_r.legend(bbox_to_anchor=(0, 1.02, 1, 0.2), loc="lower left",
-                mode="expand", borderaxespad=0, ncol=3)
-fig_rk_rel_r.tight_layout()
-fig_rk_rel_r.savefig("data/plot/rk4_relerr_r_multiN_log.pdf")
-
+# Euler relative error r–t
 ax_eu_rel_r.set_xlabel(r"$t~(\text{µ} \mathrm{s})$")
 ax_eu_rel_r.set_ylabel(r"$|r-r_a|/|r_a|$")
+ax_eu_rel_r.legend(bbox_to_anchor=(0, 1.02, 1, 0.2), loc="lower left",
+                mode="expand", borderaxespad=0, ncol=3)
+fig_eu_rel_r.tight_layout()
+fig_eu_rel_r.savefig("data/plot/euler_relerr_r_multiN.pdf")
+
+# Euler relative error r–t (log)
+ax_eu_rel_r.set_xlabel(r"$t~(\text{µ} \mathrm{s})$")
+ax_eu_rel_r.set_ylabel(r"$\log\left(|r-r_a|/|r_a|\right)$")
 ax_eu_rel_r.set_yscale("log")
 ax_eu_rel_r.legend(bbox_to_anchor=(0, 1.02, 1, 0.2), loc="lower left",
                 mode="expand", borderaxespad=0, ncol=3)
@@ -221,15 +225,16 @@ ax_xy_rk.set_aspect('equal')
 fig_xy_rk.tight_layout()
 fig_xy_rk.savefig("data/plot/rk4_xy_multiN.pdf")
 
-
-ax_max_eu_rel_r.set_xlabel(r"Step size $h~(\text{µ} \mathrm{s})$")
+# Max Euler rel err vs h
+ax_max_eu_rel_r.set_xlabel(r"Step size $\text{dt}~(\text{µ} \mathrm{s})$")
 ax_max_eu_rel_r.set_ylabel(r"$\max(|r_t-r_a|/|r_a|)$")
 ax_max_eu_rel_r.set_xscale("log")
 ax_max_eu_rel_r.set_yscale("log")
 ax_max_eu_rel_r.set_axisbelow(True)
 ax_max_eu_rel_r.grid(True, which="both", alpha=0.3, linewidth=0.6, linestyle="--")
 
-ax_max_rk_rel_r.set_xlabel(r"Step size $h~(\text{µ} \mathrm{s})$")
+# Max RK rel err vs h
+ax_max_rk_rel_r.set_xlabel(r"Step size $\text{dt}~(\text{µ} \mathrm{s})$")
 ax_max_rk_rel_r.set_ylabel(r"$\max(|r_t-r_a|/|r_a|)$")
 ax_max_rk_rel_r.set_xscale("log")
 ax_max_rk_rel_r.set_yscale("log")
