@@ -208,3 +208,19 @@ make run-s
 - Add Verlet/Leapfrog integrator
 - Further evolve the flouquet_table.py script to generate a proper stability diagram
 - Make a parameters.json file to read parameters from instead of hardcoding them in parameters.hpp. This would also make it easier to keep parameters in sync between the C++ code and the python scripts.
+
+## Declaration of Use of Generative AI
+
+In this scientific work, generative artificial intelligence (AI) has been used. All data and personal information have been processed in accordance with the University of Oslo’s regulations, and we, as the authors of the document, take full responsibility for its content, claims, and references. An overview of the use of generative AI is provided below.
+
+**Summary**
+
+- **Tool(s) used:** [OpenAI ChatGPT (GPT-5)](https://chatgpt.com/)
+- **Use:**
+  - Generating boilerplate code (e.g., plotting with `matplotlib`).
+  - Generating Makefiles.
+  - Formatting `README.md`.
+  - Checking language for clarity and grammar; general proofreading.
+  - Generating brief code documentation, comments, and variable names to improve readability and adhere to conventions.
+  - Creating tables in proper TeX format.
+  - Brainstorming ideas for code optimization and efficiency.
