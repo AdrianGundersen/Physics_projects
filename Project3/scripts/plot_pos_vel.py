@@ -122,7 +122,7 @@ def plot_phase_space(x1, v1, x2, v2, xlabel, ylabel, title, outname):
 
 print((p1_off["x"]),(p1_off["vx"]))
 
-def plot_xy(p1, p2, title, outname):
+def plot_xy(p1, p2, title, outname, legend_on=True):
     """Plot x–y trajectory for both particles."""
     plt.figure()
     plt.plot(p1["x"], p1["y"], alpha=0.9, label="P1")
@@ -144,7 +144,8 @@ def plot_xy(p1, p2, title, outname):
     plt.ylabel(r"$y~(\text{µ}\mathrm{m})$")
     # plt.title(title)
     plt.gca().set_aspect('equal', adjustable='box') # plt.axis("equal") did not work
-    plt.legend(bbox_to_anchor=(1.04, 1), borderaxespad=0)
+    if legend_on:
+        plt.legend(bbox_to_anchor=(1.04, 1), borderaxespad=0)
     plt.tight_layout()
     plt.savefig(outname)
     plt.close()
@@ -193,15 +194,19 @@ plot_xy(p1_on, p2_on, r"XY trajectory (Coulomb ON)",  "data/plot/xy_traj_coulomb
 plot_xy(p1_off, p2_off, r"XY trajectory (Coulomb OFF)", "data/plot/xy_traj_coulomb_off.pdf")
 
 # plot cover page
-p1_on_cover = load_posvel(1, 0, N=1000000) # coulomb on, particle 0, longer run
-p2_on_cover = load_posvel(1, 1, N=1000000) # coulomb on, particle 1, longer run
+p1_on_cover = load_posvel(0, 0, N=1000000) # coulomb on, particle 0, longer run
+p2_on_cover = load_posvel(0, 1, N=1000000) # coulomb on, particle 1, longer run
 
 plt.figure()
 plt.plot(p1_on_cover["x"], p1_on_cover["y"], alpha=0.9, label="P1")
 plt.plot(p2_on_cover["x"], p2_on_cover["y"], alpha=0.9, label="P2")
-plt.axis('equal')
-plt.xlabel(r"$x~(\text{µ}\mathrm{m})$")
-plt.ylabel(r"$y~(\text{µ}\mathrm{m})$")
+
+ax = plt.gca()
+ax.set_aspect('equal', adjustable='box')
+ax.set_xticks([])
+ax.set_yticks([])
+ax.tick_params(left=False, bottom=False, labelleft=False, labelbottom=False)
+
 plt.tight_layout()
-plt.savefig("data/plot/xy_traj_coulomb_on_cover.pdf")
+plt.savefig("data/plot/xy_traj_coulomb_off_cover.pdf", dpi=300, bbox_inches="tight")
 plt.close()
