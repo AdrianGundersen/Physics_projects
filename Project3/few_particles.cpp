@@ -7,6 +7,7 @@
 #include <iostream>
 #include <fstream>
 #include <filesystem>
+#include <iomanip>
 
 int main() {
     arma::arma_rng::set_seed(parameters::seed);
@@ -64,6 +65,8 @@ int main() {
     ofile1 << "# t x y z vx vy vz" << "\n";
     ofile2 << "# t x y z vx vy vz" << "\n";
     energy_ofile << "# t E_total" << "\n";
+
+    energy_ofile << std::setprecision(17);
 
     par1.write_to_file(ofile1, time, true);
     par2.write_to_file(ofile2, time, true);

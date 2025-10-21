@@ -4,6 +4,7 @@ import re
 import glob
 import numpy as np
 import matplotlib.pyplot as plt
+import matplotlib.ticker as mticker
 
 # ---- Matplotlib defaults ----
 # Adjusted for visibility in reports and due to triple figures in report
@@ -214,16 +215,27 @@ plt.close()
 # Plot energy
 energy_data0 = np.loadtxt("data/total_energy_coulomb=0_N40000.txt")
 energy_data1 = np.loadtxt("data/total_energy_coulomb=1_N40000.txt")
-t = energy_data0[:,0]
-e0 = energy_data0[:,1]
-e1 = energy_data1[:,1]
-plt.figure()
-plt.plot(t, e1, label="Coulomb ON")
-plt.xlabel(r"$t~(\text{µ}\mathrm{s})$")
-plt.ylabel(r"Total Energy (u (m/s)$^2$)")
-plt.legend()
+t  = energy_data0[:, 0]
+e0 = energy_data0[:, 1]
+e1 = energy_data1[:, 1]
+
+E0_0 = e0[0]
+E0_1 = e1[0]
+fig, ax = plt.subplots()
+ax.plot(t, e1 - E0_1, label="Coulomb ON")
+ax.plot(t, e0 - E0_0, label="Coulomb OFF")
+
+ax.set_xlabel(r"$t\;(\mu\mathrm{s})$")
+ax.set_ylabel(r"$\Delta E\;[u\,(m/s)^2]$")
+ax.axhline(0, lw=1, alpha=0.6, color="gray", linestyle="--", label="Initial Energy")
+
+ax.ticklabel_format(axis='y', style='plain', useOffset=False)
+ax.yaxis.get_offset_text().set_visible(False)
+ax.legend(frameon=True)
+ax.margins(y=0.05)
+plt.grid(True, which="both", alpha=0.3, linewidth=0.6, linestyle="--")
 plt.tight_layout()
-plt.savefig("data/plot/total_energy_few_particles.pdf")
+plt.savefig("data/plot/total_energy_delta_few_particles.pdf")
 plt.close()
 
 # Plot relative error in energy
