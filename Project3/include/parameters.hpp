@@ -57,20 +57,20 @@ const std::string filename_single = "single_particle_N" + std::to_string(single.
 
 // FEW PARTICLE PARAMETERS
 inline constexpr SimulationParams few{
-    200.0,  // total_time_few [µs]
-    1000000,  // N_few
-    true    // coulomb_on_few
+    500.0,  // total_time_few [µs]
+    40000,  // N_few
+    false    // coulomb_on_few
 };
 
 // filename for output data (if using another naming scheme, update plotting accordingly (not recommended))
 const std::string filename_few0 = "pos_vel_0_coulomb=" + std::to_string(few.coulomb_on) + "_N" + std::to_string(few.N) + ".txt"; // particle 0
 const std::string filename_few1 = "pos_vel_1_coulomb=" + std::to_string(few.coulomb_on) + "_N" + std::to_string(few.N) + ".txt"; // particle 1
-
+const std::string filename_few_energy = "total_energy_coulomb=" + std::to_string(few.coulomb_on) + "_N" + std::to_string(few.N) + ".txt";
 // MULTI PARTICLE PARAMETERS
 inline constexpr SimulationParams multi{
     500.0,   // total_time_multi [µs]
     40000,   // N_multi
-    false   // coulomb_on_multi coulumb forces
+    true   // coulomb_on_multi coulumb forces
 };
 
 // Trap setup

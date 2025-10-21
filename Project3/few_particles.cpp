@@ -54,13 +54,16 @@ int main() {
 
     std::string filepath1 = "data/" + parameters::filename_few0;
     std::string filepath2 = "data/" + parameters::filename_few1;
+    std::string energy_filepath = "data/" + parameters::filename_few_energy;
 
     std::ofstream ofile1(filepath1);
     std::ofstream ofile2(filepath2);
+    std::ofstream energy_ofile(energy_filepath);
 
     // makes headesr
     ofile1 << "# t x y z vx vy vz" << "\n";
     ofile2 << "# t x y z vx vy vz" << "\n";
+    energy_ofile << "# t E_total" << "\n";
 
     par1.write_to_file(ofile1, time, true);
     par2.write_to_file(ofile2, time, true);
@@ -70,9 +73,13 @@ int main() {
         time += dt;
         par1.write_to_file(ofile1, time, true);
         par2.write_to_file(ofile2, time, true);
+        ek = trap.total_energy(false);
+        tot_ek = arma::sum(ek);
+        energy_ofile << time << " " << tot_ek << "\n";
     }
     ofile1.close();
     ofile2.close();
+    energy_ofile.close();
     //trap.print_particles();
 
     ek = trap.total_energy();
@@ -85,6 +92,7 @@ int main() {
 
     std::cout << "Wrote positions against time as: "<< filepath1 << "\n";
     std::cout << "Wrote positions against time as: "<< filepath2 << "\n";
+    std::cout << "Wrote total energy against time as: "<< energy_filepath << "\n";
     std::cout << dt << "\n";
     std::cout << time << "\n";
     return 0;

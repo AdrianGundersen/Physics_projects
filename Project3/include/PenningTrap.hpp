@@ -45,7 +45,7 @@ public:
     - Calculates the coulumb potential between the particles
     - Returning a vector with the Total energy of each particle
     */
-    arma::vec total_energy() const;
+    arma::vec total_energy(bool print_info = true) const;
 
     // test functions
     int number_of_particles(); // number of particles in trap (can add option to remove particles)

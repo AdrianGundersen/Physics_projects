@@ -210,3 +210,31 @@ ax.tick_params(left=False, bottom=False, labelleft=False, labelbottom=False)
 plt.tight_layout()
 plt.savefig("data/plot/xy_traj_coulomb_off_cover.pdf", dpi=300, bbox_inches="tight")
 plt.close()
+
+# Plot energy
+energy_data0 = np.loadtxt("data/total_energy_coulomb=0_N40000.txt")
+energy_data1 = np.loadtxt("data/total_energy_coulomb=1_N40000.txt")
+t = energy_data0[:,0]
+e0 = energy_data0[:,1]
+e1 = energy_data1[:,1]
+plt.figure()
+plt.plot(t, e1, label="Coulomb ON")
+plt.xlabel(r"$t~(\text{µ}\mathrm{s})$")
+plt.ylabel(r"Total Energy (u (m/s)$^2$)")
+plt.legend()
+plt.tight_layout()
+plt.savefig("data/plot/total_energy_few_particles.pdf")
+plt.close()
+
+# Plot relative error in energy
+rel_err0 = np.abs(e0 - e0[0]) / (np.abs(e0[0]) + DEN_TOL)
+rel_err1 = np.abs(e1 - e1[0]) / (np.abs(e1[0]) + DEN_TOL)
+plt.figure()
+plt.plot(t, rel_err1, label="Coulomb ON")
+plt.plot(t, rel_err0, label="Coulomb OFF")
+plt.xlabel(r"$t~(\text{µ}\mathrm{s})$")
+plt.ylabel(r"Relative error in Total Energy")
+plt.yscale("log")
+plt.legend()
+plt.tight_layout()
+plt.savefig("data/plot/total_energy_relerr_few_particles.pdf")

@@ -66,8 +66,8 @@ int main() {
 
 
     std::cout << "Starting simulations on " << N_particles << " particles.\n";
-    int total_threads = omp_get_max_threads();
-    int N_threads = std::min(total_threads, parameters::max_threads); // use at most max_threads
+    int total_threads = static_cast<int>(parameters::total_threads);
+    int N_threads = std::min(total_threads, static_cast<int>(std::thread::hardware_concurrency()));
     std::cout << "Using up to " << N_threads << "/" << total_threads << " threads.\n";
     std::cout << "Total runs: " << total_runs << "\n";
     std::cout << "Coulomb interaction: " << (coulomb_on ? "ON" : "OFF") << "\n";

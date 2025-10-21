@@ -144,16 +144,10 @@ arma::mat PenningTrap::acceleration_all(const arma::mat& R, const arma::mat& V, 
 return A;
 }    
 
-int PenningTrap::number_of_particles() {
-    // also removes particles outside the trap (should maybe rename or be optional)
-    std::erase_if(particles, [outside = d](const Particle& p){ // remove if outside the trap requires C++20
-        return arma::norm(p.position) >= outside;  // all particles outside the trap
-    });
-    return static_cast<int>(particles.size());  // remaining inside 
-}
+
 
 // Calculatng total energy of the particles
-arma::vec PenningTrap::total_energy() const {
+arma::vec PenningTrap::total_energy(bool print_info) const { // optional print info
     const int N = particles.size();
 
     //constants 
@@ -200,12 +194,23 @@ arma::vec PenningTrap::total_energy() const {
                 coulumb_potential(j) += 0.5 * U;
 
         }}}
-    std::cout   << "Kinetic:  " << arma::sum(kinetic_energies) << " u (m/s)^2" << "\n" 
-                << "Electric: " << arma::sum(EPotential) << " u (m/s)^2" << "\n" 
-                << "Coulumb:  " << arma::sum(coulumb_potential)<< " u (m/s)^2" << "\n";
+    if (print_info) {
+        std::cout   << "Kinetic:  " << arma::sum(kinetic_energies) << " u (m/s)^2" << "\n" 
+                    << "Electric: " << arma::sum(EPotential) << " u (m/s)^2" << "\n" 
+                    << "Coulumb:  " << arma::sum(coulumb_potential)<< " u (m/s)^2" << "\n";
+    }
     arma::vec total_energy = kinetic_energies + EPotential + coulumb_potential;
 
     return total_energy;
+}
+
+
+int PenningTrap::number_of_particles() {
+    // also removes particles outside the trap (should maybe rename or be optional)
+    std::erase_if(particles, [outside = d](const Particle& p){ // remove if outside the trap requires C++20
+        return arma::norm(p.position) >= outside;  // all particles outside the trap
+    });
+    return static_cast<int>(particles.size());  // remaining inside 
 }
 
 // Debugging
