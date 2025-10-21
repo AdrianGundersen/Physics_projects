@@ -222,9 +222,8 @@ e1 = energy_data1[:, 1]
 E0_0 = e0[0]
 E0_1 = e1[0]
 fig, ax = plt.subplots()
-ax.plot(t, e1 - E0_1, label="Coulomb ON")
-ax.plot(t, e0 - E0_0, label="Coulomb OFF")
-
+ax.plot(t, e0 - E0_0, label="Coulomb OFF", alpha=0.9)
+ax.plot(t, e1 - E0_1, label="Coulomb ON", alpha=0.9, linestyle='--')
 ax.set_xlabel(r"$t\;(\mu\mathrm{s})$")
 ax.set_ylabel(r"$\Delta E\;[u\,(m/s)^2]$")
 ax.axhline(0, lw=1, alpha=0.6, color="gray", linestyle="--", label="Initial Energy")
