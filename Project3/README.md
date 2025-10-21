@@ -199,7 +199,7 @@ make run-s
 | `plot_single.py` | Compares analytical vs numerical trajectories for one particle | Data files from `single_particle.exe` | Time evolution & relative error plots |
 | `plot_pos_vel.py` | Plots positions and velocities of multiple particles | Few/N-particle data files | Phase space and trajectory plots |
 | `plot_trapped_vs_omega.py` | Plots trapped fraction vs driving frequency | Parameter sweep results | Stability diagrams |
-| `floquet_table.py` | Generates a Floquet/Mathieu stability table | Parameters inside | LaTeX-formatted stability tables |
+| `floquet_table.py` | Generates a Floquet/Mathieu stability table | Parameters inside | Stability tables |
 | `animate.py` | Creates animations of particle motion (mainly used for debugging)| Positional data files | `.gif` or `.mp4` animations |
 
 
