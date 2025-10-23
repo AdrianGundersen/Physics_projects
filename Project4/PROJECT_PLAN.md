@@ -13,7 +13,7 @@ A description of the project, goals, timeline, and task assignments. Only meant 
 - **Report writing** and review
 - **Final delivery** of code and report
 ### File Structure
-```
+```text
 Project4/
 ├── Makefile                 # Build targets (consider switching to CMake if desired)
 ├── README.md                # Project overview and quickstart
@@ -42,8 +42,7 @@ Project4/
 │   └── 
 │
 └── scripts/                 # Analysis & plotting (Python scripts)
-    └── (e.g., analyze.py, plot.ipynb)
-
+    └── 
 ```
 ## Timeline
 Project Start Date: 23.10.2025
@@ -105,8 +104,8 @@ Things to pick:
 | Task ID | Task Description      | Assigned To | Start Date | End Date   | Status     |
 |---------|---------------------------|-------------|------------|------------|------------|
 | Week 43 |                           |             |            |            |            |
-|1 | Make project plan | Everyone | 23.10.2025 | 28.10.2025 | In Progress |
-|2 | Make LaTeX template | Victor | 24.10.2025 | 24.10.2025 | In Progress |
+|1 | Make project plan draft | Everyone | 23.10.2025 | 28.10.2025 | In Progress |
+|2 | Make LaTeX template | Victor | 24.10.2025 | 24.10.2025 | Completed |
 | Week 44 |                           |             |            |            |            |
 |3 | Problem 1:  2x2 lattice analytics| TBD | TBD | TBD| Not Started |
 |4 | Problem 2: Find $\Delta E$ for lattice $L>2$ | TBD | TBD | TBD | Not Started |
