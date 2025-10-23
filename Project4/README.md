@@ -48,7 +48,7 @@ Project4/
 - **Armadillo** 
 - **OpenMP** 
 - **Python 3.10+**
-- **nhlomann/json** (header-only C++ JSON library) - included in `include/` folder
+- **nhlomann/json** (header-only C++ JSON library) - included in    `include/` folder
   - `numpy`
   - `matplotlib`
 
