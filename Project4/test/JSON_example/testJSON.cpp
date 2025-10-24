@@ -47,19 +47,19 @@ int main(int argc, char** argv) { // argc and argv to get JSON file path (argc i
         return 1;
     }
 
-    json j; f >> j;
-    Config cfg = j.get<Config>();
+    json j; f >> j; // parse JSON file into json object
+    Config cfg = j.get<Config>(); // convert json object to Config struct
 
     std::filesystem::create_directories(cfg.output.directory);
-    const std::string outpath = cfg.output.directory + cfg.output.file_name;
+    const std::string outpath = cfg.output.directory + cfg.output.file_name; 
 
     std::ofstream out(outpath);
-    if (!out) {
+    if (!out) { // check if file opened successfully
         std::cerr << "Could not open output file: " << outpath << "\n";
         return 2;
     }
 
-    out << "# positions (x y z)\n"
+    out << "# positions (x y z)\n" // write header
         << cfg.positions.x << " "
         << cfg.positions.y << " "
         << cfg.positions.z << "\n";
