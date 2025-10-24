@@ -34,6 +34,22 @@ void from_json(const json& j, Config& c) {
     j.at("output").get_to(c.output);
 }
 
+// Config::Positions -> json
+void to_json(json &j, const Config::Positions& p) {
+    j = json{{"x", p.x}, {"y", p.y}, {"z", p.z}};
+}
+
+// Config::Output -> json
+void to_json(json &j, const Config::Output& o) {
+    j = json{{"directory", o.directory}, {"file_name", o.file_name}};
+}
+
+// Config -> json
+void to_json(json &j, const Config& c) {
+    j = json{{"positions", c.positions}, {"output", c.output}};
+}
+
+
 int main(int argc, char** argv) { // argc and argv to get JSON file path (argc is number of arguments, argv is array of arguments)
     if (argc < 2) {
         std::cerr << "Usage: " << argv[0] << " <config.json>\n";
@@ -50,6 +66,13 @@ int main(int argc, char** argv) { // argc and argv to get JSON file path (argc i
     json j; f >> j; // parse JSON file into json object
     Config cfg = j.get<Config>(); // convert json object to Config struct
 
+    /*
+    same as:
+    std::ifstream f(cfg_path);
+    json j{json::parse(f)};
+    Config cfg = j.get<Config>();
+    */
+
     std::filesystem::create_directories(cfg.output.directory);
     const std::string outpath = cfg.output.directory + cfg.output.file_name; 
 
@@ -59,6 +82,7 @@ int main(int argc, char** argv) { // argc and argv to get JSON file path (argc i
         return 2;
     }
 
+    
     out << "# positions (x y z)\n" // write header
         << cfg.positions.x << " "
         << cfg.positions.y << " "
