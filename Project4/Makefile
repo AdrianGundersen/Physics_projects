@@ -1,7 +1,7 @@
 # Makefile (project root)
 CXX := g++
-CXXFLAGS := -std=c++20 -O2 -Wall -Wextra
-INCLUDE := -Iinclude
+CXXFLAGS := -std=c++20 -O2 -Wall -Wextra 
+INCLUDE := -Iinclude -I$(abspath ..)/third_party 
 
 BIN := bin/test_json
 SRC := test/JSON_example/testJSON.cpp
