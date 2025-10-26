@@ -1,4 +1,8 @@
 // include/ising/lattice.hpp
+
+/*
+For the Ising model. To represent the lattice and its spins.
+*/
 #pragma once
 #include <armadillo>
 #include <vector>
