@@ -107,11 +107,12 @@ Things to pick:
 |1 | Make project plan draft | Everyone | 23.10.2025 | 28.10.2025 | In Progress |
 |2 | Make LaTeX template | Victor | 24.10.2025 | 24.10.2025 | Completed |
 | Week 44 |                           |             |            |            |            |
-|3 | Problem 1:  2x2 lattice analytics| TBD | TBD | TBD| Not Started |
-|4 | Problem 2: Find $\Delta E$ for lattice $L>2$ | TBD | TBD | TBD | Not Started |
+|3 | Problem 1:  2x2 lattice analytics| Casper & Victor | 25.10.2025 | TBD | In Progress |
+|4 | Problem 2: Find $\Delta E$ for lattice $L>2$ | Victor | 26.10.2025 | 26.10.2025 | Completed |
 |5 | Problem 3: Implement BC without multiple if-tests | TBD | TBD | TBD | Not Started |
 |6 | Set up code structure/skeleton code | TBD | 24.10.2025 | TBD | Not Started |
 |7 | Implement JSON input template | Victor | 25.10.2025 | 28.10.2025 | Not Started |
+| 8| Add option to run on raspberry pi | Victor | 26.10.2025 | 26.10.2025 | Completed |
 ---------------------------------------------------------------------------------
 
 ## Notes
