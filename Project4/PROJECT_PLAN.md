@@ -20,7 +20,7 @@ Project4/
 ├── PROJECT_PLAN.md          # Internal project plan (scope, timeline, tasks)
 │
 ├── configs/                 # JSON configs for different runs
-│   └── ...
+│   └── 2x2_test.json
 │
 │
 ├── data/                 # Numerical outputs, logs, tables
@@ -31,15 +31,23 @@ Project4/
 │
 ├── include/                 # Header files
 │   ├── ising/
-│   │   ├── lattice.hpp
-│   │   └── metropolis.hpp
-│   └── constants.hpp
+│   │   ├── io/
+│   │   │   └── json_util.hpp # JSON parsing utilities (Header-only)
+│   │   ├── lattice.hpp       # Lattice class definition with L and spins
+│   │   └── metropolis.hpp    # Metropolis algorithm functions
+│   │   └── observables.hpp   # Functions to compute observables like energy, magnetization
+│   │   └── model.hpp         # Model parameters and model structure (Header-only)
+│   └── omp_rng.hpp       # OpenMP random number generator
 │
-├── src/                     # Implementation files
-│   └── metropolis.cpp
+└── src/
+    └─ ising/
+    |  ├─ lattice.cpp
+    |  ├─ metropolis.cpp
+    |  └─ observables.cpp
+    └─ omp_rng.cpp
 │
 ├── apps/                    # Executables running JSON configs
-│   └── 
+│   └── validate2x2.cpp
 │
 └── scripts/                 # Analysis & plotting (Python scripts)
     └── 

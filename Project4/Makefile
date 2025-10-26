@@ -1,42 +1,38 @@
 # Makefile (project root)
 CXX := g++
-# Optional architecture flags (to use raspberry pi)
 ARCH ?=
-
 CXXFLAGS := -std=c++20 -O2 -Wall -Wextra $(ARCH)
 
-INCLUDE := -Iinclude -I$(abspath ..)/third_party
-
-BIN := bin/test_json
+INCLUDE := -Iinclude -I$(abspath ..)/third_party # third party at FYS3150 root
+BIN := bin/test_json 
 SRC := test/JSON_example/testJSON.cpp
 
-all: $(BIN)
+# App: validate 2x2
+BIN_DIR := bin
+BIN_VALIDATE := $(BIN_DIR)/validate2x2
+APP_VALIDATE := apps/validate2x2.cpp
 
-$(BIN): $(SRC)
-	@mkdir -p bin
-	$(CXX) $(CXXFLAGS) $(INCLUDE) $< -o $@
+all: $(BIN_VALIDATE)
 
-JSON ?= test/JSON_example/testJSON.json
+$(BIN_VALIDATE): $(SRC_CORE) $(APP_VALIDATE)
+	@mkdir -p $(BIN_DIR)
+	$(CXX) $(CXXFLAGS) $(INCLUDE) $^ -o $@
 
-run: $(BIN)
-	./$(BIN) $(JSON)
+# Default config to run (2x2)
+JSON ?= configs/2x2_test.json
+
+run-2x2: $(BIN_VALIDATE)
+	./$(BIN_VALIDATE) $(JSON) 
 
 clean:
-	rm -rf bin
+	rm -rf $(BIN_DIR)
 
-.PHONY: all run clean
+.PHONY: all run-2x2 clean
 
-
-# Pi remote build (optional)
-# SSH alias or user@host of your Pi
+# --- Pi remote build (optional) ---
 PI_HOST ?= rpi
-# Remote directory to sync into (uses the current folder name)
 PI_DIR  ?= ~/$(notdir $(CURDIR))
-
-# CPU tuning (Pi 5 default)
 PI_ARCH ?= -march=armv8-a+simd -mcpu=cortex-a76
-
-.PHONY: pirsync pibuild run-pi
 
 pirsync:
 	rsync -az --delete ./ $(PI_HOST):$(PI_DIR)/
@@ -47,4 +43,6 @@ pibuild: pirsync
 		$(MAKE) ARCH="$(PI_ARCH)" -j$$(nproc)'
 
 run-pi: pibuild
-	ssh $(PI_HOST) 'cd $(PI_DIR) && ./$(BIN) $(JSON)'
+	ssh $(PI_HOST) 'cd $(PI_DIR) && ./$(BIN_VALIDATE) $(JSON)'
+
+.PHONY: pirsync pibuild run-pi

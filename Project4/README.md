@@ -73,6 +73,16 @@ The executables in the `apps/` folder read parameters from JSON config files loc
 
 ### Run
 
+On raspberry pi, use:
+```bash
+make PI_HOST=<your_pi_host>
+```
+
+or set the `PI_HOST` variable in the `Makefile` and run:
+```bash
+make run-pi
+```
+
 
 ### Plotting
 

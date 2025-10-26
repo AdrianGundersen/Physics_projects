@@ -2,3 +2,8 @@
 /*
 For the metropolis algorithm
 */
+
+namespace ising{
+
+    
+}
