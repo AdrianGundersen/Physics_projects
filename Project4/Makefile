@@ -6,11 +6,11 @@ CXXFLAGS := -std=c++20 -O2 -Wall -Wextra $(ARCH)
 INCLUDE := -Iinclude -I$(abspath ..)/third_party # third party at FYS3150 root
 BIN := bin/test_json 
 SRC := test/JSON_example/testJSON.cpp
-
 # App: validate 2x2
 BIN_DIR := bin
 BIN_VALIDATE := $(BIN_DIR)/validate2x2
 APP_VALIDATE := apps/validate2x2.cpp
+SRC_CORE := src/ising/lattice.cpp src/ising/observables.cpp     # add more .cpp later as you implement
 
 all: $(BIN_VALIDATE)
 

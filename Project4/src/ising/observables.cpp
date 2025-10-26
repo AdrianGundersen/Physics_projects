@@ -9,6 +9,7 @@
 #include <cmath>
 
 namespace ising{
+    // energy
     double total_energy(const Lattice& lat, const Model& model) {
         double J = model.J;
         int L = static_cast<int>(lat.size());
@@ -18,5 +19,18 @@ namespace ising{
 
     double energy_per_spin(const Lattice& lat, const Model& model) {
         return total_energy(lat, model) / lat.num_spins();
+    }
+    // magnetization
+    int total_magnetization(const Lattice& lat) { 
+        const int L = lat.size();
+        int M = 0;
+        for (int i = 0; i < L; ++i)
+            for (int j = 0; j < L; ++j)
+                M += lat(i, j);
+        return M;
+    }
+
+    double magnetization_per_spin(const Lattice& lat) {
+        return total_magnetization(lat) / lat.num_spins();
     }
 }

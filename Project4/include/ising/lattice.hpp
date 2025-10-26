@@ -7,27 +7,31 @@ For the Ising model. To represent the lattice and its spins.
 #include <armadillo>
 #include <vector>
 #include <random>
-#include <omp_rng.hpp>
 
 namespace ising {
     class Lattice {
         private:
             int L; // Lattice size
-            double N; // Number of spins
+            int N; // Number of spins
 
 
             arma::Mat<int> spins; // 2D matrix to hold spin values (+1 or -1)
 
-
-            void init_spin_from_mat(const arma::Mat<int> spin_mat) {
-                arma::Mat<int> spins = spin_mat;
-            }
-
-            void init_spin_rand(int seed);
+ 
 
         public:
             Lattice(int L) : L(L), N(L * L), spins(L, L) {} // constructor
 
+            void init_spin_from_mat(const arma::Mat<int>& spin_mat) {spins = spin_mat;} // initialize spins from given matrix
+
+            void init_spin_rand(int seed); // initialize spins randomly with given seed
+
+            void init_spin_same(bool up = true); // initialize all spins to same value (+1 by default)
+
+
+            // opperators
+            int& operator()(int i, int j) { return spins(i, j); } // non-const version
+            int  operator()(int i, int j) const { return spins(i, j); } // const version
 
             // helper functions
             int size() const { return L; } // return lattice size L

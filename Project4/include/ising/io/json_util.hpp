@@ -23,8 +23,6 @@ namespace ising::io {
 
     inline void observables_to_json(nlohmann::json& j, const ising::Observables& obs) {
         j["E"] = obs.E;
-        j["E2"] = obs.E2;
         j["M"] = obs.M;
-        j["M2"] = obs.M2;
     }
 }

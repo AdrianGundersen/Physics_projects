@@ -34,9 +34,15 @@ int main(int argc, char** argv) { // argc and argv to get JSON file path (argc i
     ising::io::model_from_json(j.at("model"), model); // populate model
 
     ising::Lattice lattice = ising::io::lattice_from_json(j.at("lattice")); // populate lattice
+    lattice.init_spin_same(true); // all spins up for 2x2 validation
 
     std::cout << "Model J: " << model.J << "\n";
     std::cout << "Lattice size L: " << lattice.size() << "\n";
+    std::cout << "Spin (0,0): " << lattice(0, 0) << "\n";
+
+    int M = total_magnetization(lattice);
+
+    std::cout << "Total magnetization M: " << M << "\n";
     return 0;
 }
 
