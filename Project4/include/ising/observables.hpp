@@ -14,6 +14,8 @@ namespace ising{
     int total_magnetization(const Lattice& lat);
     double magnetization_per_spin(const Lattice& lat);
 
+    double heat_capacity(const Lattice& lat, const Model& model, double T);
+    double susceptibility(const Lattice& lat, const Model& model, double T);
     struct Observables {
         double E{0.0};
         int   M{0};

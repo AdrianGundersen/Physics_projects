@@ -14,6 +14,13 @@ namespace ising{
         double J = model.J;
         int L = static_cast<int>(lat.size());
         double E = 0.0;
+        /*
+        for (int i = 0; i < L; ++i) {
+            for (int j = 0; j < L; ++j) {
+                int s = lat(i, j);
+            
+        }
+        */
         return E;
     }
 

@@ -20,7 +20,7 @@ namespace ising {
  
 
         public:
-            Lattice(int L) : L(L), N(L * L), spins(L, L) {} // constructor
+            Lattice(int L) : L(L), N(L * L), spins(L, L) {} // constructor (assumes LxL lattice)
 
             void init_spin_from_mat(const arma::Mat<int>& spin_mat) {spins = spin_mat;} // initialize spins from given matrix
 
@@ -29,7 +29,9 @@ namespace ising {
             void init_spin_same(bool up = true); // initialize all spins to same value (+1 by default)
 
 
-            // opperators
+            // operators
+
+            // access spin value at (i, j)
             int& operator()(int i, int j) { return spins(i, j); } // non-const version
             int  operator()(int i, int j) const { return spins(i, j); } // const version
 
