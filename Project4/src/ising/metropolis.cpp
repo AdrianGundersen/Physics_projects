@@ -20,6 +20,9 @@ namespace ising{
         const double beta = 1.0 / T;
         const double J = model.J;
         
+
+
+
         int i, j;
         int right, left, up, down;
 
@@ -37,7 +40,12 @@ namespace ising{
             right = (j + 1) % L;
             left = (j + L - 1) % L; // right/left in cols
 
+            dE = 2.0 * J * s * (lattice(up, j) + lattice(down, j) + lattice(i, right) +lattice(i, left));
+            int factor_idx = static_cast<int>(dE / (4.0 * J)) + 2; // dE to idx in Boltzmann factors
+            double r = dist_r(generator);
+            if (r <= Boltzmannfactors().factors[factor_idx]) {
+                lattice(i, j) = -s; // flip spin
         }
-
+        }
     }
 }
