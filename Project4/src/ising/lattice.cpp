@@ -8,9 +8,9 @@
 namespace ising {
     void Lattice::init_spin_same(bool up) {
         if (up) {
-            spins.fill(1);     // all +1
+            std::fill(spins.begin(), spins.end(), 1);     // all +1
         } else {
-            spins.fill(-1);   // all -1
+            std::fill(spins.begin(), spins.end(), -1);   // all -1
         }
     }
 }
