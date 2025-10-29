@@ -34,6 +34,10 @@ namespace ising {
             int& operator()(int i, int j) { return spins[i * L + j]; } // non-const version
             int  operator()(int i, int j) const { return spins[i * L + j]; } // const version
 
+            // access spin value at flat vector idx
+            int& operator[](int idx) { return spins[idx]; } // non-const version
+            int  operator[](int idx) const { return spins[idx]; } // const version
+
             // helper functions
             int size() const { return L; } // return lattice size L
             double num_spins() const { return N; } // return number of spins N

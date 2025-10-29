@@ -13,8 +13,7 @@ namespace ising{
         std::mt19937 generator(seed);
         const int L = lattice.size();
         const int N = lattice.num_spins();
-        std::uniform_int_distribution<int> dist_pos(0, L-1); // selects random spin
-        // later use std::uniform_int_distribution<int>(0, N-1); // to select from all spins
+        std::uniform_int_distribution<int> dist_pos(0, N-1); // select random spin
         std::uniform_real_distribution<double> dist_r(0.0, 1.0); // acceptance prob
 
 
@@ -23,21 +22,18 @@ namespace ising{
         
         int i, j;
         int right, left, up, down;
-
+        double dE;
         for (int step = 0; step < n_steps; ++step) {
-            i = dist_pos(generator);
-            j = dist_pos(generator);
+            int idx = dist_pos(generator);
 
-            const int s_old = lattice(i, j);
+            i = idx / L;
+            j = idx % L;
 
+            int s = lattice(i, j);
             right = (i + 1) % L;
             left  = (i - 1 + L) % L;
             down  = (j + 1) % L;
             up    = (j - 1 + L) % L;
-            
-
-
-
         }
 
     }
