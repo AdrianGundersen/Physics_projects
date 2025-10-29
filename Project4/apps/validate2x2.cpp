@@ -34,17 +34,35 @@ int main(int argc, char** argv) { // argc and argv to get JSON file path (argc i
     ising::io::model_from_json(j.at("model"), model); // populate model
 
     ising::Lattice lattice = ising::io::lattice_from_json(j.at("lattice")); // populate lattice
-    lattice.init_spin_same(false); // all spins up for 2x2 validation
+
+    if (j.at("model").contains("spin_config")) {
+        std::string spin_config = j.at("model").at("spin_config").get<std::string>();
+        if (spin_config == "all_up") {
+            lattice.init_spin_same(true);
+        } else if (spin_config == "all_down") {
+            lattice.init_spin_same(false);
+        } else {
+            std::cerr << "Unknown spin configuration: " << spin_config << "\n";
+            return 1;
+        }
+    }
+    else {
+        std::cerr << "No spin config specified.\n";
+        return 1;
+    }
 
     std::cout << "Model J: " << model.J << "\n";
     std::cout << "Lattice size L: " << lattice.size() << "\n";
     std::cout << "Spin (0,0): " << lattice(0, 0) << "\n";
 
     int M = total_magnetization(lattice);
-
-    bool double_count = model.double_count;
-
     std::cout << "Total magnetization M: " << M << "\n";
+
+
+    int eps = ising::energy_per_spin(lattice, model);
+
+    std::cout << "Total energy per spin ε: " << eps << "\n";
+
     return 0;
 }
 

@@ -14,13 +14,47 @@ namespace ising{
         double J = model.J;
         int L = static_cast<int>(lat.size());
         double E = 0.0;
-        /*
+        bool double_count = model.double_count;
+        int s;
+        int right, down;
+        int s_down, s_right;
+        if (!double_count) {       
         for (int i = 0; i < L; ++i) {
             for (int j = 0; j < L; ++j) {
-                int s = lat(i, j);
-            
+                s = lat(i, j);
+                right = (i+1) % L;
+                down = (j+1) % L;
+                s_right = lat(right, j);
+                s_down = lat(i, down);
+                E += s*(s_down + s_right);
+            }
+            }
+        } 
+
+        else {
+        int s_left, s_up;
+        int left, up;
+        for (int i = 0; i < L; ++i) {
+            for (int j = 0; j < L; ++j) {
+                s = lat(i, j);
+                right = (i+1) % L;
+                down = (j+1) % L;
+                s_right = lat(right, j);
+                s_down = lat(i, down);
+                E += s*s_down;
+                E += s*s_right;
+                
+                // also count left and up
+                left = (i - 1 + L) % L;
+                up = (j - 1 + L) % L;
+                s_left = lat(left, j);
+                s_up = lat(i, up);
+                E += s*s_left;
+                E += s*s_up;
+            }
         }
-        */
+        }
+        E *= -J;
         return E;
     }
 
