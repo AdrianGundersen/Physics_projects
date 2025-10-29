@@ -22,6 +22,8 @@ namespace ising{
         
         int i, j;
         int right, left, up, down;
+
+        int s;
         double dE;
         for (int step = 0; step < n_steps; ++step) {
             int idx = dist_pos(generator);
@@ -29,11 +31,12 @@ namespace ising{
             i = idx / L;
             j = idx % L;
 
-            int s = lattice(i, j);
-            right = (i + 1) % L;
-            left  = (i - 1 + L) % L;
-            down  = (j + 1) % L;
-            up    = (j - 1 + L) % L;
+            s = lattice(i, j);
+            up = (i + 1) % L;
+            down = (i + L - 1) % L; 
+            right = (j + 1) % L;
+            left = (j + L - 1) % L; // right/left in cols
+
         }
 
     }
