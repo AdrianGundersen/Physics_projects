@@ -26,6 +26,8 @@ namespace ising::io {
         params.total_steps = js.value("total_steps", 10000); // default 10000
         params.temperature = js.value("temperature", 2.0); // default T=2.0
         params.seed = js.value("seed", 67); // default seed=67
+        params.burn_in_sweeps = js.value("burn_in_sweeps", 1000); // default 1000
+        params.measure_sweeps = js.value("measure_sweeps", 5000);
     }
 
     inline void observables_to_json(nlohmann::json& j, const ising::Observables& obs) {
