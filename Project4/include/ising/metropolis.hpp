@@ -14,18 +14,20 @@ namespace ising{
         int total_steps;
         double temperature;
         int seed;
+        int burn_in_sweeps;
+        int measure_sweeps;
     };
 
     struct Boltzmannfactors{
         std::array<double, 5> factors;
 
         void set(double beta, double J){
-            factors[0] = std::exp(-beta * 8.0 * J); 
-            factors[1] = std::exp(-beta * 4.0 * J);
+            factors[0] = 1.0;
+            factors[1] = 1.0;
             factors[2] = 1.0;
-            factors[3] = std::exp(beta * 4.0 * J);
-            factors[4] = std::exp(beta * 8.0 * J);
+            factors[3] = std::exp(-beta * 4.0 * J);
+            factors[4] = std::exp(-beta * 8.0 * J);
         }
     };
-    void Metropolis(Model& model, Lattice& lattice, int n_steps, double T, int seed);
+    void Metropolis(Model& model, Lattice& lattice, simParams& parmas, std::mt19937& rng);
 }

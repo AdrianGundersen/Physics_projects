@@ -59,12 +59,14 @@ namespace ising{
     }
 
     double energy_per_spin(const Lattice& lat, const Model& model) {
-        return total_energy(lat, model) / lat.num_spins();
+        double N = lat.num_spins();
+        double E_tot = total_energy(lat, model);
+        return E_tot / N;
     }
     // magnetization
-    int total_magnetization(const Lattice& lat) { 
+    double total_magnetization(const Lattice& lat) { 
         const int L = lat.size();
-        int M = 0;
+        double M = 0;
         for (int i = 0; i < L; ++i)
             for (int j = 0; j < L; ++j)
                 M += lat(i, j);
@@ -72,6 +74,8 @@ namespace ising{
     }
 
     double magnetization_per_spin(const Lattice& lat) {
-        return total_magnetization(lat) / lat.num_spins();
+        double M_tot = total_magnetization(lat);
+        double N = lat.num_spins();
+        return M_tot / N;
     }
 }

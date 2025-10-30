@@ -11,7 +11,7 @@ namespace ising{
     double total_energy(const Lattice& lat, const Model& model);
     double energy_per_spin(const Lattice& lat, const Model& model);
 
-    int total_magnetization(const Lattice& lat);
+    double total_magnetization(const Lattice& lat);
     double magnetization_per_spin(const Lattice& lat);
 
     double heat_capacity(const Lattice& lat, const Model& model, double T);
