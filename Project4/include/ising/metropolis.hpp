@@ -10,6 +10,12 @@ For the metropolis algorithm
 
 namespace ising{
 
+    struct simParams{
+        int total_steps;
+        double temperature;
+        int seed;
+    };
+
     struct Boltzmannfactors{
         std::array<double, 5> factors;
 
@@ -20,7 +26,6 @@ namespace ising{
             factors[3] = std::exp(beta * 4.0 * J);
             factors[4] = std::exp(beta * 8.0 * J);
         }
-
-    void Metropolis(Model& model, Lattice& lattice, int n_steps, double T, int seed);
     };
+    void Metropolis(Model& model, Lattice& lattice, int n_steps, double T, int seed);
 }

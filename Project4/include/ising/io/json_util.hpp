@@ -4,7 +4,7 @@
 #include "ising/model.hpp"
 #include "ising/lattice.hpp"
 #include "ising/observables.hpp"
-
+#include "ising/metropolis.hpp"
 #include <string>
 #include <nlohmann/json.hpp>
 #include <cstdint>
@@ -20,6 +20,12 @@ namespace ising::io {
         const int L = jl.at("L").get<int>();
         ising::Lattice lat(L);
         return lat;
+    }
+
+    inline void simparams_from_json(const nlohmann::json& js, ising::simParams& params) {
+        params.total_steps = js.value("total_steps", 10000); // default 10000
+        params.temperature = js.value("temperature", 2.0); // default T=2.0
+        params.seed = js.value("seed", 67); // default seed=67
     }
 
     inline void observables_to_json(nlohmann::json& j, const ising::Observables& obs) {

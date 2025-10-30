@@ -9,6 +9,8 @@ Validate 2x2 against analytical results
 #include "ising/lattice.hpp"
 #include "ising/io/json_util.hpp"
 #include "ising/model.hpp"
+#include "ising/observables.hpp"
+#include "ising/metropolis.hpp"
 
 
 using json = nlohmann::json;
@@ -61,6 +63,21 @@ int main(int argc, char** argv) { // argc and argv to get JSON file path (argc i
 
     int eps = ising::energy_per_spin(lattice, model);
 
+    std::cout << "Total energy per spin ε: " << eps << "\n";
+
+    ising::simParams params;
+    ising::io::simparams_from_json(j.at("simulation"), params);
+    int seed = params.seed;
+    double T = params.temperature;
+    int n_steps = params.total_steps;
+
+    ising::Metropolis(model, lattice, n_steps, T, seed);
+
+    eps = ising::energy_per_spin(lattice, model);
+    M = total_magnetization(lattice);
+
+    std::cout << "After Metropolis:\n";
+    std::cout << "Total magnetization M: " << M << "\n";
     std::cout << "Total energy per spin ε: " << eps << "\n";
 
     return 0;

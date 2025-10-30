@@ -10,7 +10,7 @@ SRC := test/JSON_example/testJSON.cpp
 BIN_DIR := bin
 BIN_VALIDATE := $(BIN_DIR)/validate2x2
 APP_VALIDATE := apps/validate2x2.cpp
-SRC_CORE := src/ising/lattice.cpp src/ising/observables.cpp     # add more .cpp later as you implement
+SRC_CORE := src/ising/lattice.cpp src/ising/observables.cpp src/ising/metropolis.cpp    # add more .cpp later as you implement
 
 all: $(BIN_VALIDATE)
 

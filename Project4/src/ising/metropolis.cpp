@@ -7,6 +7,7 @@
 #include "ising/model.hpp"
 #include "ising/observables.hpp"
 #include <random>
+#include <iostream>
 
 namespace ising{
     void Metropolis(Model& model, Lattice& lattice, int n_steps, double T, int seed) {
@@ -20,9 +21,6 @@ namespace ising{
         const double beta = 1.0 / T;
         const double J = model.J;
         
-
-
-
         int i, j;
         int right, left, up, down;
 
@@ -31,8 +29,8 @@ namespace ising{
         for (int step = 0; step < n_steps; ++step) {
             int idx = dist_pos(generator);
 
-            i = idx / L;
-            j = idx % L;
+            i = static_cast<int>(idx / L);
+            j = static_cast<int>(idx % L);
 
             s = lattice(i, j);
             up = (i + 1) % L;
@@ -45,6 +43,7 @@ namespace ising{
             double r = dist_r(generator);
             if (r <= Boltzmannfactors().factors[factor_idx]) {
                 lattice(i, j) = -s; // flip spin
+                std::cout << "Flipped spin at (" << i << ", " << j << ")\n";
         }
         }
     }

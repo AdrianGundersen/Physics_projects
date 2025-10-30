@@ -11,9 +11,9 @@
     },
     "simulation":
     {
-        "mother_seed": 67,
-        "temperature": 1.0,
-        "sweeps": 1000,
+        "seed": 67,
+        "temperature": 2.0,
+        "total_steps": 1000,
         "measure_step": 10
     }
 }
