@@ -87,7 +87,7 @@ Things to pick:
   - GitHub management
   
 - **Casper:** 
-  - TBD
+  - Analytical calculations for 2x2 lattice
 
 - **Victor:**  
   - Implement JSON input
@@ -98,7 +98,7 @@ Things to pick:
 - **TBD**
   - Optimization of code with OMP and FLOP reduction etc.
   - Report overview and writing
-  - Analytical calculations
+
   - Plotting and analysis
   - Makefile
   - Readme
@@ -112,16 +112,24 @@ Things to pick:
 | Task ID | Task Description      | Assigned To | Start Date | End Date   | Status     |
 |---------|---------------------------|-------------|------------|------------|------------|
 | Week 43 |                           |             |            |            |            |
-|1 | Make project plan draft | Everyone | 23.10.2025 | 28.10.2025 | In Progress |
+|1 | Make project plan draft | Everyone | 23.10.2025 | 28.10.2025 | Completed |
 |2 | Make LaTeX template | Victor | 24.10.2025 | 24.10.2025 | Completed |
 | Week 44 |                           |             |            |            |            |
-|3 | Problem 1:  2x2 lattice analytics| Casper & Victor | 25.10.2025 | TBD | In Progress |
+|3 | Problem 1:  2x2 lattice analytical | Casper & Victor | 25.10.2025 | 30.10.2025 | Completed |
 |4 | Problem 2: Find $\Delta E$ for lattice $L>2$ | Victor | 26.10.2025 | 26.10.2025 | Completed |
-|5 | Problem 3: Implement BC without multiple if-tests | TBD | TBD | TBD | Not Started |
-|6 | Set up code structure/skeleton code | TBD | 24.10.2025 | TBD | Not Started |
-|7 | Implement JSON input template | Victor | 25.10.2025 | 28.10.2025 | Not Started |
+|5 | Problem 3: Implement BC without multiple if-tests | Adrian | 27.10.2025 | 28.10.2025 | Completed |
+|6 | Set up code structure/skeleton code | Victor | 24.10.2025 | 30.10.2025 | Completed |
+|7 | Implement JSON input template | Victor | 25.10.2025 | 28.10.2025 | Completed |
 | 8| Add option to run on raspberry pi | Victor | 26.10.2025 | 26.10.2025 | Completed |
----------------------------------------------------------------------------------
+|9 | Calculate observables| Adrian & Victor | 29.10.2025 | 29.10.2025 | Completed |
+|10 | Write Boltzmann lookup table | Victor | 29.10.2025 | 30.10.2025 | Completed |
+|11 | Implement Metropolis algorithm | Adrian & Casper | 30.10.2025 | 02.11.2025 | In progress |
+|12 | Validate 2x2 lattice code | Adrian & Casper | 01.11.2025 | 02.11.2025 | Not started |
+| Week 45 |                           |             |            |            |            |
+|13 | Study burn-in time| TBD | 03.11.2025 | 05.11.2025 | Not started |
+|14 | Find probability distribution of states | TBD | 04.11.2025 | 06.11.2025 | Not started |
+|15 | Parallelize code with OpenMP | TBD | 05.11.2025 | 09.11.2025 | Not started |
+| Week 46 |                           |
 
 ## Notes
 - Units: 
