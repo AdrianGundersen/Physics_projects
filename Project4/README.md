@@ -64,14 +64,54 @@ Other systems not tested, but should work with similar steps.
 
 
 ## Usage & Compilation
+To see how make targets are defined, check the `Makefile` or run:
+```bash
+make help
+```
 
 ### Using JSON config files
 The executables in the `apps/` folder read parameters from JSON config files located in the `configs/` folder. You can create your own config files by copying and modifying the existing templates.
 
+**Example**
+```json
+{
+    "model": // Model parameters
+    {
+        "J": 1.0, // Interaction strength
+        "double_count" : false, // Whether to double count energy
+        "spin_config": "all_up" // Initial spin configuration: "all_up", "all_down", "random"
+    },
+    "lattice": // Lattice parameters
+    {
+        "L" : 2 // Lattice size (LxL)
+    },
+    "simulation": // Simulation parameters (Metropolis)
+    {
+        "seed": 67, // Mother seed for random number generator
+        "temperature": 2.0, // Temperature [J/kB]
+        "total_steps": 1000, // Total Monte Carlo steps
+        "measure_step": 10 // Measure observables every n steps
+    }
+}
+```
 
 ### Compile
+To compile the code to `bin/`, use:
+```bash
+make all
+```
+
+or to compile only specific:
+```bash
+make <target>
+```
 
 ### Run
+To run the code locally, use:
+```bash 
+make run-2x2 JSON=configs/2x2_test.json
+```
+
 
 On raspberry pi, use:
 ```bash
@@ -90,8 +130,6 @@ make run-pi
 
 
 ### What different scripts do:
-
-
 
 
 ## Future work
