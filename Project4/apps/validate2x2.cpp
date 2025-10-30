@@ -81,7 +81,7 @@ int main(int argc, char** argv) { // argc and argv to get JSON file path (argc i
     for (int s = 0; s< burn_in * N; ++s) {
         ising::Metropolis(model, lattice, params, rng);
     }
-    std::vector<double> eps_samples, mabs_samples;
+    std::vector<double> eps_samples, mabs_samples, eps2_samples, mabs2_samples;
 
     for (int s = 0; s< measure_steps * N; ++s) {
         ising::Metropolis(model, lattice, params, rng);
@@ -90,23 +90,22 @@ int main(int argc, char** argv) { // argc and argv to get JSON file path (argc i
             double mabs = std::abs(magnetization_per_spin(lattice));
             eps_samples.push_back(eps);
             mabs_samples.push_back(mabs);
+            eps2_samples.push_back(eps * eps);
+            mabs2_samples.push_back(mabs * mabs);
         }
     }
-    double avg_eps = 0.0;
-    double avg_mabs = 0.0;
-    for (double e : eps_samples) {
-        avg_eps += e;
-    }
-    avg_eps /= eps_samples.size();
-    for (double m : mabs_samples) {
-        avg_mabs += m;
-    }
-    avg_mabs /= mabs_samples.size();
+    double avg_eps = ising::avrage(eps_samples);
+    double avg_mabs = ising::avrage(mabs_samples);
+    double avg_eps2 = ising::avrage(eps2_samples);
+    double avg_mabs2 = ising::avrage(mabs2_samples);
+    double heat_cap = ising::heat_capacity(lattice, avg_eps2, avg_eps, T);
+    double susc = ising::susceptibility(lattice, avg_mabs2, avg_mabs, T);
 
     std::cout << "After Metropolis sampling:\n";
     std::cout << "Average absolute magnetization per spin <|m|>: " << avg_mabs << "\n"; 
     std::cout << "Average energy per spin <ε>: " << avg_eps << "\n";
-
+    std::cout << "Heat capacity C_V: " << heat_cap << "\n";
+    std::cout << "Susceptibility χ: " << susc << "\n";
 
     eps = ising::energy_per_spin(lattice, model);
     M = total_magnetization(lattice);
@@ -119,11 +118,18 @@ int main(int argc, char** argv) { // argc and argv to get JSON file path (argc i
     const double beta = 1.0 / T;
     double analytical_Z = 12.0 + 4.0 * std::cosh(8.0 * J * beta);
     double analytical_eps = -(32.0 *J) / N  * (std::sinh(8 * beta * J)) / analytical_Z;
-    double analytical_mabs = 8.0 / N *(std::exp(8.0 * J / T) + 2.0) / analytical_Z;
+    double analythical_eps2 = (128.0 * J * J) / N / N * (std::cosh(8.0 * J * beta)) / analytical_Z;
+    double analytical_mabs = 8.0 / N *(std::exp(8.0 * J *beta) + 2.0) / analytical_Z;
+    double analytical_m2 =  32.0 /( N * N ) * (std::exp(8.0 * J * beta) + 1.0) / analytical_Z;
+
+    double analytical_Cv = N / (T * T) *(analythical_eps2 - analytical_eps * analytical_eps);
+    double analytical_chi = N  / T * (analytical_m2 - analytical_mabs * analytical_mabs);
 
     std::cout << "\nAnalytical results:\n";
     std::cout << "Analytical average absolute magnetization per spin <|m|>: " << analytical_mabs << "\n";   
     std::cout << "Analytical average energy per spin <ε>: " << analytical_eps << "\n";
+    std::cout << "Analytical heat capacity C_V/N: " << analytical_Cv << "\n";
+    std::cout << "Analytical susceptibility χ/N: " << analytical_chi << "\n";
 
     return 0;
 }

@@ -78,4 +78,23 @@ namespace ising{
         double N = lat.num_spins();
         return M_tot / N;
     }
+
+    double avrage(const std::vector<double>& data) {
+        double sum = 0.0;
+        for (double x : data) {
+            sum += x;
+        }
+        return sum / data.size();
+    }
+
+    double heat_capacity(const Lattice& Lat, double eps2_avg, double eps_avg, double T) {
+        double C_V = (eps2_avg - eps_avg * eps_avg) / (T * T);
+        return C_V;
+    }
+
+    double susceptibility(const Lattice& Lat, double m2_avg, double m_avg, double T) {
+        double chi = (m2_avg - m_avg * m_avg) / T;
+        return chi;
+    }
 }
+
