@@ -66,7 +66,7 @@ namespace ising{
     // magnetization
     double total_magnetization(const Lattice& lat) { 
         const int L = lat.size();
-        double M = 0;
+        int M = 0;
         for (int i = 0; i < L; ++i)
             for (int j = 0; j < L; ++j)
                 M += lat(i, j);

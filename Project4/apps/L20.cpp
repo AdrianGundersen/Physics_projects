@@ -1,8 +1,3 @@
-// apps/validate2x2.cpp
-/*
-Validate 2x2 against analytical results
-*/
-
 #include <iostream>
 #include <fstream>
 #include <nlohmann/json.hpp>
@@ -16,9 +11,10 @@ Validate 2x2 against analytical results
 using json = nlohmann::json;
 using namespace ising;
 
-int main(int argc, char** argv) { // argc and argv to get JSON file path (argc is number of arguments, argv is array of arguments)
+int main(int argc, char** argv) {
+    // ----------------------- Finding files and making sure everything is fine ---------------------------------
     if (argc < 2) {
-        std::cerr << "Usage: " << argv[0] << " <configs/2x2.json>\n";
+        std::cerr << "Usage: " << argv[0] << " <configs/L20.json>\n";
         return 1;
     }
     
@@ -32,6 +28,9 @@ int main(int argc, char** argv) { // argc and argv to get JSON file path (argc i
 
     json j; f >> j; // parse JSON file into json object
 
+    //----------------------------------------------------------------------------------------
+
+
     ising::Model model;
     ising::io::model_from_json(j.at("model"), model); // populate model
 
@@ -43,6 +42,8 @@ int main(int argc, char** argv) { // argc and argv to get JSON file path (argc i
             lattice.init_spin_same(true);
         } else if (spin_config == "all_down") {
             lattice.init_spin_same(false);
+        } else if (spin_config == "random"){
+            lattice.init_spin_rand(67);
         } else {
             std::cerr << "Unknown spin configuration: " << spin_config << "\n";
             return 1;
@@ -52,6 +53,7 @@ int main(int argc, char** argv) { // argc and argv to get JSON file path (argc i
         std::cerr << "No spin config specified.\n";
         return 1;
     }
+
 
     std::cout << "Model J: " << model.J << "\n";
     std::cout << "Lattice size L: " << lattice.size() << "\n";
@@ -78,21 +80,21 @@ int main(int argc, char** argv) { // argc and argv to get JSON file path (argc i
     std::cout << "\nBurn-in sweeps: " << burn_in << ", Measure sweeps: " << measure_steps << "\n";
 
     // Running measure- and burn-in sweeps multiplied by N (number of spins)
-    for (int s = 0; s< burn_in * N; ++s) {
+    for (int s = 0; s < burn_in; ++s) {
         ising::Metropolis(model, lattice, params, rng);
     }
+
+
     std::vector<double> eps_samples, mabs_samples, eps2_samples, mabs2_samples;
 
-    for (int s = 0; s< measure_steps * N; ++s) {
+    for (int s = 0; s < measure_steps * N; ++s) {    // her må metropolis kjøre N ganger for at info skal være riktig
         ising::Metropolis(model, lattice, params, rng);
-        if (s % N == 0) { // after each sweep
-            double eps = ising::energy_per_spin(lattice, model);
-            double mabs = std::abs(magnetization_per_spin(lattice));
-            eps_samples.push_back(eps);
-            mabs_samples.push_back(mabs);
-            eps2_samples.push_back(eps * eps);
-            mabs2_samples.push_back(mabs * mabs);
-        }
+        double eps = ising::energy_per_spin(lattice, model);
+        double mabs = std::abs(magnetization_per_spin(lattice));
+        eps_samples.push_back(eps);
+        mabs_samples.push_back(mabs);
+        eps2_samples.push_back(eps * eps);
+        mabs2_samples.push_back(mabs * mabs);
     }
     double avg_eps = ising::avrage(eps_samples);
     double avg_mabs = ising::avrage(mabs_samples);
@@ -114,24 +116,6 @@ int main(int argc, char** argv) { // argc and argv to get JSON file path (argc i
     std::cout << "Total magnetization M: " << M << "\n";
     std::cout << "Total energy per spin ε: " << eps << "\n";
 
-    const double J = model.J; 
-    const double beta = 1.0 / T;
-    double analytical_Z = 12.0 + 4.0 * std::cosh(8.0 * J * beta);
-    double analytical_eps = -(32.0 *J) / N  * (std::sinh(8 * beta * J)) / analytical_Z;
-    double analythical_eps2 = (128.0 * J * J) / N / N * (std::cosh(8.0 * J * beta)) / analytical_Z;
-    double analytical_mabs = 8.0 / N *(std::exp(8.0 * J *beta) + 2.0) / analytical_Z;
-    double analytical_m2 =  32.0 /( N * N ) * (std::exp(8.0 * J * beta) + 1.0) / analytical_Z;
-
-    double analytical_Cv = N / (T * T) *(analythical_eps2 - analytical_eps * analytical_eps);
-    double analytical_chi = N  / T * (analytical_m2 - analytical_mabs * analytical_mabs);
-
-    std::cout << "\nAnalytical results:\n";
-    std::cout << "Analytical average absolute magnetization per spin <|m|>: " << analytical_mabs << "\n";   
-    std::cout << "Analytical average energy per spin <ε>: " << analytical_eps << "\n";
-    std::cout << "Analytical heat capacity C_V/N: " << analytical_Cv << "\n";
-    std::cout << "Analytical susceptibility χ/N: " << analytical_chi << "\n";
-
-    return 0;
+    
+    
 }
-
-

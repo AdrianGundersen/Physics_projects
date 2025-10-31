@@ -12,9 +12,18 @@ BIN_VALIDATE := $(BIN_DIR)/validate2x2
 APP_VALIDATE := apps/validate2x2.cpp
 SRC_CORE := src/ising/lattice.cpp src/ising/observables.cpp src/ising/metropolis.cpp    # add more .cpp later as you implement
 
-all: $(BIN_VALIDATE)
+# App: L=20
+BIN_L20   := $(BIN_DIR)/L20
+APP_L20   := apps/L20.cpp
+JSON_L20  ?= configs/L20.json
+
+all: $(BIN_VALIDATE) $(BIN_L20)
 
 $(BIN_VALIDATE): $(SRC_CORE) $(APP_VALIDATE)
+	@mkdir -p $(BIN_DIR)
+	$(CXX) $(CXXFLAGS) $(INCLUDE) $^ -o $@
+
+$(BIN_L20): $(SRC_CORE) $(APP_L20)
 	@mkdir -p $(BIN_DIR)
 	$(CXX) $(CXXFLAGS) $(INCLUDE) $^ -o $@
 
@@ -24,10 +33,13 @@ JSON ?= configs/2x2_test.json
 run-2x2: $(BIN_VALIDATE)
 	./$(BIN_VALIDATE) $(JSON) 
 
+run-L20: $(BIN_L20)
+	./$(BIN_L20) $(JSON_L20)
+
 clean:
 	rm -rf $(BIN_DIR)
 
-.PHONY: all run-2x2 clean
+.PHONY: all run-2x2 clean run-L20
 
 # --- Pi remote build (optional) ---
 PI_HOST ?= rpi
@@ -44,5 +56,8 @@ pibuild: pirsync
 
 run-pi: pibuild
 	ssh $(PI_HOST) 'cd $(PI_DIR) && ./$(BIN_VALIDATE) $(JSON)'
+
+run-pi-L20: pibuild
+	ssh $(PI_HOST) 'cd $(PI_DIR) && ./$(BIN_L20) $(JSON_L20)'
 
 .PHONY: pirsync pibuild run-pi

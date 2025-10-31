@@ -34,8 +34,8 @@ namespace ising{
         for (int step = 0; step < n_steps; ++step) {
             int idx = dist_pos(generator);
 
-            i = static_cast<int>(idx / L);
-            j = static_cast<int>(idx % L);
+            i = static_cast<int>(idx % L);
+            j = static_cast<int>(idx / L);
 
             s = lattice(i, j);
             up = (i + 1) % L;
