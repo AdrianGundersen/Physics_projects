@@ -13,9 +13,11 @@ a.out
 *.dylib
 
 # Build folders
-/build/
-/bin/
-/CMakeFiles/
+bin/
+build/
+build-*/
+cmake-build-*/
+CMakeFiles/
 CMakeCache.txt
 
 # Editor/IDE files
