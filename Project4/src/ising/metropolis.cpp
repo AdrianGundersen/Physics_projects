@@ -12,7 +12,7 @@
 namespace ising{
     void Metropolis(Model& model, Lattice& lattice, simParams& params, std::mt19937& generator) {
         const double T = params.temperature;
-        const int n_steps = params.total_steps; 
+        const int n_steps = params.total_steps; // default N steps = N spins = 1 sweep
         const int seed = params.seed;
         
         const int L = lattice.size();

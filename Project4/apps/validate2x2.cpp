@@ -66,28 +66,30 @@ int main(int argc, char** argv) { // argc and argv to get JSON file path (argc i
     std::cout << "Total energy per spin ε: " << eps << "\n";
 
     ising::simParams params;
-    ising::io::simparams_from_json(j.at("simulation"), params);
+    ising::io::simparams_from_json(j.at("simulation"), params, lattice);
     int seed = params.seed;
     std::mt19937 rng(seed);
     double T = params.temperature;
-    int n_steps = params.total_steps;
     int burn_in = params.burn_in_sweeps;
-    int measure_steps = params.measure_sweeps;
-    int N = lattice.num_spins();
+    int measure_sweeps = params.measure_sweeps;
+    int total_sweeps = params.total_sweeps;
     
-    std::cout << "\nBurn-in sweeps: " << burn_in << ", Measure sweeps: " << measure_steps << "\n";
+    std::cout << "\nBurn-in sweeps: " << burn_in << ", Measure sweeps: " << measure_sweeps << "\n";
 
     // Running measure- and burn-in sweeps multiplied by N (number of spins)
-    for (int s = 0; s< burn_in * N; ++s) {
+    for (int s = 0; s< burn_in; ++s) {
         ising::Metropolis(model, lattice, params, rng);
     }
     std::vector<double> eps_samples, mabs_samples, eps2_samples, mabs2_samples;
-
-    for (int s = 0; s< measure_steps * N; ++s) {
+    
+    double mabs;
+    const int N = lattice.num_spins();
+    for (int s = 0; s < total_sweeps; ++s) {
         ising::Metropolis(model, lattice, params, rng);
-        if (s % N == 0) { // after each sweep
-            double eps = ising::energy_per_spin(lattice, model);
-            double mabs = std::abs(magnetization_per_spin(lattice));
+        if (s % measure_sweeps == 0) { // after each sweep
+            std::cout << "Sampling at sweep " << s << "...\n";
+            eps = ising::energy_per_spin(lattice, model);
+            mabs = std::abs(magnetization_per_spin(lattice));
             eps_samples.push_back(eps);
             mabs_samples.push_back(mabs);
             eps2_samples.push_back(eps * eps);

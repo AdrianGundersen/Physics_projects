@@ -22,12 +22,19 @@ namespace ising::io {
         return lat;
     }
 
-    inline void simparams_from_json(const nlohmann::json& js, ising::simParams& params) {
-        params.total_steps = js.value("total_steps", 10000); // default 10000
+    inline void simparams_from_json(const nlohmann::json& js, ising::simParams& params, const ising::Lattice& lattice) {
+        const int N = lattice.num_spins();
+        if (js.value("total_steps", "N") == "N") {
+            params.total_steps = N; // one sweep
+        } else {
+            params.total_steps = js.value("total_steps", N); // default N
+        }
+
         params.temperature = js.value("temperature", 2.0); // default T=2.0
         params.seed = js.value("seed", 67); // default seed=67
         params.burn_in_sweeps = js.value("burn_in_sweeps", 1000); // default 1000
         params.measure_sweeps = js.value("measure_sweeps", 5000);
+        params.total_sweeps = js.value("total_sweeps", 10000);
     }
 
     inline void observables_to_json(nlohmann::json& j, const ising::Observables& obs) {

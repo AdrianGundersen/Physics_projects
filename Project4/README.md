@@ -89,8 +89,9 @@ The executables in the `apps/` folder read parameters from JSON config files loc
     {
         "seed": 67, // Mother seed for random number generator
         "temperature": 2.0, // Temperature [J/kB]
-        "total_steps": 1000, // Total Monte Carlo steps
-        "measure_step": 10 // Measure observables every n steps
+        "total_steps": "N", // Total Monte Carlo steps ("N" means number af spins but can also be any integer)
+        "measure_sweeps": 10, // Measure observables every n sweeps
+        "total_sweeps": 3000 // Total number of sweeps after burn-in
     }
 }
 ```
