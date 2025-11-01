@@ -100,6 +100,14 @@ int main(int argc, char** argv) { // argc and argv to get JSON file path (argc i
     int N = lattice.num_spins();
 
 
+    std::string filename = "data/outputs/L20_random.txt";
+    std::ofstream ofile;
+    ofile.open(filename);
+    ofile << std::setprecision(10);
+    ofile << ising::energy_per_spin(lattice, model) << "\n";
+
+
+
     std::vector<double> eps_samples, mabs_samples, eps2_samples, mabs2_samples;
 
     double mabs;
@@ -136,11 +144,8 @@ int main(int argc, char** argv) { // argc and argv to get JSON file path (argc i
     std::cout << "Total energy per spin ε: " << eps << "\n";
 
 
-    std::string filename = "data/outputs/L20_random.txt";
-    std::ofstream ofile;
-    ofile.open(filename);
+   
     //temp code
-    ofile << std::setprecision(10);
     for (int i = 0; i < std::size(eps_samples); i++) {
         ofile << eps_samples[i] << "\n";
     }
