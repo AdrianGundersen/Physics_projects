@@ -1,5 +1,6 @@
 #include <iostream>
 #include <fstream>
+#include <string>
 #include <nlohmann/json.hpp>
 #include "ising/lattice.hpp"
 #include "ising/io/json_util.hpp"
@@ -10,6 +11,30 @@
 
 using json = nlohmann::json;
 using namespace ising;
+
+
+void write_to_file(std::ofstream& ofile,
+                const std::vector<double>& v1,
+                const std::vector<double>& v2,
+                const std::vector<double>& v3,
+                const std::vector<double>& v4,
+                const std::vector<double>& v5,
+                const std::vector<double>& v6,
+                int precision = 10){
+
+    ofile << std::setprecision(precision);
+    int size = std::size(v1);
+    for (int i = 0; i < size; ++i) {
+        ofile << v1[i] << ","
+              << v2[i] << ","
+              << v3[i] << ","
+              << v4[i] << ","
+              << v5[i] << ","
+              << v6[i] << "\n";
+    }
+    ofile.close();
+
+}
 
 int main(int argc, char** argv) { // argc and argv to get JSON file path (argc is number of arguments, argv is array of arguments)
     if (argc < 2) {
@@ -70,17 +95,9 @@ int main(int argc, char** argv) { // argc and argv to get JSON file path (argc i
     std::mt19937 rng(seed);
     double T = params.temperature;
     int n_steps = params.total_steps;
-    int burn_in = params.burn_in_sweeps;
     int measure_sweeps = params.measure_sweeps;
     int total_sweeps = params.total_sweeps;
     int N = lattice.num_spins();
-
-    std::cout << "\nBurn-in sweeps: " << burn_in << ", Measure each: " << measure_sweeps << " sweeps\n";
-
-    // Running measure- and burn-in sweeps multiplied by N (number of spins)
-    for (int s = 0; s < burn_in; ++s) {
-        ising::Metropolis(model, lattice, params, rng);
-    }
 
 
     std::vector<double> eps_samples, mabs_samples, eps2_samples, mabs2_samples;
@@ -118,6 +135,18 @@ int main(int argc, char** argv) { // argc and argv to get JSON file path (argc i
     std::cout << "Total magnetization M: " << M << "\n";
     std::cout << "Total energy per spin ε: " << eps << "\n";
 
+
+    std::string filename = "data/outputs/L20_random.txt";
+    std::ofstream ofile;
+    ofile.open(filename);
+    //temp code
+    ofile << std::setprecision(10);
+    for (int i = 0; i < std::size(eps_samples); i++) {
+        ofile << eps_samples[i] << "\n";
+    }
+    ofile.close();
     
+
+
     
 }
