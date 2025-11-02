@@ -71,3 +71,33 @@ plt.tight_layout()
 plt.savefig(out, format="pdf", bbox_inches="tight")
 plt.close()
 print(f"Saved: {out}")
+
+# plot histograms after burn-in
+
+burn_in = 2e3
+burnt_in_epsT10_u = epsT10_u[int(burn_in):]
+burnt_in_epsT24_u = epsT24_u[int(burn_in):]
+
+def plot_hist_gauss(data, T, fig_dir):
+    plt.hist(data, bins=50, density=True, alpha=0.6, color='g', label='Histogram')
+    
+    mu = np.mean(data)
+    sigma = np.std(data)
+    xmin, xmax = plt.xlim()
+    x = np.linspace(xmin, xmax, 100)
+    p = (1 / (sigma * np.sqrt(2 * np.pi))) * np.exp(-0.5 * ((x - mu) / sigma) ** 2)
+    plt.plot(x, p, 'k', linewidth=2, label='Gaussian fit')
+    
+    plt.title(f'Histogram of ε at T={T} $J/k_{{B}}$')
+    plt.xlabel(r'$\epsilon$')
+    plt.ylabel('Density')
+    plt.legend()
+    
+    out = fig_dir / f"burnin_L20_hist_eps_T={T:0.2f}.pdf"
+    plt.tight_layout()
+    plt.savefig(out, format="pdf", bbox_inches="tight")
+    plt.close()
+    print(f"Saved: {out}")
+
+plot_hist_gauss(burnt_in_epsT10_u, 1.0, fig_dir)
+plot_hist_gauss(burnt_in_epsT24_u, 2.4, fig_dir)
