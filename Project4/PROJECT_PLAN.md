@@ -123,12 +123,12 @@ Things to pick:
 | 8| Add option to run on raspberry pi | Victor | 26.10.2025 | 26.10.2025 | Completed |
 |9 | Calculate observables| Adrian & Victor | 29.10.2025 | 29.10.2025 | Completed |
 |10 | Write Boltzmann lookup table | Victor | 29.10.2025 | 30.10.2025 | Completed |
-|11 | Implement Metropolis algorithm | Adrian & Casper | 30.10.2025 | 02.11.2025 | In progress |
-|12 | Validate 2x2 lattice code | Adrian & Casper | 01.11.2025 | 02.11.2025 | Not started |
+|11 | Implement Metropolis algorithm | Adrian & Casper | 30.10.2025 | 02.11.2025 | Completed |
+|12 | Validate 2x2 lattice code | Adrian & Casper | 01.11.2025 | 02.11.2025 | Completed |
+|13 | Study burn-in time| Adrian | 01.11.2025 | 02.11.2025 | Completed |
+|14 | Find probability distribution of states | Adrian & Victor | 02.11.2025 | 02.11.2025 | Completed |
 | Week 45 |                           |             |            |            |            |
-|13 | Study burn-in time| TBD | 03.11.2025 | 05.11.2025 | Not started |
-|14 | Find probability distribution of states | TBD | 04.11.2025 | 06.11.2025 | Not started |
-|15 | Parallelize code with OpenMP | TBD | 05.11.2025 | 09.11.2025 | Not started |
+|15 | Parallelize code with OpenMP as a MCMC_run.cpp | TBD | 03.11.2025 | 07.11.2025 | Not started |
 | Week 46 |                           |
 
 ## Notes
