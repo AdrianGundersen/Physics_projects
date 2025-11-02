@@ -5,6 +5,7 @@ Validate 2x2 against analytical results
 
 #include <iostream>
 #include <fstream>
+#include <cmath>
 #include <nlohmann/json.hpp>
 #include "ising/lattice.hpp"
 #include "ising/io/json_util.hpp"
@@ -96,18 +97,18 @@ int main(int argc, char** argv) { // argc and argv to get JSON file path (argc i
             mabs2_samples.push_back(mabs * mabs);
         }
     }
-    double avg_eps = ising::avrage(eps_samples);
-    double avg_mabs = ising::avrage(mabs_samples);
-    double avg_eps2 = ising::avrage(eps2_samples);
-    double avg_mabs2 = ising::avrage(mabs2_samples);
+    double avg_eps = ising::average(eps_samples);
+    double avg_mabs = ising::average(mabs_samples);
+    double avg_eps2 = ising::average(eps2_samples);
+    double avg_mabs2 = ising::average(mabs2_samples);
     double heat_cap = ising::heat_capacity(lattice, avg_eps2, avg_eps, T);
     double susc = ising::susceptibility(lattice, avg_mabs2, avg_mabs, T);
 
     std::cout << "After Metropolis sampling:\n";
     std::cout << "Average absolute magnetization per spin <|m|>: " << avg_mabs << "\n"; 
     std::cout << "Average energy per spin <ε>: " << avg_eps << "\n";
-    std::cout << "Heat capacity C_V: " << heat_cap << "\n";
-    std::cout << "Susceptibility χ: " << susc << "\n";
+    std::cout << "Heat capacity per spin C_V/N: " << heat_cap/N << "\n";
+    std::cout << "Susceptibility χ per spin/N: " << susc/N << "\n";
 
     eps = ising::energy_per_spin(lattice, model);
     M = total_magnetization(lattice);
@@ -120,11 +121,11 @@ int main(int argc, char** argv) { // argc and argv to get JSON file path (argc i
     const double beta = 1.0 / T;
     double analytical_Z = 12.0 + 4.0 * std::cosh(8.0 * J * beta);
     double analytical_eps = -(32.0 *J) / N  * (std::sinh(8 * beta * J)) / analytical_Z;
-    double analythical_eps2 = (128.0 * J * J) / N / N * (std::cosh(8.0 * J * beta)) / analytical_Z;
+    double analytical_eps2 = (128.0 * J * J) / N / N * (std::cosh(8.0 * J * beta)) / analytical_Z;
     double analytical_mabs = 8.0 / N *(std::exp(8.0 * J *beta) + 2.0) / analytical_Z;
     double analytical_m2 =  32.0 /( N * N ) * (std::exp(8.0 * J * beta) + 1.0) / analytical_Z;
 
-    double analytical_Cv = N / (T * T) *(analythical_eps2 - analytical_eps * analytical_eps);
+    double analytical_Cv = N / (T * T) *(analytical_eps2 - analytical_eps * analytical_eps);
     double analytical_chi = N  / T * (analytical_m2 - analytical_mabs * analytical_mabs);
 
     std::cout << "\nAnalytical results:\n";
