@@ -13,12 +13,12 @@ Runs a Markov Chain Monte Carlo with Metropolis algorithm with different walkers
 
 namespace ising {
     struct Walker { // results from each walker
-        double sum_eps = 0.0;
-        double sum_eps2 = 0.0;
-        double sum_absM = 0.0;
-        double sum_m = 0.0;
-        double sum_m2 = 0.0;
-        int n = 0;
+        double sum_eps = 0.0; // sum of energies
+        double sum_eps2 = 0.0; // sum of squared energies
+        double sum_absM = 0.0; // sum of absolute magnetizations
+        double sum_m = 0.0; // sum of magnetizations
+        double sum_m2 = 0.0; // sum of squared magnetizations
+        int n = 0; // number of measurements
     };
 
     struct Result { // overall result

@@ -11,7 +11,7 @@ Runs a Markov Chain Monte Carlo with Metropolis algorithm with different walkers
 #include "ising/metropolis.hpp"
 #include "ising/observables.hpp"
 
-namespace ising {
+namespace ising{
     Result mcmc_run(const Lattice& initial_lat, const Model& model, const json& j) {
         int n_walkers = omp_get_max_threads();
         std::vector<Walker> walkers(n_walkers);
