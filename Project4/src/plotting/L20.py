@@ -88,7 +88,6 @@ def plot_hist_gauss(data, T, fig_dir):
     p = (1 / (sigma * np.sqrt(2 * np.pi))) * np.exp(-0.5 * ((x - mu) / sigma) ** 2)
     plt.plot(x, p, 'k', linewidth=2, label='Gaussian fit')
     
-    plt.title(f'Histogram of ε at T={T} $J/k_{{B}}$')
     plt.xlabel(r'$\epsilon$')
     plt.ylabel('Density')
     plt.legend()

@@ -35,6 +35,8 @@ namespace ising::io {
         params.burn_in_sweeps = js.value("burn_in_sweeps", 1000); // default 1000
         params.measure_sweeps = js.value("measure_sweeps", 5000);
         params.total_sweeps = js.value("total_sweeps", 10000);
+        params.cores = js.value("cores", 1);
+        params.walkers = js.value("walkers", 1);
     }
 
     inline void observables_to_json(nlohmann::json& j, const ising::Observables& obs) {
