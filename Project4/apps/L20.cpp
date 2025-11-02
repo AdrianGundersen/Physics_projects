@@ -19,8 +19,6 @@ void write_to_file(std::ofstream& ofile,
                 const std::vector<double>& v2,
                 const std::vector<double>& v3,
                 const std::vector<double>& v4,
-                const std::vector<double>& v5,
-                const std::vector<double>& v6,
                 int precision = 10){
 
     ofile << std::setprecision(precision);
@@ -29,12 +27,9 @@ void write_to_file(std::ofstream& ofile,
         ofile << v1[i] << ","
               << v2[i] << ","
               << v3[i] << ","
-              << v4[i] << ","
-              << v5[i] << ","
-              << v6[i] << "\n";
+              << v4[i] << "\n";
     }
     ofile.close();
-
 }
 
 int main(int argc, char** argv) { // argc and argv to get JSON file path (argc is number of arguments, argv is array of arguments)
@@ -106,7 +101,10 @@ int main(int argc, char** argv) { // argc and argv to get JSON file path (argc i
     std::ofstream ofile;
     ofile.open(filename);
     ofile << std::setprecision(10);
-    ofile << ising::energy_per_spin(lattice, model) << "\n";
+    ofile << ising::energy_per_spin(lattice, model) << ","
+          << std::abs(magnetization_per_spin(lattice)) << ","
+          << ising::energy_per_spin(lattice, model) * ising::energy_per_spin(lattice, model) << ","
+          << std::abs(magnetization_per_spin(lattice)) * std::abs(magnetization_per_spin(lattice)) << "\n";
 
 
 
@@ -147,11 +145,8 @@ int main(int argc, char** argv) { // argc and argv to get JSON file path (argc i
 
 
    
-    //temp code
-    for (int i = 0; i < std::size(eps_samples); i++) {
-        ofile << eps_samples[i] << "\n";
-    }
-    ofile.close();
+    write_to_file(ofile, eps_samples, mabs_samples, eps2_samples, mabs2_samples, 10);
+
     
 
 
