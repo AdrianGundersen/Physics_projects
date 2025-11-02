@@ -28,7 +28,7 @@ def load_data(T, spin_config):
         print(f"Warning: missing file: {p}")
         return None
     try:
-        return np.loadtxt(p)
+        return np.loadtxt(p, delimiter=',')
     except Exception as e:
         print(f"Error reading {p}: {e}")
         return None
@@ -41,10 +41,10 @@ def cummean(x):
 spin_configs = ["all_up", "all_down", "random"]
 temperatures = [1.0, 2.40]  # flere kan legges til
 
-epsT10_u = load_data(1.0, "random")
-epsT10_o = load_data(1.0, "all_up")
-epsT24_u = load_data(2.40, "random")
-epsT24_o = load_data(2.40, "all_up")
+epsT10_u = load_data(1.0, "random")[:, 0]
+epsT10_o = load_data(1.0, "all_up")[:, 0]
+epsT24_u = load_data(2.40, "random")[:, 0]
+epsT24_o = load_data(2.40, "all_up")[:, 0]
 mean_eps_T10_u = cummean(epsT10_u)
 mean_eps_T10_o = cummean(epsT10_o)
 mean_eps_T24_u = cummean(epsT24_u)

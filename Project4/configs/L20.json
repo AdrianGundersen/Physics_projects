@@ -12,7 +12,7 @@
     "simulation":
     {
         "seed": 67,
-        "temperature": 1.0,
+        "temperature": 2.4,
         "total_steps": "N",
         "burn_in_sweeps": 0,
         "measure_sweeps": 1,

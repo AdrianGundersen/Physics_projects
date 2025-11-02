@@ -2,6 +2,7 @@
 CXX := g++
 ARCH ?=
 CXXFLAGS := -std=c++20 -O2 -Wall -Wextra $(ARCH)
+PYTHON := python3
 
 INCLUDE := -Iinclude -I$(abspath ..)/third_party # third party at FYS3150 root
 BIN := bin/test_json 
@@ -16,6 +17,7 @@ SRC_CORE := src/ising/lattice.cpp src/ising/observables.cpp src/ising/metropolis
 BIN_L20   := $(BIN_DIR)/L20
 APP_L20   := apps/L20.cpp
 JSON_L20  ?= configs/L20.json
+PLOT_L20 := src/plotting/L20.py
 
 all: $(BIN_VALIDATE) $(BIN_L20)
 
@@ -36,10 +38,13 @@ run-2x2: $(BIN_VALIDATE)
 run-L20: $(BIN_L20)
 	./$(BIN_L20) $(JSON_L20)
 
+run-plot-L20:
+	$(PYTHON) $(PLOT_L20)
+
 clean:
 	rm -rf $(BIN_DIR)
 
-.PHONY: all run-2x2 clean run-L20
+.PHONY: all run-2x2 clean run-L20 run-plot-L20
 
 # --- Pi remote build (optional) ---
 PI_HOST ?= rpi
@@ -59,5 +64,6 @@ run-pi: pibuild
 
 run-pi-L20: pibuild
 	ssh $(PI_HOST) 'cd $(PI_DIR) && ./$(BIN_L20) $(JSON_L20)'
+
 
 .PHONY: pirsync pibuild run-pi
