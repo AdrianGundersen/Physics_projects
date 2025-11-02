@@ -18,6 +18,7 @@ namespace ising{
         int measure_sweeps;
         int total_sweeps;
         int cores;
+        int walkers;
     };
 
     struct Boltzmannfactors{

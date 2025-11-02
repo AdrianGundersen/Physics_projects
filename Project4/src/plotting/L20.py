@@ -23,6 +23,15 @@ fig_dir = ROOT / "data/figures/L20"
 fig_dir.mkdir(parents=True, exist_ok=True)
 
 def load_data(T, spin_config):
+    """_summary_
+
+    Args:
+        T (_type_): _description_
+        spin_config (_type_): _description_
+
+    Returns:
+        _type_: _description_
+    """    
     p = ROOT / f"data/outputs/L20_T={T:0.6f}_spin={spin_config}.txt"
     if not p.exists():
         print(f"Warning: missing file: {p}")
@@ -79,6 +88,17 @@ burnt_in_epsT10_u = epsT10_u[int(burn_in):]
 burnt_in_epsT24_u = epsT24_u[int(burn_in):]
 
 def plot_hist_gauss(data, T, fig_dir):
+    """Plot histogram and Gaussian fit for the given data.
+
+    Args:
+        data (np.ndarray): Data to plot.
+        T (float): Temperature parameter.
+        fig_dir (Path): Directory to save the figure.
+
+    Returns:
+        None
+    """    
+    plt.figure()
     plt.hist(data, bins=50, density=True, alpha=0.6, color='g', label='Histogram')
     
     mu = np.mean(data)
@@ -87,7 +107,9 @@ def plot_hist_gauss(data, T, fig_dir):
     x = np.linspace(xmin, xmax, 100)
     p = (1 / (sigma * np.sqrt(2 * np.pi))) * np.exp(-0.5 * ((x - mu) / sigma) ** 2)
     plt.plot(x, p, 'k', linewidth=2, label='Gaussian fit')
-    
+    plt.axvline(mu, color='r', linestyle='dashed', linewidth=1, label=r'$\mu$')
+    plt.axvline(mu + sigma, color='b', linestyle='dashed', linewidth=1, label=r'$\mu \pm \sigma$')
+    plt.axvline(mu - sigma, color='b', linestyle='dashed', linewidth=1)
     plt.xlabel(r'$\epsilon$')
     plt.ylabel('Density')
     plt.legend()
@@ -96,7 +118,9 @@ def plot_hist_gauss(data, T, fig_dir):
     plt.tight_layout()
     plt.savefig(out, format="pdf", bbox_inches="tight")
     plt.close()
+    print(rf"Mean: {mu:.4f}, Std: {sigma:.4f} for T={T:0.2f}")
     print(f"Saved: {out}")
 
 plot_hist_gauss(burnt_in_epsT10_u, 1.0, fig_dir)
 plot_hist_gauss(burnt_in_epsT24_u, 2.4, fig_dir)
+
