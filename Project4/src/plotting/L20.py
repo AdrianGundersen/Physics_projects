@@ -99,8 +99,10 @@ def plot_hist_gauss(data, T, fig_dir):
         None
     """    
     plt.figure()
-    plt.hist(data, bins=50, density=True, alpha=0.6, color='g', label='Histogram')
-    
+
+    bin_width = 0.01 # 4J / 400 particles delta epsilon
+    plt.hist(data, bins=np.arange(min(data), max(data) + bin_width, bin_width), density=True, alpha=0.6, color='g', label='Histogram')
+
     mu = np.mean(data)
     sigma = np.std(data)
     xmin, xmax = plt.xlim()
@@ -120,6 +122,7 @@ def plot_hist_gauss(data, T, fig_dir):
     plt.close()
     print(rf"Mean: {mu:.4f}, Std: {sigma:.4f} for T={T:0.2f}")
     print(f"Saved: {out}")
+
 
 plot_hist_gauss(burnt_in_epsT10_u, 1.0, fig_dir)
 plot_hist_gauss(burnt_in_epsT24_u, 2.4, fig_dir)

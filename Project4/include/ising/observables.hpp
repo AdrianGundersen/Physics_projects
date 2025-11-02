@@ -16,7 +16,7 @@ namespace ising{
 
     double heat_capacity(const Lattice& lat, const Model& model, double T);
     double susceptibility(const Lattice& lat, const Model& model, double T);
-    double avrage(const std::vector<double>& data);
+    double average(const std::vector<double>& data);
     double heat_capacity(const Lattice& Lat, double eps2_avg, double eps_avg, double T);
     double susceptibility(const Lattice& Lat, double m2_avg, double m_avg, double T);
     struct Observables {
