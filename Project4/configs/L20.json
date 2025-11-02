@@ -14,9 +14,8 @@
         "seed": 67,
         "temperature": 1.0,
         "total_steps": "N",
-        "measure_step": 10,
-        "burn_in_sweeps": 1000,
-        "measure_sweeps": 10,
-        "total_sweeps": 3000
+        "burn_in_sweeps": 0,
+        "measure_sweeps": 1,
+        "total_sweeps": 300
     }
 }

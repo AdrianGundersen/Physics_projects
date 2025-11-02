@@ -1,5 +1,6 @@
 #include <iostream>
 #include <fstream>
+#include <iomanip>
 #include <string>
 #include <nlohmann/json.hpp>
 #include "ising/lattice.hpp"
@@ -58,8 +59,9 @@ int main(int argc, char** argv) { // argc and argv to get JSON file path (argc i
 
     ising::Lattice lattice = ising::io::lattice_from_json(j.at("lattice")); // populate lattice
 
+    std::string spin_config;
     if (j.at("model").contains("spin_config")) {
-        std::string spin_config = j.at("model").at("spin_config").get<std::string>();
+        spin_config = j.at("model").at("spin_config").get<std::string>();
         if (spin_config == "all_up") {
             lattice.init_spin_same(true);
         } else if (spin_config == "all_down") {
@@ -100,7 +102,7 @@ int main(int argc, char** argv) { // argc and argv to get JSON file path (argc i
     int N = lattice.num_spins();
 
 
-    std::string filename = "data/outputs/L20_random.txt";
+    std::string filename = "data/outputs/L20_T=" + std::to_string(T) + "_spin=" + spin_config + ".txt";
     std::ofstream ofile;
     ofile.open(filename);
     ofile << std::setprecision(10);
