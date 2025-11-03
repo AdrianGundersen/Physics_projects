@@ -19,8 +19,8 @@ namespace ising {
  
 
         public:
+            Lattice() : L(0), N(0), spins() {}  // default constructor
             Lattice(int L) : L(L), N(L * L), spins(N) {} // constructor (assumes LxL lattice)
-
             void init_spin_from_mat(const std::vector<std::vector<int>>& spin_mat) {};
 
             void init_spin_rand(std::mt19937 rng); // initialize spins randomly

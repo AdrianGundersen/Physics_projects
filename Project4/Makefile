@@ -1,7 +1,7 @@
 # Makefile (project root)
 CXX := g++
 ARCH ?=
-CXXFLAGS := -std=c++20 -O2 -fopenmp -Wall -Wextra $(ARCH) 
+CXXFLAGS := -std=c++20 -O2 -fopenmp #-Wall -Wextra $(ARCH) 
 PYTHON := python3
 
 INCLUDE := -Iinclude -I$(abspath ..)/third_party # third party at FYS3150 root

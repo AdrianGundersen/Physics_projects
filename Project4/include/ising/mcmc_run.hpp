@@ -4,6 +4,7 @@ Runs a Markov Chain Monte Carlo with Metropolis algorithm with different walkers
 */
 #pragma once
 #include <vector>
+#include <random>
 #include <omp.h>
 #include <nlohmann/json.hpp>
 #include "ising/lattice.hpp"
@@ -15,10 +16,11 @@ Runs a Markov Chain Monte Carlo with Metropolis algorithm with different walkers
 
 namespace ising {
     struct Walker { // results from each walker
-        std::vector<double> eps_samples; // sum of energies
-        std::vector<double> mabs_samples; // sum of absolute magnetizations
-        std::vector<double> sum_m; // sum of magnetizations
+        std::vector<double> eps_samples; // energy samples
+        std::vector<double> mabs_samples; // absolute magnetization samples
         int n = 0; // number of measurements
+        Lattice lat; // lattice state
+        Model model; // model parameters
         std::mt19937 rng;
     };
 

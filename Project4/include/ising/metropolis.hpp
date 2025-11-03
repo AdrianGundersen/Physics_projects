@@ -19,6 +19,10 @@ namespace ising{
         int total_sweeps;
         int cores;
         int walkers;
+
+        // file writing
+        bool write_enabled;
+        std::string write_type;
     };
 
     struct Boltzmannfactors{

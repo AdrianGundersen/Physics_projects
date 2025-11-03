@@ -40,6 +40,11 @@ namespace ising::io {
         params.walkers = js.value("walkers", 1);
     }
 
+    inline void write_to_file_from_json(const nlohmann::json& jwrite, ising::simParams& params) {
+        params.write_enabled = jwrite.value("enabled", false); // default false
+        params.write_type = jwrite.value("type", "txt"); // default txt
+    }
+
     inline void observables_to_json(nlohmann::json& j, const ising::Observables& obs) {
         j["E"] = obs.E;
         j["M"] = obs.M;
