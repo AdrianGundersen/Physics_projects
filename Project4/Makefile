@@ -7,6 +7,7 @@ PYTHON := python3
 INCLUDE := -Iinclude -I$(abspath ..)/third_party # third party at FYS3150 root
 BIN := bin/test_json 
 SRC := test/JSON_example/testJSON.cpp
+
 # App: validate 2x2
 BIN_DIR := bin
 BIN_VALIDATE := $(BIN_DIR)/validate2x2

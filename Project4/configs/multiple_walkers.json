@@ -27,6 +27,8 @@
         "type": "txt",
         "delimiter": ",",
         "precision": 6,
-        "output_filename": "default"
+        "output_filename": "default",
+        "header": true,
+        "average_or_concatenate": "concatenate"
     }
 }
