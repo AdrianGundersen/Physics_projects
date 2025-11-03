@@ -88,7 +88,7 @@ int main(int argc, char** argv) { // argc and argv to get JSON file path (argc i
     for (int s = 0; s < total_sweeps; ++s) {
         ising::Metropolis(model, lattice, params, rng);
         if (s % measure_sweeps == 0) { // after each sweep
-            std::cout << "Sampling at sweep " << s << "...\n";
+            //std::cout << "Sampling at sweep " << s << "...\n";
             eps = ising::energy_per_spin(lattice, model);
             mabs = std::abs(magnetization_per_spin(lattice));
             eps_samples.push_back(eps);
@@ -107,8 +107,10 @@ int main(int argc, char** argv) { // argc and argv to get JSON file path (argc i
     std::cout << "After Metropolis sampling:\n";
     std::cout << "Average absolute magnetization per spin <|m|>: " << avg_mabs << "\n"; 
     std::cout << "Average energy per spin <ε>: " << avg_eps << "\n";
-    std::cout << "Heat capacity per spin C_V/N: " << heat_cap/N << "\n";
-    std::cout << "Susceptibility χ per spin/N: " << susc/N << "\n";
+    std::cout << "Average energy squared per spin <ε²>: " << avg_eps2 << "\n";
+    std::cout << "Average magnetization squared per spin <m²>: " << avg_mabs2 << "\n";
+    std::cout << "Heat capacity per spin C_V/N: " << heat_cap << "\n";
+    std::cout << "Susceptibility χ per spin/N: " << susc << "\n";
 
     eps = ising::energy_per_spin(lattice, model);
     M = total_magnetization(lattice);
@@ -120,8 +122,8 @@ int main(int argc, char** argv) { // argc and argv to get JSON file path (argc i
     const double J = model.J; 
     const double beta = 1.0 / T;
     double analytical_Z = 12.0 + 4.0 * std::cosh(8.0 * J * beta);
-    double analytical_eps = -(32.0 *J) / N  * (std::sinh(8 * beta * J)) / analytical_Z;
-    double analytical_eps2 = (128.0 * J * J) / N / N * (std::cosh(8.0 * J * beta)) / analytical_Z;
+    double analytical_eps = -(32.0 *J) / N  * (std::sinh(8.0 * beta * J)) / analytical_Z;
+    double analytical_eps2 = (256.0 * J * J) / N / N * (std::cosh(8.0 * J * beta)) / analytical_Z;
     double analytical_mabs = 8.0 / N *(std::exp(8.0 * J *beta) + 2.0) / analytical_Z;
     double analytical_m2 =  32.0 /( N * N ) * (std::exp(8.0 * J * beta) + 1.0) / analytical_Z;
 
@@ -131,6 +133,8 @@ int main(int argc, char** argv) { // argc and argv to get JSON file path (argc i
     std::cout << "\nAnalytical results:\n";
     std::cout << "Analytical average absolute magnetization per spin <|m|>: " << analytical_mabs << "\n";   
     std::cout << "Analytical average energy per spin <ε>: " << analytical_eps << "\n";
+    std::cout << "Analytical average energy squared per spin <ε²>: " << analytical_eps2 << "\n";
+    std::cout << "Analytical average magnetization squared per spin <m²>: " << analytical_m2 << "\n";
     std::cout << "Analytical heat capacity C_V/N: " << analytical_Cv << "\n";
     std::cout << "Analytical susceptibility χ/N: " << analytical_chi << "\n";
 

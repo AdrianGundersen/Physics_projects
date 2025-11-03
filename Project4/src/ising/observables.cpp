@@ -89,12 +89,14 @@ namespace ising{
     }
 
     double heat_capacity(const Lattice& Lat, double eps2_avg, double eps_avg, double T) {
-        double C_V = (eps2_avg - eps_avg * eps_avg) / (T * T);
+        int N = Lat.num_spins();
+        double C_V = N * (eps2_avg - eps_avg * eps_avg) / (T * T);
         return C_V;
     }
 
     double susceptibility(const Lattice& Lat, double m2_avg, double m_avg, double T) {
-        double chi = (m2_avg - m_avg * m_avg) / T;
+        int N = Lat.num_spins();
+        double chi = N * (m2_avg - m_avg * m_avg) / T;
         return chi;
     }
 }
