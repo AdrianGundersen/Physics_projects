@@ -46,13 +46,18 @@ namespace ising{
             n = s * (lattice(up, j) + lattice(down, j) + lattice(i, right) +lattice(i, left));  //(-4, -2, 0, 2, 4)
             
             int factor_idx = (n+4) / 2; // n to idx in Boltzmann factors
-            double r = dist_r(generator);
-            if (r <= boltz.factors[factor_idx]) {
+            
+            if (factor_idx <=2){    // delta eps = 0, -4J, -8J -> always accept
                 lattice(i, j) = -s; // flip spin
-
-                // std::cout << "Flipped spin at (" << i << ", " << j << ")\n";
             }
+            else {
+                double r = dist_r(generator);
+                    if (r <= boltz.factors[factor_idx])     // delta eps = 4J, 8J -> always if rng says so
+                    lattice(i, j) = -s; // flip spin
 
-    }
+                    // std::cout << "Flipped spin at (" << i << ", " << j << ")\n";
+                    
+            }
+        }
     }
 }

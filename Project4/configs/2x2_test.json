@@ -15,7 +15,7 @@
         "temperature": 1.0,
         "total_steps": "N",
         "burn_in_sweeps": 1e7,
-        "measure_sweeps": 1,
+        "measure_sweeps": 10,
         "total_sweeps": 3e7
     }
 }
