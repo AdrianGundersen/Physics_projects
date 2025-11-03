@@ -52,7 +52,7 @@ namespace ising{
             }
             else {
                 double r = dist_r(generator);
-                    if (r <= boltz.factors[factor_idx])     // delta eps = 4J, 8J -> always if rng says so
+                    if (r <= boltz.factors[factor_idx])     // delta eps = 4J, 8J -> accept if rng says so
                     lattice(i, j) = -s; // flip spin
 
                     // std::cout << "Flipped spin at (" << i << ", " << j << ")\n";
