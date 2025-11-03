@@ -15,9 +15,10 @@ namespace ising {
     }
     void Lattice::init_spin_rand(int seed) {
         std::mt19937_64 rng(seed);
+        int spin;
         for (int i = 0; i < spins.size(); i++) {
             std::uniform_int_distribution<int> bit(0, 1);
-            int spin = bit(rng) * 2 - 1; // 0->-1, 1->+1
+            spin = bit(rng) * 2 - 1; // 0->-1, 1->+1
             spins[i] = spin;
         }
     }

@@ -123,10 +123,10 @@ int main(int argc, char** argv) { // argc and argv to get JSON file path (argc i
             mabs2_samples.push_back(mabs * mabs);
         }
     }
-    double avg_eps = ising::avrage(eps_samples);
-    double avg_mabs = ising::avrage(mabs_samples);
-    double avg_eps2 = ising::avrage(eps2_samples);
-    double avg_mabs2 = ising::avrage(mabs2_samples);
+    double avg_eps = ising::average(eps_samples);
+    double avg_mabs = ising::average(mabs_samples);
+    double avg_eps2 = ising::average(eps2_samples);
+    double avg_mabs2 = ising::average(mabs2_samples);
     double heat_cap = ising::heat_capacity(lattice, avg_eps2, avg_eps, T);
     double susc = ising::susceptibility(lattice, avg_mabs2, avg_mabs, T);
 

@@ -79,12 +79,13 @@ namespace ising{
         return M_tot / N;
     }
 
-    double avrage(const std::vector<double>& data) {
+    double average(const std::vector<double>& data) {
         double sum = 0.0;
+        double size = data.size();
         for (double x : data) {
             sum += x;
         }
-        return sum / data.size();
+        return sum / size;
     }
 
     double heat_capacity(const Lattice& Lat, double eps2_avg, double eps_avg, double T) {
