@@ -57,7 +57,7 @@ inline void write_results_to_file(const nlohmann::json& jwrite,
 
     if (header) {
         for (std::size_t k = 0; k < observables.size(); ++k) {
-            ofile << observables[k];
+            ofile << "# " << observables[k];
             if (k + 1 < observables.size()) ofile << delim;
         }
         ofile << "\n";

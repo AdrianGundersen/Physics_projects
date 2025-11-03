@@ -1,4 +1,6 @@
 import numpy as np
+import matplotlib as mpl
+mpl.use("Agg") # to avoid wayland issues
 import matplotlib.pyplot as plt
 from pathlib import Path
 
@@ -33,15 +35,19 @@ def load_data(T, spin_config):
         _type_: _description_
     """    
     p = ROOT / f"data/outputs/L20_T={T:0.6f}_spin={spin_config}.txt"
-    if not p.exists():
-        print(f"Warning: missing file: {p}")
-        return None
-    try:
-        return np.loadtxt(p, delimiter=',')
-    except Exception as e:
-        print(f"Error reading {p}: {e}")
-        return None
-    
+    data = np.genfromtxt(
+        p,
+        delimiter=',',
+        comments='#',      # skip "# m, e"
+        usecols=(0,1),    # only load energy and magnetization
+        autostrip=True,
+        invalid_raise=False
+    )
+    if data.ndim == 1:     # handle single-row files
+        data = data.reshape(1, -1)
+    return data
+
+
 def cummean(x):
     return np.cumsum(x) / np.arange(1, len(x) + 1)
 
@@ -59,16 +65,23 @@ mean_eps_T10_o = cummean(epsT10_o)
 mean_eps_T24_u = cummean(epsT24_u)
 mean_eps_T24_o = cummean(epsT24_o)
 
-n_MC_cycles = np.arange(0, len(epsT10_u))
+n10u = np.arange(len(epsT10_u))
+n10o = np.arange(len(epsT10_o))
+n24u = np.arange(len(epsT24_u))
+n24o = np.arange(len(epsT24_o))
 
-plt.plot(n_MC_cycles, epsT10_u, '-', color='#377eb8', alpha=0.4, linewidth=1.0)
-plt.plot(n_MC_cycles, epsT10_o, '-', color='#4daf4a', alpha=0.4, linewidth=1.0)
-plt.plot(n_MC_cycles, epsT24_u, '-', color='#e41a1c', alpha=0.4, linewidth=1.0)
-plt.plot(n_MC_cycles, epsT24_o, '-', color='#984ea3', alpha=0.4, linewidth=1.0)
-plt.plot(n_MC_cycles, mean_eps_T10_u, '-', linewidth=2.0, color='#377eb8', label='$T=1.0$ $J/k_{B}$, unordered')
-plt.plot(n_MC_cycles, mean_eps_T10_o, '-', linewidth=2.0, color='#4daf4a', label='$T=1.0$ $J/k_{B}$, ordered')
-plt.plot(n_MC_cycles, mean_eps_T24_u, '-', linewidth=2.0, color='#e41a1c', label='$T=2.4$ $J/k_{B}$, unordered')
-plt.plot(n_MC_cycles, mean_eps_T24_o, '-', linewidth=2.0, color='#984ea3', label='$T=2.4$ $J/k_{B}$, ordered')
+print(rf"length of different data sets: {len(epsT10_u)}, {len(epsT10_o)}, {len(epsT24_u)}, {len(epsT24_o)}")
+
+plt.plot(n10u, epsT10_u, '-', color='#377eb8', alpha=0.4, linewidth=1.0)
+plt.plot(n10o, epsT10_o, '-', color='#4daf4a', alpha=0.4, linewidth=1.0)
+plt.plot(n24u, epsT24_u, '-', color='#e41a1c', alpha=0.4, linewidth=1.0)
+plt.plot(n24o, epsT24_o, '-', color='#984ea3', alpha=0.4, linewidth=1.0)
+
+plt.plot(n10u, mean_eps_T10_u, '-', linewidth=2.0, color='#377eb8', label='$T=1.0$ $J/k_{B}$, unordered')
+plt.plot(n10o, mean_eps_T10_o, '-', linewidth=2.0, color='#4daf4a', label='$T=1.0$ $J/k_{B}$, ordered')
+plt.plot(n24u, mean_eps_T24_u, '-', linewidth=2.0, color='#e41a1c', label='$T=2.4$ $J/k_{B}$, unordered')
+plt.plot(n24o, mean_eps_T24_o, '-', linewidth=2.0, color='#984ea3', label='$T=2.4$ $J/k_{B}$, ordered')
+
 plt.xscale('log')
 plt.xlabel("Monte Carlo cycles")
 plt.ylabel(r"$\epsilon$")
@@ -83,7 +96,7 @@ print(f"Saved: {out}")
 
 # plot histograms after burn-in
 
-burn_in = 2e3
+burn_in = 1e4 # discard first 10 000 sweeps
 burnt_in_epsT10_u = epsT10_u[int(burn_in):]
 burnt_in_epsT24_u = epsT24_u[int(burn_in):]
 
@@ -112,6 +125,7 @@ def plot_hist_gauss(data, T, fig_dir):
     plt.axvline(mu, color='r', linestyle='dashed', linewidth=1, label=r'$\mu$')
     plt.axvline(mu + sigma, color='b', linestyle='dashed', linewidth=1, label=r'$\mu \pm \sigma$')
     plt.axvline(mu - sigma, color='b', linestyle='dashed', linewidth=1)
+    plt.xlim(xmin, xmax)
     plt.xlabel(r'$\epsilon$')
     plt.ylabel('Density')
     plt.legend()

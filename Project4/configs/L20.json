@@ -3,7 +3,7 @@
     {
         "J": 1.0,
         "double_count" : false,
-        "spin_config": "all_up"
+        "spin_config": "random"
     },
     "lattice":
     {
@@ -12,10 +12,23 @@
     "simulation":
     {
         "seed": 67,
-        "temperature": 2.4,
+        "temperature": 1.0,
         "total_steps": "N",
-        "burn_in_sweeps": 0,
+        "burn_in_sweeps": 10000,
         "measure_sweeps": 1,
-        "total_sweeps": 1000000
+        "total_sweeps": 100000,
+        "cores": 10,
+        "walkers":10
+    },
+    "write_to_file": 
+    {
+        "enabled": true,
+        "observables": ["e", "m"],
+        "type": "txt",
+        "delimiter": ",",
+        "precision": 6,
+        "output_filename": "default",
+        "header": true,
+        "average_or_concatenate": "concatenate"
     }
 }

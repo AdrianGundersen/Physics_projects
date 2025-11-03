@@ -66,17 +66,11 @@ namespace ising{
             ising::Lattice lat = walker.lat;
             ising::Model model = walker.model;
 
-            double eps  = ising::energy_per_spin(lat, model);
-            double mabs = std::abs(ising::magnetization_per_spin(lat));
-
-            walker.eps_samples.push_back(eps);
-            walker.mabs_samples.push_back(mabs);
-
             for (int b = 0; b < params.burn_in_sweeps; ++b) {
                 ising::Metropolis(model, lat, params, rng_i);
             }
             
-
+            double eps, mabs;
             for (int s = 0; s < total_sweeps; ++s) {
                 ising::Metropolis(model, lat, params, rng_i);
                 if (s % measure_sweeps == 0) {
