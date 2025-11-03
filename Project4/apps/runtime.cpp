@@ -1,10 +1,15 @@
+// apps/runtime.cpp
+/*
+To compare time for parallell and serial execution.
+*/
 #include <iostream>
 #include <fstream>
 #include <iomanip>
 #include <string>
+#include <chrono>
 #include <nlohmann/json.hpp>
 #include <omp.h>
-#include <cmath>
+
 #include "ising/lattice.hpp"
 #include "ising/io/json_util.hpp"
 #include "ising/model.hpp"
@@ -15,7 +20,6 @@
 #include "omp_rng.hpp"
 
 using json = nlohmann::json;
-using namespace ising;
 
 
 int main(int argc, char** argv) { // argc and argv to get JSON file path (argc is number of arguments, argv is array of arguments)
@@ -38,28 +42,18 @@ int main(int argc, char** argv) { // argc and argv to get JSON file path (argc i
     ising::io::model_from_json(j.at("model"), model); // populate model
 
     ising::Lattice initial_lat = ising::io::lattice_from_json(j.at("lattice"));
+
+
+    double start_time = omp_get_wtime();
     ising::Result result = ising::mcmc_run(initial_lat, model, j);
 
-    // writing setup
-    nlohmann::json write_json = j.at("write_to_file");
+    double end_time = omp_get_wtime();
+    double elapsed_time = end_time - start_time;
 
-    // parameters for default filename
-    int L = initial_lat.size();
-    double T = j.at("simulation").at("temperature").get<double>();
-    std::string spin_config = j.at("model").at("spin_config").get<std::string>();
-
-    std::string default_file_name = "data/outputs/L" + std::to_string(L)
-                                    + "_T=" + std::to_string(T)
-                                    + "_spin=" + spin_config + ".txt";
-    std::string output_file_name;
-    if (write_json.value("output_filename", "default") == "default") {
-        output_file_name = default_file_name;
-    } else {
-        output_file_name = write_json.at("output_filename").get<std::string>();
-    }
-
-    ising::io::write_results_to_file(write_json, result, output_file_name);
-
+    // print time and number of cores
+    int cores = j.at("simulation").value("cores", 1);
+    std::cout << "Elapsed time: " << elapsed_time << " seconds\n";
+    std::cout << "Number of cores: " << cores << "\n";
 
     return 0;
 }

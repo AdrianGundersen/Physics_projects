@@ -1,4 +1,8 @@
-# Makefile (project root)
+# Makefile (project root) 
+# Made largely with chatGPT assistance
+
+SHELL := /bin/bash 
+
 CXX := g++
 ARCH ?=
 CXXFLAGS := -std=c++20 -O2 -fopenmp #-Wall -Wextra $(ARCH) 
@@ -25,9 +29,14 @@ BIN_LN := $(BIN_DIR)/Ln
 APP_LN := apps/Ln.cpp
 JSON_LN ?= configs/multiple_walkers.json
 
+# App: runtime (added minimal)
+BIN_RUNTIME := $(BIN_DIR)/runtime
+APP_RUNTIME := apps/runtime.cpp
+JSON_RUNTIME ?= configs/multiple_walkers.json
 
 
-all: $(BIN_VALIDATE) $(BIN_L20)
+
+all: $(BIN_VALIDATE) $(BIN_L20) $(BIN_LN)
 
 $(BIN_VALIDATE): $(SRC_CORE) $(APP_VALIDATE)
 	@mkdir -p $(BIN_DIR)
@@ -38,6 +47,11 @@ $(BIN_L20): $(SRC_CORE) $(APP_L20)
 	$(CXX) $(CXXFLAGS) $(INCLUDE) $^ -o $@
 
 $(BIN_LN): $(SRC_CORE) $(APP_LN)
+	@mkdir -p $(BIN_DIR)
+	$(CXX) $(CXXFLAGS) $(INCLUDE) $^ -o $@
+
+# Build runtime (added minimal)
+$(BIN_RUNTIME): $(SRC_CORE) $(APP_RUNTIME)
 	@mkdir -p $(BIN_DIR)
 	$(CXX) $(CXXFLAGS) $(INCLUDE) $^ -o $@
 
@@ -52,13 +66,18 @@ run-L20: $(BIN_L20)
 
 run-plot-L20:
 	$(PYTHON) $(PLOT_L20)
+
+# Run runtime (added minimal)
+run-runtime: $(BIN_RUNTIME)
+	./$(BIN_RUNTIME) $(JSON_RUNTIME)
+
 run: $(BIN_LN)
 	./$(BIN_LN) $(JSON_LN)
 
 clean:
 	rm -rf $(BIN_DIR)
 
-.PHONY: all run-2x2 clean run-L20 run-plot-L20 run
+.PHONY: all run-2x2 clean run-L20 run-plot-L20 run run-runtime
 
 # --- Pi remote build (optional) ---
 PI_HOST ?= rpi
@@ -79,5 +98,7 @@ run-pi: pibuild
 run-pi-L20: pibuild
 	ssh $(PI_HOST) 'cd $(PI_DIR) && ./$(BIN_L20) $(JSON_L20)'
 
+run-pi-LN: pibuild
+	ssh $(PI_HOST) 'cd $(PI_DIR) && ./$(BIN_LN) $(JSON_LN)'
 
 .PHONY: pirsync pibuild run-pi
