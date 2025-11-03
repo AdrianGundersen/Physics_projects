@@ -35,10 +35,12 @@ namespace ising::io {
             for (int i = 0; i < n_samples; ++i) {
                 for (const std::string& obs : observables) {
                     // std::cout << "Writing observable: " << obs << "\n";
-                    if (obs == "energy") {
-                        ofile << result.avg_walker.eps_samples[i] << delimiter;
-                    } else if (obs == "magnetization") {
-                        ofile << result.avg_walker.mabs_samples[i] << delimiter;
+                    if (obs == "energy_per_spin" || obs == "e" || obs == "eps") {
+                        ofile << result.avg_walker.eps_samples[i];
+                    } else if (obs == "magnetization_per_spin" || obs == "m" || obs == "mabs") {
+                        ofile << result.avg_walker.mabs_samples[i];
+                    } else {
+                        std::cerr << "Unknown observable: " << obs << "\n";
                     }
                 }
                 ofile << "\n";

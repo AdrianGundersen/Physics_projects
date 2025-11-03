@@ -23,7 +23,7 @@
     "write_to_file": 
     {
         "enabled": true,
-        "observables": ["energy", "magnetization"],
+        "observables": ["e", "m"],
         "type": "txt",
         "delimiter": ",",
         "precision": 6,
