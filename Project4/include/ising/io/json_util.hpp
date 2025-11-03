@@ -22,8 +22,9 @@ namespace ising::io {
         return lat;
     }
 
-    inline void simparams_from_json(const nlohmann::json& js, ising::simParams& params, const ising::Lattice& lattice) {
-        const int N = lattice.num_spins();
+    inline void simparams_from_json(const nlohmann::json& js, const nlohmann::json& jl, ising::simParams& params) {
+        const int L = jl.at("L").get<int>();
+        const int N = L*L;
         if (js.value("total_steps", "N") == "N") {
             params.total_steps = N; // one sweep
         } else {

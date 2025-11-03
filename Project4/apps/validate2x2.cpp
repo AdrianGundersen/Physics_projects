@@ -67,7 +67,7 @@ int main(int argc, char** argv) { // argc and argv to get JSON file path (argc i
     std::cout << "Total energy per spin ε: " << eps << "\n";
 
     ising::simParams params;
-    ising::io::simparams_from_json(j.at("simulation"), params, lattice);
+    ising::io::simparams_from_json(j.at("simulation"), j.at("lattice"), params);
     int seed = params.seed;
     std::mt19937 rng(seed);
     double T = params.temperature;

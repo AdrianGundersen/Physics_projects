@@ -1,7 +1,7 @@
 # Makefile (project root)
 CXX := g++
 ARCH ?=
-CXXFLAGS := -std=c++20 -O2 -Wall -Wextra $(ARCH)
+CXXFLAGS := -std=c++20 -O2 -fopenmp -Wall -Wextra $(ARCH) 
 PYTHON := python3
 
 INCLUDE := -Iinclude -I$(abspath ..)/third_party # third party at FYS3150 root
@@ -11,13 +11,20 @@ SRC := test/JSON_example/testJSON.cpp
 BIN_DIR := bin
 BIN_VALIDATE := $(BIN_DIR)/validate2x2
 APP_VALIDATE := apps/validate2x2.cpp
-SRC_CORE := src/ising/lattice.cpp src/ising/observables.cpp src/ising/metropolis.cpp    # add more .cpp later as you implement
+SRC_CORE := src/ising/lattice.cpp src/ising/observables.cpp src/ising/metropolis.cpp  src/ising/mcmc_run.cpp src/omp_rng.cpp# add more .cpp later as you implement
 
 # App: L=20
 BIN_L20   := $(BIN_DIR)/L20
 APP_L20   := apps/L20.cpp
 JSON_L20  ?= configs/L20.json
 PLOT_L20 := src/plotting/L20.py
+
+# App: LN
+BIN_LN := $(BIN_DIR)/Ln
+APP_LN := apps/Ln.cpp
+JSON_LN ?= configs/multiple_walkers.json
+
+
 
 all: $(BIN_VALIDATE) $(BIN_L20)
 
@@ -26,6 +33,10 @@ $(BIN_VALIDATE): $(SRC_CORE) $(APP_VALIDATE)
 	$(CXX) $(CXXFLAGS) $(INCLUDE) $^ -o $@
 
 $(BIN_L20): $(SRC_CORE) $(APP_L20)
+	@mkdir -p $(BIN_DIR)
+	$(CXX) $(CXXFLAGS) $(INCLUDE) $^ -o $@
+
+$(BIN_LN): $(SRC_CORE) $(APP_LN)
 	@mkdir -p $(BIN_DIR)
 	$(CXX) $(CXXFLAGS) $(INCLUDE) $^ -o $@
 
@@ -40,11 +51,13 @@ run-L20: $(BIN_L20)
 
 run-plot-L20:
 	$(PYTHON) $(PLOT_L20)
+run: $(BIN_LN)
+	./$(BIN_LN) $(JSON_LN)
 
 clean:
 	rm -rf $(BIN_DIR)
 
-.PHONY: all run-2x2 clean run-L20 run-plot-L20
+.PHONY: all run-2x2 clean run-L20 run-plot-L20 run
 
 # --- Pi remote build (optional) ---
 PI_HOST ?= rpi

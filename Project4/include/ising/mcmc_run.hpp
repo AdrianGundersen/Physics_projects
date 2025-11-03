@@ -5,24 +5,26 @@ Runs a Markov Chain Monte Carlo with Metropolis algorithm with different walkers
 #pragma once
 #include <vector>
 #include <omp.h>
-#include "ising/lattice.hpp
+#include <nlohmann/json.hpp>
+#include "ising/lattice.hpp"
 #include "ising/model.hpp"
 #include "ising/io/json_util.hpp"
 #include "ising/metropolis.hpp"
 #include "ising/observables.hpp"
 
+
 namespace ising {
     struct Walker { // results from each walker
-        double sum_eps = 0.0; // sum of energies
-        double sum_eps2 = 0.0; // sum of squared energies
-        double sum_absM = 0.0; // sum of absolute magnetizations
-        double sum_m = 0.0; // sum of magnetizations
-        double sum_m2 = 0.0; // sum of squared magnetizations
+        std::vector<double> eps_samples; // sum of energies
+        std::vector<double> mabs_samples; // sum of absolute magnetizations
+        std::vector<double> sum_m; // sum of magnetizations
         int n = 0; // number of measurements
+        std::mt19937 rng;
     };
 
     struct Result { // overall result
         Walker avg_walker; // average over all walkers as walker structure
         std::vector<Walker> all_walkers; // individual walker results
     };
+    Result mcmc_run(const Lattice& initial_lat, const Model& model, const nlohmann::json& j);
 }

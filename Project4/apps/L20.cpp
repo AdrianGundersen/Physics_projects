@@ -53,8 +53,18 @@ int main(int argc, char** argv) { // argc and argv to get JSON file path (argc i
     ising::io::model_from_json(j.at("model"), model); // populate model
 
     ising::Lattice lattice = ising::io::lattice_from_json(j.at("lattice")); // populate lattice
-
+    ising::simParams params;
+    ising::io::simparams_from_json(j.at("simulation"), j.at("lattice"), params);
+    int seed = params.seed;
+    std::mt19937 rng(seed);
+    double T = params.temperature;
+    int n_steps = params.total_steps;
+    int measure_sweeps = params.measure_sweeps;
+    int total_sweeps = params.total_sweeps;
+    int N = lattice.num_spins();
     std::string spin_config;
+
+    
     if (j.at("model").contains("spin_config")) {
         spin_config = j.at("model").at("spin_config").get<std::string>();
         if (spin_config == "all_up") {
@@ -62,7 +72,7 @@ int main(int argc, char** argv) { // argc and argv to get JSON file path (argc i
         } else if (spin_config == "all_down") {
             lattice.init_spin_same(false);
         } else if (spin_config == "random"){
-            lattice.init_spin_rand(67);
+            lattice.init_spin_rand(rng);
         } else {
             std::cerr << "Unknown spin configuration: " << spin_config << "\n";
             return 1;
@@ -86,15 +96,7 @@ int main(int argc, char** argv) { // argc and argv to get JSON file path (argc i
 
     std::cout << "Total energy per spin ε: " << eps << "\n";
 
-    ising::simParams params;
-    ising::io::simparams_from_json(j.at("simulation"), params, lattice);
-    int seed = params.seed;
-    std::mt19937 rng(seed);
-    double T = params.temperature;
-    int n_steps = params.total_steps;
-    int measure_sweeps = params.measure_sweeps;
-    int total_sweeps = params.total_sweeps;
-    int N = lattice.num_spins();
+   
 
 
     std::string filename = "data/outputs/L20_T=" + std::to_string(T) + "_spin=" + spin_config + ".txt";
