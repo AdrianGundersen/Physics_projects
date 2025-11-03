@@ -128,7 +128,8 @@ Things to pick:
 |13 | Study burn-in time| Adrian | 01.11.2025 | 02.11.2025 | Completed |
 |14 | Find probability distribution of states | Adrian & Victor | 02.11.2025 | 02.11.2025 | Completed |
 | Week 45 |                           |             |            |            |            |
-|15 | Parallelize code with OpenMP as a MCMC_run.cpp | TBD | 03.11.2025 | 07.11.2025 | Not started |
+|15 | Parallelize code with OpenMP as a MCMC_run.cpp | Adrian | 03.11.2025 | 03.11.2025 | Completed |
+|16 | Calculate speedup | Victor | 03.11.2025 | 03.11.2025 | Completed |
 | Week 46 |                           |
 
 ## Notes

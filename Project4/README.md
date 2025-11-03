@@ -98,7 +98,7 @@ The executables in the `apps/` folder read parameters from JSON config files loc
     "write_to_file": 
     {
         "enabled": true, // whether to write results to file
-        "observables": ["energy", "magnetization"], // what observables to write
+        "observables": ["e", "m"], // what observables to write
         "type": "txt", // file type: "txt" (only txt supported currently)
         "delimiter": ",", // delimiter for txt files
         "precision": 6, // number of decimal places
