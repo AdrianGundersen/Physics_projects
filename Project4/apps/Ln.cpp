@@ -81,9 +81,14 @@ int main(int argc, char** argv) { // argc and argv to get JSON file path (argc i
         ising::io::write_results_to_file(write_json, result, output_file_name);
     }
 
+    std::cout << "\nRunning simulations over temperature range:\n";
+    std::cout << "Tmax: " << params.Tmax << ", Tmin: " << params.Tmin << ", Tsteps: " << params.Tsteps << "\n";
+    std::vector<double> heat_cap_values;
+    std::vector<double> susc_values;
     for (double T : T_values){
         json jT = j;
         jT["simulation"]["temperature"] = T;
+
         ising::Lattice initial_lat = ising::io::lattice_from_json(jT.at("lattice"));
         ising::Result result = ising::mcmc_run(initial_lat, model, jT);
         std::vector<double> eps, eps2 , mabs, mabs2;
@@ -105,13 +110,24 @@ int main(int argc, char** argv) { // argc and argv to get JSON file path (argc i
 
         double heat_cap = ising::heat_capacity(initial_lat, avg_eps2, avg_eps, T);
         double susc = ising::susceptibility(initial_lat, avg_mabs2, avg_mabs, T);
+        heat_cap_values.push_back(heat_cap);
+        susc_values.push_back(susc);
 
-        std::cout << "avgerage absolute magnetization per spin <|m|>: " << avg_mabs << "\n";
-        std::cout << "average energy per spin <ε>: " << avg_eps << "\n";
-        std::cout << "average energy squared per spin <ε²>: " << avg_eps2 << "\n";
-        std::cout << "average magnetization squared per spin <m²>: " << avg_mabs2 << "\n";
-        std::cout << "heat capacity: " << heat_cap << "\n";
-        std::cout << "susceptibility: " << susc << "\n";
+        // For testing againmst the analytical solution for 2x2 lattice
+
+        // std::cout << "average absolute magnetization per spin <m>: " << avg_mabs << "\n";
+        // std::cout << "average energy per spin <ε>: " << avg_eps << "\n";
+        // std::cout << "average energy squared per spin <ε²>: " << avg_eps2 << "\n";
+        // std::cout << "average magnetization squared per spin <m²>: " << avg_mabs2 << "\n";
+        // std::cout << "heat capacity: " << heat_cap << "\n";
+        // std::cout << "susceptibility: " << susc << "\n";
     }
+    double max_heat_cap = *std::max_element(heat_cap_values.begin(), heat_cap_values.end());
+    double T_at_max_heat_cap = T_values[std::distance(heat_cap_values.begin(), std::max_element(heat_cap_values.begin(), heat_cap_values.end()))];
+    double max_susc = *std::max_element(susc_values.begin(), susc_values.end());
+    double T_at_max_susc = T_values[std::distance(susc_values.begin(), std::max_element(susc_values.begin(), susc_values.end()))];
+
+    std::cout << "Maximum heat capacity: " << max_heat_cap << " at T = " << T_at_max_heat_cap << "\n";
+    std::cout << "Maximum susceptibility: " << max_susc << " at T = " << T_at_max_susc << "\n";
     return 0;
 }

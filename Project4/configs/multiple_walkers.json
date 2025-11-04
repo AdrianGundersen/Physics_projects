@@ -7,7 +7,7 @@
     },
     "lattice":
     {
-        "L" : 2
+        "L" : 40
     },
     "simulation":
     {
@@ -20,9 +20,9 @@
             "Tsteps": 10
         },
         "total_steps": "N",
-        "burn_in_sweeps": 100000,
+        "burn_in_sweeps": 10000,
         "measure_sweeps": 1,
-        "total_sweeps": 200000,
+        "total_sweeps": 20000,
         "cores": 10,
         "walkers": 10
     },
