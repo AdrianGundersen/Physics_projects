@@ -36,15 +36,12 @@ namespace ising{
         int cores = params.cores;
         int n_walkers = params.walkers;
         ising::Result result;
-
         std::vector<uint32_t> seeds = omp_rng::initialize_omp_rng_container(mother_seed, n_walkers);
-
         std::vector<Walker> walkers(n_walkers); // vector with n_walkers number of walkers
         std::vector<std::mt19937> rng_vec;
         for (int i = 0; i < n_walkers; i++) {
             rng_vec.push_back(std::mt19937(seeds[i]));
             walkers[i].rng = rng_vec[i];
-
             // initialize lattice for each walker
             ising::Lattice lat = ising::io::lattice_from_json(lattice_json);
             
@@ -52,11 +49,8 @@ namespace ising{
             else if (spin_config == "all_up")   lat.init_spin_same(true);
             else if (spin_config == "all_down") lat.init_spin_same(false);
             else {std::cerr << "Unknown spin configuration\n"; continue; }
-
             walkers[i].lat = lat;
-            walkers[i].model = model;
-
-
+            walkers[i].model = model; 
         }
         omp_set_num_threads(cores);
         #pragma omp parallel for schedule(static)
@@ -83,21 +77,20 @@ namespace ising{
             }
             walkers[i] = walker; // save back the walker
         }
-    // write overall results
-    result.all_walkers = walkers;
-
-    // compute average walker
-    Walker avg_walker;
-    avg_walker.n = walkers[0].n; // all walkers should have same number
-    for (int i = 0; i < avg_walker.n; ++i) {
-        double eps_sum = 0.0;
-        double mabs_sum = 0.0;
-        for (const auto& walker : walkers) {
-            eps_sum += walker.eps_samples[i];
-            mabs_sum += walker.mabs_samples[i];
-        }
-        avg_walker.eps_samples.push_back(eps_sum / n_walkers);
-        avg_walker.mabs_samples.push_back(mabs_sum / n_walkers);
+        // write overall results
+        result.all_walkers = walkers;
+        // compute average walker
+        Walker avg_walker;
+        avg_walker.n = walkers[0].n; // all walkers should have same number
+        for (int i = 0; i < avg_walker.n; ++i) {
+            double eps_sum = 0.0;
+            double mabs_sum = 0.0;
+            for (const auto& walker : walkers) {
+                eps_sum += walker.eps_samples[i];
+                mabs_sum += walker.mabs_samples[i];
+            }
+            avg_walker.eps_samples.push_back(eps_sum / n_walkers);
+            avg_walker.mabs_samples.push_back(mabs_sum / n_walkers);
     }
     result.avg_walker = avg_walker;
     // std::cout << result.all_walkers.size() << " walkers completed." << std::endl;

@@ -60,6 +60,34 @@ int main(int argc, char** argv) { // argc and argv to get JSON file path (argc i
 
     ising::io::write_results_to_file(write_json, result, output_file_name);
 
+    std::vector<double> eps, eps2 , mabs, mabs2;
 
+
+    const auto& walkers = result.all_walkers;
+    for (const auto& w : walkers){
+        const int n = std::min<int>(w.eps_samples.size(), w.mabs_samples.size());
+        for (int i = 0; i < n; ++i) {
+            eps.push_back(w.eps_samples[i]);
+            mabs.push_back(w.mabs_samples[i]);
+            eps2.push_back(w.eps_samples[i] * w.eps_samples[i]);
+            mabs2.push_back(w.mabs_samples[i] * w.mabs_samples[i]);
+        }
+    }
+    double avg_eps = ising::average(eps);
+    double avg_mabs = ising::average(mabs);
+    double avg_eps2 = ising::average(eps2);
+    double avg_mabs2 = ising::average(mabs2);
+    double heat_cap = ising::heat_capacity(initial_lat, avg_eps2, avg_eps, T);
+    double susc = ising::susceptibility(initial_lat, avg_mabs2, avg_mabs, T);
+
+    std::cout << "avgerage absolute magnetization per spin <|m|>: " << avg_mabs << "\n";
+    std::cout << "average energy per spin <ε>: " << avg_eps << "\n";
+    std::cout << "average energy squared per spin <ε²>: " << avg_eps << "\n";
+    std::cout << "average magnetization squared per spin <m²>: " << avg_mabs2 << "\n";
+    std::cout << "heat capacity: " << heat_cap << "\n";
+    std::cout << "susceptibility: " << susc << "\n";
+
+    //sdt::cout << "heat capasity: " << result.heat_cap << "\n";
+    //sdt::cout << "susceptibility: " << result.susc << "\n";
     return 0;
 }

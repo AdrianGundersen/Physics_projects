@@ -62,7 +62,6 @@ inline void write_results_to_file(const nlohmann::json& jwrite,
         }
         ofile << "\n";
     }
-
     if (mode == "average") {
         const auto& w = result.avg_walker;
         const int n = std::min<int>(w.eps_samples.size(), w.mabs_samples.size());

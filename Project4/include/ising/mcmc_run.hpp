@@ -18,6 +18,10 @@ namespace ising {
     struct Walker { // results from each walker
         std::vector<double> eps_samples; // energy samples
         std::vector<double> mabs_samples; // absolute magnetization samples
+        std::vector<double> eps2_samples; // energy samples squared
+        std::vector<double> mabs2_samples; // absolute magnetization samplessquared
+        double heat_cap = 0.0; // heat capacity
+        double susc = 0.0; // susceptibility
         int n = 0; // number of measurements
         Lattice lat; // lattice state
         Model model; // model parameters

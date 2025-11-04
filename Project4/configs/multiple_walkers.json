@@ -7,22 +7,22 @@
     },
     "lattice":
     {
-        "L" : 20
+        "L" : 2
     },
     "simulation":
     {
         "seed": 67,
-        "temperature": 2.4,
+        "temperature": 1.0,
         "total_steps": "N",
-        "burn_in_sweeps": 10000,
+        "burn_in_sweeps": 100000,
         "measure_sweeps": 1,
-        "total_sweeps": 10000,
-        "cores": 8,
-        "walkers": 8
+        "total_sweeps": 200000,
+        "cores": 10,
+        "walkers": 10
     },
     "write_to_file": 
     {
-        "enabled": true,
+        "enabled": false,
         "observables": ["e", "m"],
         "type": "txt",
         "delimiter": ",",
