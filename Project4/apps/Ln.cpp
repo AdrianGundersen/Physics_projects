@@ -17,6 +17,16 @@
 using json = nlohmann::json;
 using namespace ising;
 
+// like numpy linspace
+static std::vector<double> linspace(double start, double end,  int n){
+    std::vector<double> v;
+    v.reserve(n);
+    if (n <= 1) {v.push_back(start); return v;}
+    double step = (end - start) / (n - 1);
+    for (int i = 0; i < n; ++i){
+        v.push_back(start + i * step);
+    }
+}
 
 int main(int argc, char** argv) { // argc and argv to get JSON file path (argc is number of arguments, argv is array of arguments)
     if (argc < 2) {
@@ -82,7 +92,7 @@ int main(int argc, char** argv) { // argc and argv to get JSON file path (argc i
 
     std::cout << "avgerage absolute magnetization per spin <|m|>: " << avg_mabs << "\n";
     std::cout << "average energy per spin <ε>: " << avg_eps << "\n";
-    std::cout << "average energy squared per spin <ε²>: " << avg_eps << "\n";
+    std::cout << "average energy squared per spin <ε²>: " << avg_eps2 << "\n";
     std::cout << "average magnetization squared per spin <m²>: " << avg_mabs2 << "\n";
     std::cout << "heat capacity: " << heat_cap << "\n";
     std::cout << "susceptibility: " << susc << "\n";

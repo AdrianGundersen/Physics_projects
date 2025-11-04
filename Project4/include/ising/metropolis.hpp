@@ -13,6 +13,10 @@ namespace ising{
     struct simParams{
         int total_steps;
         double temperature;
+        bool use_Trange;
+        double Tmin;
+        double Tmax;
+        int Tsteps;
         int seed;
         int burn_in_sweeps;
         int measure_sweeps;

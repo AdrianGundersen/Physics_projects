@@ -32,6 +32,18 @@ namespace ising::io {
         }
 
         params.temperature = js.value("temperature", 2.0); // default T=2.0
+        params.use_Trange = js.value("use_Trange", false); // default false
+        if (params.use_Trange && js.contains("Trange")) {
+            const auto& jr = js.at("Trange");
+            params.Tmin = jr.value("Tmin", 2.1); // default Tmin=1.0
+            params.Tmax = jr.value("Tmax", 2.4); // default Tmax=3.0
+            params.Tsteps = jr.value("Tsteps", 10); // default Tsteps=5
+        }
+        else {
+            params.Tmin = params.temperature;
+            params.Tmax = params.temperature;
+            params.Tsteps = 1;
+        }
         params.seed = js.value("seed", 67); // default seed=67
         params.burn_in_sweeps = js.value("burn_in_sweeps", 1000); // default 1000
         params.measure_sweeps = js.value("measure_sweeps", 5000);
