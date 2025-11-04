@@ -13,7 +13,7 @@
     {
         "seed": 67,
         "temperature": 1.0,
-        "use_Trange": false,
+        "use_Trange": true,
         "Trange": {
             "Tmin": 2.1,
             "Tmax": 2.4,
