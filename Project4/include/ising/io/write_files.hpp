@@ -94,7 +94,7 @@ inline void write_results_to_file(const nlohmann::json& jin,
         } // copied from chatGPT (it never worked for me :( ))
         // calculate chi and Tc
         const ising::Walker& w = result.avg_walker;
-        std::cout << "first epsilon of avg walker: " << w.eps_samples[0] << "\n";
+        // std::cout << "first epsilon of avg walker: " << w.eps_samples[0] << "\n";
         std::vector<double> eps = w.eps_samples;
         std::vector<double> mabs = w.mabs_samples;
         std::vector<double> eps2, mabs2;

@@ -69,23 +69,25 @@ namespace ising::io {
 
         double tol = 1e-5; // tolerance for overwriting existing T entry
 
-        nlohmann::json& entry = jout[std::to_string(L)]; // order L : runs : values
-        for (auto& e : entry) {
-            if (std::abs(e.at("T").get<double>() - T) < tol) { // if T matches existing entry within tolerance
-                // overwrite existing entry
-                e["chi"] = chi;
-                e["Cv"] = heat_cap;
-                e["sweeps"] = sweeps;
-                e["walkers"] = walkers;
+        nlohmann::json& entry = jout[std::to_string(L)]; // order L : T : values
+        
+        // try to find existing T entry
+        for (auto& [k, v] : entry.items()) { // k is T, v is values
+            double Tk = std::stod(k); // string to double
+            if (std::abs(Tk - T) < tol) {
+                v["chi"]     = chi;
+                v["Cv"]      = heat_cap;
+                v["sweeps"]  = sweeps;
+                v["walkers"] = walkers;
                 return;
             }
         }
-        entry.push_back({
-            {"T", T},
-            {"chi", chi},
-            {"Cv", heat_cap},
-            {"sweeps", sweeps},
-            {"walkers", walkers}
-        });
+
+        // no match -> create a new exact T key
+        nlohmann::json& T_entry = entry[std::to_string(T)];
+        T_entry["chi"]     = chi;
+        T_entry["Cv"]      = heat_cap;
+        T_entry["sweeps"]  = sweeps;
+        T_entry["walkers"] = walkers;
     }
 }
