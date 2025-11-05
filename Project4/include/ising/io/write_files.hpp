@@ -117,23 +117,30 @@ inline void write_results_to_file(const nlohmann::json& jin,
         out.close();
         }
         if (mode == "concatenate") {
-            const auto& walkers = result.all_walkers;
-            for (const auto& w : walkers) {
-                std::vector<double> eps = w.eps_samples;
-                std::vector<double> mabs = w.mabs_samples;
-                std::vector<double> eps2, mabs2;
-                for (const auto& e : eps)  eps2.push_back(e * e);
-                for (const auto& m : mabs) mabs2.push_back(m * m);
-
-                double avg_eps = ising::average(eps);
-                double avg_mabs = ising::average(mabs);
-                double avg_eps2 = ising::average(eps2);
-                double avg_mabs2 = ising::average(mabs2);
-                double heat_cap = ising::heat_capacity(w.lat, avg_eps2, avg_eps, jin.at("simulation").at("temperature").get<double>());
-                double susc = ising::susceptibility(w.lat, avg_mabs2, avg_mabs, jin.at("simulation").at("temperature").get<double>());
-
-                ising::io::T_to_json(jout, jin, T, heat_cap, susc);
+            double eps_sum = 0.0; double mabs_sum = 0.0;
+            double eps2_sum = 0.0; double mabs2_sum = 0.0;
+            int count = 0;
+            for (const auto& w : result.all_walkers) {
+                for (const auto& e : w.eps_samples) {
+                    eps_sum += e;
+                    eps2_sum += e * e;
+                    count += 1;
+                }
+                for (const auto& m : w.mabs_samples) {
+                    mabs_sum += m;
+                    mabs2_sum += m * m;
+                }
             }
+
+            double avg_eps = eps_sum / count;
+            double avg_mabs = mabs_sum / count;
+            double avg_eps2 = eps2_sum / count;
+            double avg_mabs2 = mabs2_sum / count;
+
+            const double Cv   = ising::heat_capacity(result.all_walkers.front().lat, avg_eps2, avg_eps, T);
+            const double chi  = ising::susceptibility(result.all_walkers.front().lat, avg_mabs, avg_mabs2, T);
+            ising::io::T_to_json(jout, jin, T, Cv, chi);
+
             std::ofstream out(filename);
             out << std::setw(jwrite.value("indent", 2)) << jout;
             out.close();
