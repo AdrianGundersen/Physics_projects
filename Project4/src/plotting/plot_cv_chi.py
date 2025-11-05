@@ -24,7 +24,7 @@ plt.rcParams.update({
 # Finds project root
 ROOT = Path(__file__).resolve().parents[2]
 
-fig_dir = ROOT / "data/figures/L20"
+fig_dir = ROOT / "data/figures/Cv_chi"
 fig_dir.mkdir(parents=True, exist_ok=True)
 
 
@@ -79,8 +79,12 @@ def plot_chi_vs_T(data, L):
     return None
 
 # Load data and plot for L
-L = 40
+L = [20]
 json_path = ROOT / "test.json"
 data = load_JSON(json_path)
-plot_Cv_vs_T(data, L)
-plot_chi_vs_T(data, L)
+for l in L:
+    plot_Cv_vs_T(data, l)
+    plot_chi_vs_T(data, l)
+
+def find_extremum(data, L, observable="Cv"):
+    return None

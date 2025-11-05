@@ -92,8 +92,9 @@ inline void write_results_to_file(const nlohmann::json& jin,
         if (std::ifstream in{filename}; in.good()) {
             try { in >> jout; } catch (...) { /* leave as empty object */ }
         } // copied from chatGPT (it never worked for me :( ))
-        // calculate chi and Tc
-        const ising::Walker& w = result.avg_walker;
+        if (mode == "average") {
+            std::cerr << "Warning! Not recommended.\n";
+            const ising::Walker& w = result.avg_walker;
         // std::cout << "first epsilon of avg walker: " << w.eps_samples[0] << "\n";
         std::vector<double> eps = w.eps_samples;
         std::vector<double> mabs = w.mabs_samples;
@@ -114,6 +115,29 @@ inline void write_results_to_file(const nlohmann::json& jin,
         std::ofstream out(filename);
         out << std::setw(jwrite.value("indent", 2)) << jout;
         out.close();
+        }
+        if (mode == "concatenate") {
+            const auto& walkers = result.all_walkers;
+            for (const auto& w : walkers) {
+                std::vector<double> eps = w.eps_samples;
+                std::vector<double> mabs = w.mabs_samples;
+                std::vector<double> eps2, mabs2;
+                for (const auto& e : eps)  eps2.push_back(e * e);
+                for (const auto& m : mabs) mabs2.push_back(m * m);
+
+                double avg_eps = ising::average(eps);
+                double avg_mabs = ising::average(mabs);
+                double avg_eps2 = ising::average(eps2);
+                double avg_mabs2 = ising::average(mabs2);
+                double heat_cap = ising::heat_capacity(w.lat, avg_eps2, avg_eps, jin.at("simulation").at("temperature").get<double>());
+                double susc = ising::susceptibility(w.lat, avg_mabs2, avg_mabs, jin.at("simulation").at("temperature").get<double>());
+
+                ising::io::T_to_json(jout, jin, T, heat_cap, susc);
+            }
+            std::ofstream out(filename);
+            out << std::setw(jwrite.value("indent", 2)) << jout;
+            out.close();
+        }
     }
 } // end write_results_to_file
 
