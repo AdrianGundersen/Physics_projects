@@ -80,40 +80,45 @@ int main(int argc, char** argv) { // argc and argv to get JSON file path (argc i
         } else {
             output_file_name = write_json.at("output_filename").get<std::string>();
         }
-        ising::io::write_results_to_file(write_json, result, output_file_name);
+        ising::io::write_results_to_file(j, result, output_file_name); // takes the entire input json as argument
     }
 
     std::cout << "\nRunning simulations for lattice size " << ising::io::lattice_from_json(j.at("lattice")).size() << "\n";
     std::cout << "Tmax = " << params.Tmax << ", Tmin = " << params.Tmin << ", Tsteps = " << params.Tsteps << "\n";
     std::vector<double> heat_cap_values;
     std::vector<double> susc_values;
+
     for (double T : T_values){
         json jT = j;
         jT["simulation"]["temperature"] = T;
 
         ising::Lattice initial_lat = ising::io::lattice_from_json(jT.at("lattice"));
         ising::Result result = ising::mcmc_run(initial_lat, model, jT);
-        std::vector<double> eps, eps2 , mabs, mabs2;
+        ising::io::write_results_to_file(j, result, "test.json", T);
+    }
+        // std::vector<double> eps, eps2 , mabs, mabs2;
 
-        const auto& walkers = result.all_walkers;
-        for (const auto& w : walkers){
-            const int n = std::min<int>(w.eps_samples.size(), w.mabs_samples.size());
-            for (int i = 0; i < n; ++i) {
-                eps.push_back(w.eps_samples[i]);
-                mabs.push_back(w.mabs_samples[i]);
-                eps2.push_back(w.eps_samples[i] * w.eps_samples[i]);
-                mabs2.push_back(w.mabs_samples[i] * w.mabs_samples[i]);
-            }
-        }
-        double avg_eps = ising::average(eps);
-        double avg_mabs = ising::average(mabs);
-        double avg_eps2 = ising::average(eps2);
-        double avg_mabs2 = ising::average(mabs2);
+        // const auto& walkers = result.all_walkers;
+        // for (const auto& w : walkers){
+            // const int n = std::min<int>(w.eps_samples.size(), w.mabs_samples.size());
+            // for (int i = 0; i < n; ++i) {
+                
 
-        double heat_cap = ising::heat_capacity(initial_lat, avg_eps2, avg_eps, T);
-        double susc = ising::susceptibility(initial_lat, avg_mabs2, avg_mabs, T);
-        heat_cap_values.push_back(heat_cap);
-        susc_values.push_back(susc);
+                // eps.push_back(w.eps_samples[i]);
+                // mabs.push_back(w.mabs_samples[i]);
+                // eps2.push_back(w.eps_samples[i] * w.eps_samples[i]);
+        //         // mabs2.push_back(w.mabs_samples[i] * w.mabs_samples[i]);
+        //     }
+        // }
+        // double avg_eps = ising::average(eps);
+        // double avg_mabs = ising::average(mabs);
+        // double avg_eps2 = ising::average(eps2);
+        // double avg_mabs2 = ising::average(mabs2);
+
+        // double heat_cap = ising::heat_capacity(initial_lat, avg_eps2, avg_eps, T);
+        // double susc = ising::susceptibility(initial_lat, avg_mabs2, avg_mabs, T);
+        // heat_cap_values.push_back(heat_cap);
+        // susc_values.push_back(susc);
 
         // For testing againmst the analytical solution for 2x2 lattice
 
@@ -123,15 +128,15 @@ int main(int argc, char** argv) { // argc and argv to get JSON file path (argc i
         // std::cout << "average magnetization squared per spin <m²>: " << avg_mabs2 << "\n";
         // std::cout << "heat capacity: " << heat_cap << "\n";
         // std::cout << "susceptibility: " << susc << "\n";
-    }
-    double max_heat_cap = *std::max_element(heat_cap_values.begin(), heat_cap_values.end());
-    double T_at_max_heat_cap = T_values[std::distance(heat_cap_values.begin(), std::max_element(heat_cap_values.begin(), heat_cap_values.end()))];
-    double max_susc = *std::max_element(susc_values.begin(), susc_values.end());
-    double T_at_max_susc = T_values[std::distance(susc_values.begin(), std::max_element(susc_values.begin(), susc_values.end()))];
+    // }
+    // double max_heat_cap = *std::max_element(heat_cap_values.begin(), heat_cap_values.end());
+    // double T_at_max_heat_cap = T_values[std::distance(heat_cap_values.begin(), std::max_element(heat_cap_values.begin(), heat_cap_values.end()))];
+    // double max_susc = *std::max_element(susc_values.begin(), susc_values.end());
+    // double T_at_max_susc = T_values[std::distance(susc_values.begin(), std::max_element(susc_values.begin(), susc_values.end()))];
 
-    std::cout << "Maximum heat capacity: " << max_heat_cap << " at T = " << T_at_max_heat_cap << "\n";
-    std::cout << "Maximum susceptibility: " << max_susc << " at T = " << T_at_max_susc << "\n";
+    // std::cout << "Maximum heat capacity: " << max_heat_cap << " at T = " << T_at_max_heat_cap << "\n";
+    // std::cout << "Maximum susceptibility: " << max_susc << " at T = " << T_at_max_susc << "\n";
 
-    ising::io::add_critical_temperature(j, ising::io::lattice_from_json(j.at("lattice")).size(), max_heat_cap, max_susc, T_at_max_heat_cap, T_at_max_susc);
+    // ising::io::add_critical_temperature(j, ising::io::lattice_from_json(j.at("lattice")).size(), max_heat_cap, max_susc, T_at_max_heat_cap, T_at_max_susc);
     return 0;
 }

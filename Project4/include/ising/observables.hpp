@@ -23,5 +23,7 @@ namespace ising{
         double E{0.0};
         int   M{0};
         double absM{0.0};
+        double Cv{0.0};
+        double chi{0.0};
     };
 }

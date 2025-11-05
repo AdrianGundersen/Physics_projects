@@ -61,4 +61,31 @@ namespace ising::io {
         j["E"] = obs.E;
         j["M"] = obs.M;
     }
+
+    inline void T_to_json(nlohmann::json& jout, const nlohmann::json& jin, const double& T, const double& heat_cap, const double& chi) {
+        const int L = jin.at("lattice").at("L").get<int>();
+        const int sweeps = jin.at("simulation").value("total_sweeps", 10000);
+        const int walkers = jin.at("simulation").value("walkers", 1);
+
+        double tol = 1e-5; // tolerance for overwriting existing T entry
+
+        nlohmann::json& entry = jout[std::to_string(L)]; // order L : runs : values
+        for (auto& e : entry) {
+            if (std::abs(e.at("T").get<double>() - T) < tol) { // if T matches existing entry within tolerance
+                // overwrite existing entry
+                e["chi"] = chi;
+                e["Cv"] = heat_cap;
+                e["sweeps"] = sweeps;
+                e["walkers"] = walkers;
+                return;
+            }
+        }
+        entry.push_back({
+            {"T", T},
+            {"chi", chi},
+            {"Cv", heat_cap},
+            {"sweeps", sweeps},
+            {"walkers", walkers}
+        });
+    }
 }

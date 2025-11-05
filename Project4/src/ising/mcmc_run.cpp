@@ -81,6 +81,8 @@ namespace ising{
         result.all_walkers = walkers;
         // compute average walker
         Walker avg_walker;
+        avg_walker.lat = walkers[0].lat; // just copy from first walker
+        avg_walker.model = walkers[0].model;
         avg_walker.n = walkers[0].n; // all walkers should have same number
         for (int i = 0; i < avg_walker.n; ++i) {
             double eps_sum = 0.0;

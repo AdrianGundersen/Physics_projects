@@ -13,11 +13,11 @@
     {
         "seed": 67,
         "temperature": 1.0,
-        "use_Trange": false,
+        "use_Trange": true,
         "Trange": {
             "Tmin": 2.25,
-            "Tmax": 2.4,
-            "Tsteps": 4
+            "Tmax": 2.35,
+            "Tsteps": 21
         },
         "total_steps": "N",
         "burn_in_sweeps": 10000,
@@ -28,13 +28,13 @@
     },
     "write_to_file": 
     {
-        "enabled": false,
-        "observables": ["e", "m"],
-        "type": "txt",
+        "enabled": true,
+        "observables": ["cv", "chi"],
+        "type": "json",
         "delimiter": ",",
         "precision": 6,
         "output_filename": "default",
         "header": false,
-        "average_or_concatenate": "concatenate"
+        "average_or_concatenate": "average"
     }
 }
