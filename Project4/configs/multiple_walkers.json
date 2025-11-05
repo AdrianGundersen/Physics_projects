@@ -7,7 +7,7 @@
     },
     "lattice":
     {
-        "L" : 40
+        "L" : 20
     },
     "simulation":
     {
@@ -15,14 +15,14 @@
         "temperature": 1.0,
         "use_Trange": true,
         "Trange": {
-            "Tmin": 2.1,
+            "Tmin": 2.25,
             "Tmax": 2.4,
-            "Tsteps": 10
+            "Tsteps": 40
         },
         "total_steps": "N",
         "burn_in_sweeps": 10000,
         "measure_sweeps": 1,
-        "total_sweeps": 20000,
+        "total_sweeps": 40000,
         "cores": 10,
         "walkers": 10
     },
@@ -34,7 +34,7 @@
         "delimiter": ",",
         "precision": 6,
         "output_filename": "default",
-        "header": true,
+        "header": false,
         "average_or_concatenate": "concatenate"
     }
 }

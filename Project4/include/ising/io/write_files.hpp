@@ -77,6 +77,71 @@ inline void write_results_to_file(const nlohmann::json& jwrite,
     }
 
     ofile.close();
-}
+    }
+
+    inline void add_critical_temperature(const nlohmann::json& jwrite,
+        const int L,
+        const double& max_heat_cap,
+        const double& max_susc,
+        const double& T_max_heat_cap,
+        const double& T_max_susc) {
+        const std::string type   = jwrite.value("type", "txt");
+        const std::string delim  = jwrite.value("delimiter", ",");
+        const int precision      = jwrite.value("precision", 10);
+
+        const std::string dir = "data/output/";
+        std::string filename = dir + "critical_temperature.txt";
+        std::filesystem::create_directories(dir);
+
+        std::vector<std::string> lines;
+        // looking for the line for the excisting lattice size L
+        {
+            std::ifstream in(filename);
+            std::string line;
+            while (std::getline(in, line)) {
+                if (!line.empty()) lines.push_back(line);
+            }
+        }
+        // new line to write
+        std::ostringstream oss;
+        oss << std::fixed << std::setprecision(precision)
+            << L << delim 
+            << T_max_heat_cap << delim 
+            << max_heat_cap << delim 
+            << T_max_susc << delim 
+            << max_susc;
+        const std::string new_line = oss.str();
+
+        bool line_found = false;
+        for (auto& line : lines) {
+            size_t c = line.find(delim);
+            if (c == std::string::npos) continue; // malformed line
+            try {
+                int existing_L = std::stoi(line.substr(0, c));
+                if (existing_L == L) {
+                line = new_line; // update line
+                line_found = true;
+                break;
+                }
+            }          
+            catch (const std::invalid_argument& ia) {
+                continue; // skip malformed line
+            }
+        }
+
+        // If line not found, add new line
+        if (!line_found) {
+            lines.push_back(new_line);
+        }
+        // Write back to file
+        
+        std::ofstream out(filename, std::ios::trunc);
+        for (const auto& line : lines) {
+            out << line << "\n";
+        }
+        
+        std::cout << "Critical temperatures written to " << filename << "\n";
+    }
+
 
 } // namespace ising::io

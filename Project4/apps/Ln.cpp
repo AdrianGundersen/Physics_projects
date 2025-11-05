@@ -55,6 +55,8 @@ int main(int argc, char** argv) { // argc and argv to get JSON file path (argc i
     std::vector<double> T_values;
     if (use_Trange){
         T_values = linspace(params.Tmin, params.Tmax, params.Tsteps);
+
+    // running the simulation for a single temperature if uste_Trange is false
     } else {
         ising::Lattice initial_lat = ising::io::lattice_from_json(j.at("lattice"));
         double T = params.temperature;
@@ -81,8 +83,8 @@ int main(int argc, char** argv) { // argc and argv to get JSON file path (argc i
         ising::io::write_results_to_file(write_json, result, output_file_name);
     }
 
-    std::cout << "\nRunning simulations over temperature range:\n";
-    std::cout << "Tmax: " << params.Tmax << ", Tmin: " << params.Tmin << ", Tsteps: " << params.Tsteps << "\n";
+    std::cout << "\nRunning simulations for lattice size " << ising::io::lattice_from_json(j.at("lattice")).size() << "\n";
+    std::cout << "Tmax = " << params.Tmax << ", Tmin = " << params.Tmin << ", Tsteps = " << params.Tsteps << "\n";
     std::vector<double> heat_cap_values;
     std::vector<double> susc_values;
     for (double T : T_values){
@@ -129,5 +131,7 @@ int main(int argc, char** argv) { // argc and argv to get JSON file path (argc i
 
     std::cout << "Maximum heat capacity: " << max_heat_cap << " at T = " << T_at_max_heat_cap << "\n";
     std::cout << "Maximum susceptibility: " << max_susc << " at T = " << T_at_max_susc << "\n";
+
+    ising::io::add_critical_temperature(j, ising::io::lattice_from_json(j.at("lattice")).size(), max_heat_cap, max_susc, T_at_max_heat_cap, T_at_max_susc);
     return 0;
 }

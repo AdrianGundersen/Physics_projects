@@ -70,7 +70,7 @@ make help
 ```
 
 ### Using JSON config files
-The executables in the `apps/` folder read parameters from JSON config files located in the `configs/` folder. You can create your own config files by copying and modifying the existing templates.
+The executables in the `apps/` folder read parameters from JSON config files located in the `configs/` folder. You can create your own config files by copying and modifying the existing templates. The argument `use_Trange` tells the program to run for a single temeprature of not. 
 
 **Example**
 ```json
@@ -88,7 +88,13 @@ The executables in the `apps/` folder read parameters from JSON config files loc
     "simulation": // Simulation parameters (Metropolis)
     {
         "seed": 67, // Mother seed for random number generator
-        "temperature": 2.0, // Temperature [J/kB]
+        "temperature": 2.0, // Temperature [J/kB], using this temperature if "use_Trange": false
+        "use_Trange": true, // Bool too run over multiple temeratures 
+        "Trange": {
+            "Tmin": 2.1,    // Starting temerature
+            "Tmax": 2.4,    // End temeprature
+            "Tsteps": 10    // Number of temerature steps from Tmin to Tmax
+        },
         "total_steps": "N", // Total Monte Carlo steps ("N" means number af spins but can also be any integer)
         "measure_sweeps": 10, // Measure observables every n sweeps
         "total_sweeps": 3000, // Total number of sweeps after burn-in
