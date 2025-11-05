@@ -138,8 +138,8 @@ inline void write_results_to_file(const nlohmann::json& jin,
             double avg_mabs2 = mabs2_sum / count;
 
             const double Cv   = ising::heat_capacity(result.all_walkers.front().lat, avg_eps2, avg_eps, T);
-            const double chi  = ising::susceptibility(result.all_walkers.front().lat, avg_mabs, avg_mabs2, T);
-            ising::io::T_to_json(jout, jin, T, Cv, chi);
+            const double chi = ising::susceptibility(result.all_walkers.front().lat, avg_mabs, avg_mabs2, T);
+            ising::io::T_to_json(jout, jin, T, Cv, chi, avg_eps, avg_mabs);
 
             std::ofstream out(filename);
             out << std::setw(jwrite.value("indent", 2)) << jout;

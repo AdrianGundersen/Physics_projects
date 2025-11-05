@@ -62,7 +62,11 @@ namespace ising::io {
         j["M"] = obs.M;
     }
 
-    inline void T_to_json(nlohmann::json& jout, const nlohmann::json& jin, const double& T, const double& heat_cap, const double& chi) {
+    inline void T_to_json(nlohmann::json& jout, const nlohmann::json& jin, 
+            const double& T, const double& heat_cap, const double& chi, 
+            const double& avg_eps = 0.0, const double& avg_mabs = 0.0) {
+
+
         const int L = jin.at("lattice").at("L").get<int>();
         const int sweeps = jin.at("simulation").value("total_sweeps", 10000);
         const int walkers = jin.at("simulation").value("walkers", 1);
@@ -77,6 +81,8 @@ namespace ising::io {
             if (std::abs(Tk - T) < tol) {
                 v["chi"]     = chi;
                 v["Cv"]      = heat_cap;
+                v["avg_eps"] = avg_eps;
+                v["avg_mabs"] = avg_mabs;
                 v["sweeps"]  = sweeps;
                 v["walkers"] = walkers;
                 return;
@@ -87,6 +93,8 @@ namespace ising::io {
         nlohmann::json& T_entry = entry[std::to_string(T)];
         T_entry["chi"]     = chi;
         T_entry["Cv"]      = heat_cap;
+        T_entry["avg_eps"] = avg_eps;
+        T_entry["avg_mabs"] = avg_mabs;
         T_entry["sweeps"]  = sweeps;
         T_entry["walkers"] = walkers;
     }
