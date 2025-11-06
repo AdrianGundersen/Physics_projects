@@ -38,6 +38,22 @@ def load_JSON(filepath) -> dict:
         data = json.load(f) # loads into dictionary
     return data
 
+def sort_data(data, min_sweeps=1e4):
+    """
+    Sort data dictionary by temperature for each L. Remove if sweeps < min_sweeps.
+    """
+
+    sorted_data = {}
+    for L_str, T_dict in data.items():
+        T_values = []
+        for T_str, values in T_dict.items():
+            if values["sweeps"] >= min_sweeps:
+                T_values.append((float(T_str), values))
+            T_values.sort(key=lambda x: x[0])  # sort by temperature
+        sorted_data[L_str] = {str(T): vals for T, vals in T_values}
+    return sorted_data
+
+
 def plot_Cv_vs_T(data, L):
     """
     Plot heat capacity Cv vs temperature T for a given L.
@@ -79,7 +95,47 @@ def plot_chi_vs_T(data, L):
     plt.close()
     return None
 
-def Tc_regress(data, L, observable="Cv", plot = False):
+def plot_eps_vs_T(data, L):
+    """
+    Plot energy per spin ε vs temperature T for a given L.
+    """
+    T_values = []
+    eps_values = []
+
+    for T_str, values in data[str(L)].items():
+        T_values.append(float(T_str))
+        eps_values.append(values["avg_eps"])  # energy per spin
+
+    plt.figure()
+    plt.plot(T_values, eps_values, marker='o', linestyle='-')
+    plt.xlabel('Temperature T')
+    plt.ylabel('Energy per spin ε')
+    plt.grid()
+    plt.savefig(fig_dir / f'eps_vs_T_L{L}.pdf')
+    plt.close()
+    return None
+
+def plot_m_vs_T(data, L):
+    """
+    Plot absolute magnetization per spin m vs temperature T for a given L.
+    """
+    T_values = []
+    m_values = []
+
+    for T_str, values in data[str(L)].items():
+        T_values.append(float(T_str))
+        m_values.append(values["avg_mabs"])  # magnetization per spin
+
+    plt.figure()
+    plt.plot(T_values, m_values, marker='o', linestyle='-')
+    plt.xlabel('Temperature T')
+    plt.ylabel('Magnetization per spin m')
+    plt.grid()
+    plt.savefig(fig_dir / f'm_vs_T_L{L}.pdf')
+    plt.close()
+    return None
+
+def Tc_regress(data, L, observable="Cv", plot = False, min_sweeps=1e4):
     """
     """
     T_values = []
@@ -87,6 +143,8 @@ def Tc_regress(data, L, observable="Cv", plot = False):
 
     for T_str, values in data[str(L)].items():
         T_values.append(float(T_str))
+        if values["sweeps"] < min_sweeps:
+            continue # skip if not enough sweeps
         if observable == "Cv":
             obs_values.append(values["Cv"])
         elif observable == "chi":
@@ -122,9 +180,11 @@ def Tc_regress(data, L, observable="Cv", plot = False):
 
     return T_c, observable_max
 # Load data and plot for L
-L = np.array([20, 40, 60])
+L = np.array([10, 20])#, 60, 70, 80, 90, 100, 110, 120, 130])
+min_sweeps = 1e5
 json_path = ROOT / "test.json"
-data = load_JSON(json_path)
+raw_data = load_JSON(json_path)
+data = sort_data(raw_data, min_sweeps=min_sweeps)
 
 Tc_Cv_vals = []
 Tc_chi_vals = []
@@ -132,9 +192,11 @@ Tc_chi_vals = []
 for l in L:
     plot_Cv_vs_T(data, l)
     plot_chi_vs_T(data, l)
-    Tc_Cv, Cv_max = Tc_regress(data, l, observable="Cv", plot=True)
-    Tc_chi, chi_max = Tc_regress(data, l, observable="chi", plot=True)
-    Tc_Cv_vals.append(Tc_Cv)
+    plot_eps_vs_T(data, l)
+    plot_m_vs_T(data, l)
+    Tc_Cv, Cv_max = Tc_regress(data, l, observable="Cv", plot=True, min_sweeps=min_sweeps)
+    Tc_chi, chi_max = Tc_regress(data, l, observable="chi", plot=True, min_sweeps=min_sweeps)
+    Tc_Cv_vals.append(Tc_Cv)    
     Tc_chi_vals.append(Tc_chi)
     print(f"L={l}: Tc from Cv = {Tc_Cv:.4f} (max Cv = {Cv_max:.4f}), Tc from chi = {Tc_chi:.4f} (max chi = {chi_max:.4f})")
 
