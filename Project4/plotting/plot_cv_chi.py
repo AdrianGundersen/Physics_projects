@@ -11,14 +11,14 @@ from pathlib import Path
 # plotting style
 plt.rcParams.update({
     'font.family': 'serif',
-    'font.size': 15,
+    'font.size': 14,
     'figure.figsize': (6, 4),
-    'axes.titlesize': 17,
-    'axes.labelsize': 20,
+    'axes.titlesize': 14,
+    'axes.labelsize': 14,
     'xtick.labelsize': 12,
     'ytick.labelsize': 12,
     'lines.linewidth': 2.0,
-    'legend.fontsize': 17,
+    'legend.fontsize': 14,
     'figure.dpi': 300,
 })
 
@@ -70,6 +70,7 @@ def plot_Cv_vs_T(data, L):
 
     plt.xlabel('Temperature T')
     plt.ylabel('Heat Capacity Cv')
+    plt.tight_layout()
     plt.grid()
     plt.savefig(fig_dir / f'Cv_vs_T_L{L}.pdf')
     plt.close()
@@ -91,6 +92,7 @@ def plot_chi_vs_T(data, L):
     plt.xlabel('Temperature T')
     plt.ylabel('Magnetic Susceptibility χ')
     plt.grid()
+    plt.tight_layout()
     plt.savefig(fig_dir / f'chi_vs_T_L{L}.pdf')
     plt.close()
     return None
@@ -111,6 +113,7 @@ def plot_eps_vs_T(data, L):
     plt.xlabel('Temperature T')
     plt.ylabel('Energy per spin ε')
     plt.grid()
+    plt.tight_layout()
     plt.savefig(fig_dir / f'eps_vs_T_L{L}.pdf')
     plt.close()
     return None
@@ -131,11 +134,12 @@ def plot_m_vs_T(data, L):
     plt.xlabel('Temperature T')
     plt.ylabel('Magnetization per spin m')
     plt.grid()
+    plt.tight_layout()
     plt.savefig(fig_dir / f'm_vs_T_L{L}.pdf')
     plt.close()
     return None
 
-def Tc_regress(data, L, observable="Cv", plot = False, min_sweeps=1e4):
+def Tc_regress(data, L, observable="Cv", plot = False):
     """
     """
     T_values = []
@@ -143,8 +147,6 @@ def Tc_regress(data, L, observable="Cv", plot = False, min_sweeps=1e4):
 
     for T_str, values in data[str(L)].items():
         T_values.append(float(T_str))
-        if values["sweeps"] < min_sweeps:
-            continue # skip if not enough sweeps
         if observable == "Cv":
             obs_values.append(values["Cv"])
         elif observable == "chi":
@@ -154,7 +156,7 @@ def Tc_regress(data, L, observable="Cv", plot = False, min_sweeps=1e4):
 
     obs_max = max(obs_values)
     max_index = obs_values.index(obs_max)
-    delta_idx = 5 # number of points on each side of the maximum to consider
+    delta_idx = 4 # number of points on each side of the maximum to consider
     start_idx = max(0, max_index - delta_idx)
     end_idx = min(len(T_values), max_index + delta_idx + 1)
     T_fit = np.array(T_values[start_idx:end_idx])
@@ -174,13 +176,14 @@ def Tc_regress(data, L, observable="Cv", plot = False, min_sweeps=1e4):
         plt.xlabel('Temperature T')
         plt.ylabel(f'{observable} (max: {observable_max:.2f} at T_c: {T_c:.2f})')
         plt.legend()
+        plt.tight_layout()
         plt.grid()
         plt.savefig(fig_dir / f'{observable}_Tc_fit_L{L}.pdf')
         plt.close()
 
     return T_c, observable_max
 # Load data and plot for L
-L = np.array([10, 20])#, 60, 70, 80, 90, 100, 110, 120, 130])
+L = np.array([10, 20, 40, 50, 100])#, 60, 70, 80, 90, 100, 110, 120, 130])
 min_sweeps = 1e5
 json_path = ROOT / "test.json"
 raw_data = load_JSON(json_path)
@@ -194,8 +197,8 @@ for l in L:
     plot_chi_vs_T(data, l)
     plot_eps_vs_T(data, l)
     plot_m_vs_T(data, l)
-    Tc_Cv, Cv_max = Tc_regress(data, l, observable="Cv", plot=True, min_sweeps=min_sweeps)
-    Tc_chi, chi_max = Tc_regress(data, l, observable="chi", plot=True, min_sweeps=min_sweeps)
+    Tc_Cv, Cv_max = Tc_regress(data, l, observable="Cv", plot=True)
+    Tc_chi, chi_max = Tc_regress(data, l, observable="chi", plot=True)
     Tc_Cv_vals.append(Tc_Cv)    
     Tc_chi_vals.append(Tc_chi)
     print(f"L={l}: Tc from Cv = {Tc_Cv:.4f} (max Cv = {Cv_max:.4f}), Tc from chi = {Tc_chi:.4f} (max chi = {chi_max:.4f})")

@@ -7,7 +7,7 @@
     },
     "lattice":
     {
-        "L" : 20
+        "L" : 100
     },
     "simulation":
     {
@@ -15,16 +15,16 @@
         "temperature": 1.5,
         "use_Trange": true,
         "Trange": {
-            "Tmin": 1.0,
-            "Tmax": 2.5,
+            "Tmin": 2.2,
+            "Tmax": 2.36,
             "Tsteps": 11
         },
         "total_steps": "N",
         "burn_in_sweeps": 10000,
         "measure_sweeps": 1,
-        "total_sweeps": 1000000,
-        "cores": 10,
-        "walkers": 10
+        "total_sweeps": 1e6,
+        "cores": 12,
+        "walkers": 12
     },
     "write_to_file": 
     {

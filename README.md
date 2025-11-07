@@ -18,17 +18,21 @@ This repository contains the solutions to projects from **FYS3150 – Computatio
   Solving Penning Trap problem with 4th order Runge-Kutta implementation on a multi-particle system. 
 ---
 - [Project 4: The Ising Model](./Project4)  
+  Simulating the 2D Ising model using the Metropolis algorithm.
   
 ---
-
 - [Rapports](./Rapports)  
   Contains all the reports for the projects in PDF format.
-
--[Third Party Libraries](./ThirdPartyLibraries)  
+---
+- [Third Party Libraries](./ThirdPartyLibraries)  
  Contains third party libraries used in the projects.
   - Nlohmann JSON for Modern C++: https://github.com/nlohmann/json
+---
 
 ## How to Use
 
 Each folder has it's own `README.md` for usage.
+
+## Dependencies
+Each project had dependencies listed in their respective `README.md` files.
 
