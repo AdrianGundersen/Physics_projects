@@ -184,7 +184,7 @@ def Tc_regress(data, L, observable="Cv", plot = False):
     return T_c, observable_max
 
 
-def plot_together(data, L):
+def plot_together(data, L, observable="Cv"):
     """
     Plot observable for all L in the same plot
     """
@@ -193,11 +193,9 @@ def plot_together(data, L):
 
     for T_str, values in data[str(L)].items():
         T_values.append(float(T_str))
-        obs_values.append(values["Cv"])
+        obs_values.append(values[observable])
 
-    plt.plot(T_values, obs_values, marker='o', linestyle='-', label=f'L={L}')
-    plt.xlabel('Temperature T')
-    plt.ylabel('Heat Capacity Cv')
+    plt.plot(T_values, obs_values, marker='x', linestyle='-', label=f'L={L}', alpha = 0.7)
     plt.legend()
     plt.grid()
     return None
@@ -248,12 +246,14 @@ plt.close()
 
 # plot together
 plt.figure()
-for l in L:
-    plot_together(data, l)
-plt.xlabel('Temperature T')
-plt.ylabel('Heat Capacity Cv')
-plt.legend()
-plt.grid()
-plt.tight_layout()
-plt.savefig(fig_dir / 'Cv_vs_T_all_L.pdf')
-plt.close()
+for observable in ["Cv", "chi", "avg_eps", "avg_mabs"]:
+    plt.clf()
+    for l in L:
+        plot_together(data, l, observable)
+    plt.xlabel('Temperature T')
+    plt.ylabel(f'{observable}')
+    plt.legend()
+    plt.grid()
+    plt.tight_layout()
+    plt.savefig(fig_dir / f'{observable}_vs_T_all_L.pdf')
+    plt.close()
