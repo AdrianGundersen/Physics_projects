@@ -25,7 +25,7 @@ plt.rcParams.update({
 # Finds project root
 ROOT = Path(__file__).resolve().parents[2]
 
-fig_dir = ROOT / "data/figures/Cv_chi"
+fig_dir = ROOT / "Project4/data/figures/Cv_chi"
 fig_dir.mkdir(parents=True, exist_ok=True)
 
 
@@ -183,9 +183,9 @@ def Tc_regress(data, L, observable="Cv", plot = False):
 
     return T_c, observable_max
 # Load data and plot for L
-L = np.array([10, 20, 40, 50, 100])#, 60, 70, 80, 90, 100, 110, 120, 130])
+L = np.array([5, 10, 20, 40, 50, 100])#, 60, 70, 80, 90, 100, 110, 120, 130])
 min_sweeps = 1e5
-json_path = ROOT / "test.json"
+json_path = ROOT / "Project4/data/outputs/tsweep_results.json"
 raw_data = load_JSON(json_path)
 data = sort_data(raw_data, min_sweeps=min_sweeps)
 
@@ -220,6 +220,7 @@ plt.plot(inv_L, intercept + slope * inv_L, 'r--', label=f'Fit Cv: Tc={intercept:
 plt.xlabel('1/L')
 plt.ylabel('Critical Temperature Tc')
 plt.legend()
+plt.tight_layout()
 plt.grid()
 plt.savefig(fig_dir / 'Tc_vs_invL.pdf')
 plt.close()

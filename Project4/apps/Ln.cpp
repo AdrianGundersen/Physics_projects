@@ -94,7 +94,7 @@ int main(int argc, char** argv) { // argc and argv to get JSON file path (argc i
 
         ising::Lattice initial_lat = ising::io::lattice_from_json(jT.at("lattice"));
         ising::Result result = ising::mcmc_run(initial_lat, model, jT);
-        ising::io::write_results_to_file(j, result, "data/outputs/t_sweep.json", T);
+        ising::io::write_results_to_file(j, result, "data/outputs/tsweep_results.json", T);
     }
         // std::vector<double> eps, eps2 , mabs, mabs2;
 
