@@ -182,6 +182,27 @@ def Tc_regress(data, L, observable="Cv", plot = False):
         plt.close()
 
     return T_c, observable_max
+
+
+def plot_together(data, L):
+    """
+    Plot observable for all L in the same plot
+    """
+    T_values = []
+    obs_values = []
+
+    for T_str, values in data[str(L)].items():
+        T_values.append(float(T_str))
+        obs_values.append(values["Cv"])
+
+    plt.plot(T_values, obs_values, marker='o', linestyle='-', label=f'L={L}')
+    plt.xlabel('Temperature T')
+    plt.ylabel('Heat Capacity Cv')
+    plt.legend()
+    plt.grid()
+    return None
+
+
 # Load data and plot for L
 L = np.array([5, 10, 20, 40, 50, 100])#, 60, 70, 80, 90, 100, 110, 120, 130])
 min_sweeps = 1e5
@@ -223,4 +244,16 @@ plt.legend()
 plt.tight_layout()
 plt.grid()
 plt.savefig(fig_dir / 'Tc_vs_invL.pdf')
+plt.close()
+
+# plot together
+plt.figure()
+for l in L:
+    plot_together(data, l)
+plt.xlabel('Temperature T')
+plt.ylabel('Heat Capacity Cv')
+plt.legend()
+plt.grid()
+plt.tight_layout()
+plt.savefig(fig_dir / 'Cv_vs_T_all_L.pdf')
 plt.close()
