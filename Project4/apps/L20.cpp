@@ -113,8 +113,10 @@ int main(int argc, char** argv) { // argc and argv to get JSON file path (argc i
     std::vector<double> eps_samples, mabs_samples, eps2_samples, mabs2_samples;
 
     double mabs;
+    double E = ising::total_energy(lattice, model);
+    M = total_magnetization(lattice);
     for (int s = 0; s < total_sweeps; ++s) {    // her må metropolis kjøre N ganger for at info skal være riktig
-        ising::Metropolis(model, lattice, params, rng);
+        ising::Metropolis(model, lattice, params, rng, E, M);
         if (s % (measure_sweeps) == 0) { // after each sweep
             // std::cout << "Sampling at sweep " << s / N << "\n";
             eps = ising::energy_per_spin(lattice, model);
