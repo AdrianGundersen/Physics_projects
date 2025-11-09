@@ -28,6 +28,54 @@ ROOT = Path(__file__).resolve().parents[2]
 fig_dir = ROOT / "Project4/data/figures/Cv_chi"
 fig_dir.mkdir(parents=True, exist_ok=True)
 
+def get_max(data, L, observable="Cv"):
+    """
+    Get maximum value of observable and index for given L.
+    """
+    L_data = data[str(L)]
+    obs_vals = [L_data[T_str][observable] for T_str in L_data]
+    return max(obs_vals), obs_vals.index(max(obs_vals))
+
+def uncertainty_cv_chi(data, L, index_cv, index_chi):
+    """
+    Calculate uncertainty in chi and Cv using variance of energy and magnetization.
+    """
+
+    L_data = data[str(L)]
+
+    t_sorted = sorted(L_data.keys(), key=float)
+
+    T_cv_str = t_sorted[index_cv]
+    vals_cv = L_data[T_cv_str]
+    T_cv = float(T_cv_str)
+
+    T_chi_str = t_sorted[index_chi]
+    vals_chi = L_data[T_chi_str]
+    T_chi = float(T_chi_str)
+
+    N = L * L
+    kB = 1.0
+
+    M_cv = vals_cv["sweeps"] * vals_cv["walkers"]
+    M_chi = vals_chi["sweeps"] * vals_chi["walkers"]
+
+    eps = vals_cv["avg_eps"]
+    eps2 = vals_cv["avg_eps2"]
+    eps4 = vals_cv["avg_eps4"]
+
+    m = vals_chi["avg_mabs"]
+    m2 = vals_chi["avg_mabs2"]
+    m4 = vals_chi["avg_mabs4"]
+
+    var_eps = eps2 - eps**2
+    var_m = m2 - m**2
+    var_eps2 = eps4 - eps2**2
+    var_m2 = m4 - m2**2
+
+    sigma_cv = N/(kB*T_cv**2)*np.sqrt(var_eps2/M_cv + 4*eps**2*var_eps/M_cv)
+    sigma_chi = N/(kB*T_chi)*np.sqrt(var_m2/M_chi + 4*m**2*var_m/M_chi)
+
+    return sigma_chi, sigma_cv
 
 def load_JSON(filepath) -> dict:
     """Load JSON data from a file.
@@ -142,10 +190,13 @@ def plot_m_vs_T(data, L):
 def Tc_regress(data, L, observable="Cv", plot = False):
     """
     """
+    L_data = data[str(L)]
+    T_sorted = sorted(L_data.keys(), key=float)
     T_values = []
     obs_values = []
 
-    for T_str, values in data[str(L)].items():
+    for T_str in T_sorted:
+        values = L_data[T_str]
         T_values.append(float(T_str))
         if observable == "Cv":
             obs_values.append(values["Cv"])
@@ -159,12 +210,31 @@ def Tc_regress(data, L, observable="Cv", plot = False):
     delta_idx = 4 # number of points on each side of the maximum to consider
     start_idx = max(0, max_index - delta_idx)
     end_idx = min(len(T_values), max_index + delta_idx + 1)
+
     T_fit = np.array(T_values[start_idx:end_idx])
     obs_fit = np.array(obs_values[start_idx:end_idx])
-    coeffs = np.polyfit(T_fit, obs_fit, 2)
+
+    coeffs, cov = np.polyfit(T_fit, obs_fit, 2, cov=True)
+    a, b, c = coeffs
     poly = np.poly1d(coeffs)
+
     T_c = -coeffs[1] / (2 * coeffs[0]) # -b/2a
     observable_max = poly(T_c) 
+    
+    var_a = cov[0,0]
+    var_b = cov[1,1]
+    var_ab = cov[0,1]
+
+    dTda = b / (2.0 * a**2)
+    dTdb = -1.0 / (2.0 * a)
+    sigma_Tc = np.sqrt(dTda**2 * var_a + dTdb**2 * var_b + 2 * dTda * dTdb * var_ab)
+
+    if observable == "Cv":
+        sigma_obs_max = uncertainty_cv_chi(data, L, max_index, max_index)[1]
+    elif observable == "chi":
+        sigma_obs_max = uncertainty_cv_chi(data, L, max_index, max_index)[0]
+    else:
+        raise ValueError("Observable must be 'Cv' or 'chi'.")
 
     # Plotting
     if plot:
@@ -181,7 +251,7 @@ def Tc_regress(data, L, observable="Cv", plot = False):
         plt.savefig(fig_dir / f'{observable}_Tc_fit_L{L}.pdf')
         plt.close()
 
-    return T_c, observable_max
+    return T_c, observable_max, sigma_obs_max, sigma_Tc
 
 
 def plot_together(data, L, observable="Cv"):
@@ -201,8 +271,9 @@ def plot_together(data, L, observable="Cv"):
     return None
 
 
+
 # Load data and plot for L
-L = np.array([5, 10, 20, 40, 50, 100])#, 60, 70, 80, 90, 100, 110, 120, 130])
+L = np.array([5, 10, 20, 30])# 40, 50, 100])#, 60, 70, 80, 90, 100, 110, 120, 130])
 min_sweeps = 1e5
 json_path = ROOT / "Project4/data/outputs/tsweep_results.json"
 raw_data = load_JSON(json_path)
@@ -210,28 +281,47 @@ data = sort_data(raw_data, min_sweeps=min_sweeps)
 
 Tc_Cv_vals = []
 Tc_chi_vals = []
+sigma_TcCv_vals = []
+sigma_TcChi_vals = []
+sigma_Cv_vals = []
+sigma_chi_vals = []
 
 for l in L:
     plot_Cv_vs_T(data, l)
     plot_chi_vs_T(data, l)
     plot_eps_vs_T(data, l)
     plot_m_vs_T(data, l)
-    Tc_Cv, Cv_max = Tc_regress(data, l, observable="Cv", plot=True)
-    Tc_chi, chi_max = Tc_regress(data, l, observable="chi", plot=True)
-    Tc_Cv_vals.append(Tc_Cv)    
+    Tc_Cv, Cv_max, sigma_Cv, sigma_TcCv = Tc_regress(data, l, observable="Cv", plot=True)
+    Tc_chi, chi_max, sigma_chi, sigma_TcChi = Tc_regress(data, l, observable="chi", plot=True)
+    Tc_Cv_vals.append(Tc_Cv)
     Tc_chi_vals.append(Tc_chi)
-    print(f"L={l}: Tc from Cv = {Tc_Cv:.4f} (max Cv = {Cv_max:.4f}), Tc from chi = {Tc_chi:.4f} (max chi = {chi_max:.4f})")
+    sigma_TcCv_vals.append(sigma_TcCv)
+    sigma_TcChi_vals.append(sigma_TcChi)
+    sigma_Cv_vals.append(sigma_Cv)
+    sigma_chi_vals.append(sigma_chi)
+    print(f"L={l}: Tc from Cv = {Tc_Cv:.4f}+-{sigma_TcCv:.4f} (max Cv = {Cv_max:.4f}+-{sigma_Cv:.4f}), Tc from chi = {Tc_chi:.4f}+-{sigma_TcChi:.4f} (max chi = {chi_max:.4f}+-{sigma_chi:.4f})")
 
 # 1/L vs Tc plot
 Tc_Cv_vals = np.array(Tc_Cv_vals)
 Tc_chi_vals = np.array(Tc_chi_vals)
+sigma_TcCv_vals = np.array(sigma_TcCv_vals)
+sigma_TcChi_vals = np.array(sigma_TcChi_vals)
+
 Tc_vals = 0.5 * (Tc_Cv_vals + Tc_chi_vals)
+Tc_errs = 0.5 * np.sqrt(sigma_TcCv_vals**2 + sigma_TcChi_vals**2)
 
 inv_L = 1.0 / L
+
+wheights = 1.0 / Tc_errs**2
 
 # linregress
 slope, intercept, r_value, p_val, std_err = linregress(inv_L, Tc_vals)
 
+N = len(L)
+inv_L_mean = np.mean(inv_L)
+intercept_err = std_err * np.sqrt(np.sum(inv_L**2) / (N*np.sum((inv_L - inv_L_mean)**2)))
+
+print(f"Tc(inf) = {intercept:.5f} ± {intercept_err:.5f}")
 
 plt.figure()
 plt.plot(inv_L, Tc_vals, 'o', label='Tc')
