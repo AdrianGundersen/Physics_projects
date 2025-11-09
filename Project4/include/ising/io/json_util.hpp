@@ -64,7 +64,10 @@ namespace ising::io {
 
     inline void T_to_json(nlohmann::json& jout, const nlohmann::json& jin, 
             const double& T, const double& heat_cap, const double& chi, 
-            const double& avg_eps = 0.0, const double& avg_mabs = 0.0) {
+            const double& avg_eps = 0.0, const double& avg_mabs = 0.0, 
+            const double& avg_eps2 = 0.0, const double& avg_mabs2 = 0.0, 
+            const double& avg_eps3 = 0.0, const double& avg_mabs3 = 0.0,
+            const double& avg_eps4 = 0.0, const double& avg_mabs4 = 0.0) {
 
 
         const int L = jin.at("lattice").at("L").get<int>();
@@ -83,6 +86,12 @@ namespace ising::io {
                 v["Cv"]      = heat_cap;
                 v["avg_eps"] = avg_eps;
                 v["avg_mabs"] = avg_mabs;
+                v["avg_eps2"] = avg_eps2;
+                v["avg_mabs2"] = avg_mabs2;
+                v["avg_eps3"] = avg_eps3;
+                v["avg_mabs3"] = avg_mabs3;
+                v["avg_eps4"] = avg_eps4;
+                v["avg_mabs4"] = avg_mabs4;
                 v["sweeps"]  = sweeps;
                 v["walkers"] = walkers;
                 return;
@@ -95,6 +104,12 @@ namespace ising::io {
         T_entry["Cv"]      = heat_cap;
         T_entry["avg_eps"] = avg_eps;
         T_entry["avg_mabs"] = avg_mabs;
+        T_entry["avg_eps2"] = avg_eps2;
+        T_entry["avg_mabs2"] = avg_mabs2;
+        T_entry["avg_eps3"] = avg_eps3;
+        T_entry["avg_mabs3"] = avg_mabs3;
+        T_entry["avg_eps4"] = avg_eps4;
+        T_entry["avg_mabs4"] = avg_mabs4;
         T_entry["sweeps"]  = sweeps;
         T_entry["walkers"] = walkers;
     }

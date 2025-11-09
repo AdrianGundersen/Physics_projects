@@ -119,16 +119,22 @@ inline void write_results_to_file(const nlohmann::json& jin,
         if (mode == "concatenate") {
             double eps_sum = 0.0; double mabs_sum = 0.0;
             double eps2_sum = 0.0; double mabs2_sum = 0.0;
+            double eps_3_sum = 0.0; double mabs_3_sum = 0.0;
+            double eps4_sum = 0.0; double mabs4_sum = 0.0;
             int count = 0;
             for (const auto& w : result.all_walkers) {
                 for (const auto& e : w.eps_samples) {
                     eps_sum += e;
                     eps2_sum += e * e;
+                    eps_3_sum += e * e * e;
+                    eps4_sum += e * e * e * e;
                     count += 1;
                 }
                 for (const auto& m : w.mabs_samples) {
                     mabs_sum += m;
                     mabs2_sum += m * m;
+                    mabs_3_sum += m * m * m;
+                    mabs4_sum += m * m * m * m;
                 }
             }
 
@@ -136,10 +142,14 @@ inline void write_results_to_file(const nlohmann::json& jin,
             double avg_mabs = mabs_sum / count;
             double avg_eps2 = eps2_sum / count;
             double avg_mabs2 = mabs2_sum / count;
+            double avg_eps3 = eps_3_sum / count;
+            double avg_mabs3 = mabs_3_sum / count;
+            double avg_eps4 = eps4_sum / count;
+            double avg_mabs4 = mabs4_sum / count;
 
             const double Cv   = ising::heat_capacity(result.all_walkers.front().lat, avg_eps2, avg_eps, T);
             const double chi = ising::susceptibility(result.all_walkers.front().lat, avg_mabs, avg_mabs2, T);
-            ising::io::T_to_json(jout, jin, T, Cv, chi, avg_eps, avg_mabs);
+            ising::io::T_to_json(jout, jin, T, Cv, chi, avg_eps, avg_mabs, avg_eps2, avg_mabs2, avg_eps3, avg_mabs3, avg_eps4, avg_mabs4);
 
             std::ofstream out(filename);
             out << std::setw(jwrite.value("indent", 2)) << jout;
