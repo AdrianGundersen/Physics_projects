@@ -19,6 +19,7 @@ INCLUDE := -Iinclude -I$(abspath ..)/third_party
 
 # --- Paths ---
 BIN_DIR := bin
+OUT_DIR := data/outputs
 
 # --- Core sources ---
 SRC_CORE := \
@@ -51,6 +52,8 @@ APPS := $(BIN_VALIDATE) $(BIN_L20) $(BIN_LN) $(BIN_RUNTIME)
 # --- Build rules (single-step link, no object dir) ---
 $(BIN_DIR):
 	@mkdir -p $@
+$(OUT_DIR):
+	@mkdir -p $@
 
 $(BIN_VALIDATE): $(SRC_CORE) $(APP_VALIDATE) | $(BIN_DIR)
 	$(CXX) $(CXXFLAGS) $(INCLUDE) $^ -o $@
@@ -65,7 +68,7 @@ $(BIN_RUNTIME): $(SRC_CORE) $(APP_RUNTIME) | $(BIN_DIR)
 	$(CXX) $(CXXFLAGS) $(INCLUDE) $^ -o $@
 
 # --- Top-level ---
-all: $(APPS)
+all: $(APPS) | $(OUT_DIR)
 
 run-2x2: $(BIN_VALIDATE)
 	./$(BIN_VALIDATE) $(JSON_2x2)
