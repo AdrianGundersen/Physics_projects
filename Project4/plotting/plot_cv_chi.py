@@ -195,10 +195,27 @@ def plot_together(data, L, observable="Cv"):
         T_values.append(float(T_str))
         obs_values.append(values[observable])
 
-    plt.plot(T_values, obs_values, linestyle='-', label=f'L={L}', alpha = 0.7)
-    plt.legend()
+    # full plot left
+    plt.subplot(1, 2, 1)
+    plt.plot(T_values, obs_values, linestyle='-', label=f'{L}', alpha = 0.7)
+    plt.xlabel('Temperature T')
+    if observable == "chi":
+        plt.yscale('log')
     plt.grid()
+    plt.legend()
+
+    # zoomed at T in [2.1,2.4] right
+    plt.subplot(1, 2, 2)
+    plt.plot(T_values, obs_values, linestyle='-', label='_nolegend_', alpha = 0.7)
+    plt.xlabel('Temperature T')
+    if observable == "chi":
+        plt.yscale('log')
+    plt.xlim(2.1, 2.4)
+    plt.grid()
+
+
     return None
+
 
 
 # Load data and plot for L
@@ -245,15 +262,12 @@ plt.savefig(fig_dir / 'Tc_vs_invL.pdf')
 plt.close()
 
 # plot together
-plt.figure()
+
 for observable in ["Cv", "chi", "avg_eps", "avg_mabs"]:
-    plt.clf()
+    plt.figure()
     for l in L:
         plot_together(data, l, observable)
-    plt.xlabel('Temperature T')
     plt.ylabel(f'{observable}')
-    plt.legend()
-    plt.grid()
     plt.tight_layout()
     plt.savefig(fig_dir / f'{observable}_vs_T_all_L.pdf')
     plt.close()
