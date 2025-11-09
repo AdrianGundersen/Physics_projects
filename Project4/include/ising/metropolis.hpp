@@ -40,5 +40,5 @@ namespace ising{
             factors[4] = std::exp(-beta * 8.0 * J);
         }
     };
-    void Metropolis(Model& model, Lattice& lattice, simParams& parmas, std::mt19937& rng);
+    void Metropolis(Model& model, Lattice& lattice, simParams& parmas, std::mt19937& rng, double& E, int& M);
 }

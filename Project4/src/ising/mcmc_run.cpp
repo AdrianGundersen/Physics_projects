@@ -27,18 +27,16 @@ namespace ising{
         ising::simParams params;
         ising::io::simparams_from_json(sim_json, lattice_json, params);
         int mother_seed = params.seed;
-        std::mt19937 rng(mother_seed);
-        double T = params.temperature;
-        int n_steps = params.total_steps;
         int measure_sweeps = params.measure_sweeps;
         int total_sweeps = params.total_sweeps;
-        int N = params.total_steps;
         int cores = params.cores;
         int n_walkers = params.walkers;
         ising::Result result;
+
         std::vector<uint32_t> seeds = omp_rng::initialize_omp_rng_container(mother_seed, n_walkers);
-        std::vector<Walker> walkers(n_walkers); // vector with n_walkers number of walkers
+        std::vector<Walker> walkers(n_walkers); // vector with n_walkers number of walkers 
         std::vector<std::mt19937> rng_vec;
+        rng_vec.reserve(n_walkers); 
         for (int i = 0; i < n_walkers; i++) {
             rng_vec.push_back(std::mt19937(seeds[i]));
             walkers[i].rng = rng_vec[i];
@@ -49,38 +47,44 @@ namespace ising{
             else if (spin_config == "all_up")   lat.init_spin_same(true);
             else if (spin_config == "all_down") lat.init_spin_same(false);
             else {std::cerr << "Unknown spin configuration\n"; continue; }
-            walkers[i].lat = lat;
+            walkers[i].lat = std::move(lat); // move to avoid large copy
             walkers[i].model = model; 
         }
         omp_set_num_threads(cores);
         #pragma omp parallel for schedule(static)
-        for (int i = 0; i < n_walkers; ++i) {;
+        for (int i = 0; i < n_walkers; ++i) {
             ising::Walker& walker = walkers[i];
             std::mt19937& rng_i = walker.rng;
-            ising::Lattice& lat = walker.lat;
-            ising::Model& model = walker.model;
-
+            ising::Lattice& w_lat = walker.lat;
+            ising::Model& w_model = walker.model;
+            
+            double E = ising::total_energy(w_lat, w_model);
+            int M = total_magnetization(w_lat); 
+            // burn-in sweeps
             for (int b = 0; b < params.burn_in_sweeps; ++b) {
-                ising::Metropolis(model, lat, params, rng_i);
+                ising::Metropolis(w_model, w_lat, params, rng_i, E, M); 
             }
             
-            double eps, mabs;
             walker.eps_samples.clear(); // just in case not clear
             walker.mabs_samples.clear(); 
             walker.n = 0;
             walker.eps_samples.reserve(total_sweeps / measure_sweeps + 1); // preallocate memory
             walker.mabs_samples.reserve(total_sweeps / measure_sweeps + 1); 
+
+            double eps;
+            double mabs;
+
+            int total_spins = w_lat.num_spins();
             for (int s = 0; s < total_sweeps; ++s) {
-                ising::Metropolis(model, lat, params, rng_i);
+                ising::Metropolis(w_model, w_lat, params, rng_i, E, M);
                 if (s % measure_sweeps == 0) {
-                    eps  = ising::energy_per_spin(lat, model);
-                    mabs = std::abs(magnetization_per_spin(lat));
+                    eps  = E / static_cast<double>(total_spins);
+                    mabs = std::abs(M / static_cast<double>(total_spins));
                     walker.eps_samples.push_back(eps);
                     walker.mabs_samples.push_back(mabs);
                     walker.n += 1;
                 }
             }
-            walkers[i] = walker; // save back the walker
         }
         // write overall results
         result.all_walkers = walkers;

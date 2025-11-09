@@ -16,6 +16,8 @@ Runs a Markov Chain Monte Carlo with Metropolis algorithm with different walkers
 
 namespace ising {
     struct Walker { // results from each walker
+        double E = 0.0; // energy temporary variable
+        double Mabs = 0.0; // abs magnetization temporary variable
         std::vector<double> eps_samples; // energy samples
         std::vector<double> mabs_samples; // absolute magnetization samples
         std::vector<double> eps2_samples; // energy samples squared

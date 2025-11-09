@@ -10,10 +10,9 @@
 #include <iostream>
 
 namespace ising{
-    void Metropolis(Model& model, Lattice& lattice, simParams& params, std::mt19937& generator) {
+    void Metropolis(Model& model, Lattice& lattice, simParams& params, std::mt19937& generator, double& E, int& M) {
         const double T = params.temperature;
         const int n_steps = params.total_steps; // default N steps = N spins = 1 sweep
-        const int seed = params.seed;
         
         const int L = lattice.size();
         const int N = lattice.num_spins();
@@ -29,34 +28,39 @@ namespace ising{
         int right, left, up, down;
         
         int s;
-        int n;        
+        int n, sn, factor_idx;        
 
+        double dE;
+        int dM;
         for (int step = 0; step < n_steps; ++step) {
             int idx = dist_pos(generator);
 
             i = static_cast<int>(idx % L);
             j = static_cast<int>(idx / L);
 
-            s = lattice(i, j);
+            s = lattice(i, j);  
             up = (i + 1) % L;
             down = (i + L - 1) % L; 
             right = (j + 1) % L;
             left = (j + L - 1) % L; // right/left in cols
 
-            n = s * (lattice(up, j) + lattice(down, j) + lattice(i, right) +lattice(i, left));  //(-4, -2, 0, 2, 4)
-            
-            int factor_idx = (n+4) / 2; // n to idx in Boltzmann factors
-            
-            if (factor_idx <=2){    // delta eps = 0, -4J, -8J -> always accept
-                lattice(i, j) = -s; // flip spin
-            }
-            else {
-                double r = dist_r(generator);
-                    if (r <= boltz.factors[factor_idx])     // delta eps = 4J, 8J -> accept if rng says so
-                    lattice(i, j) = -s; // flip spin
+            n = lattice(up, j) + lattice(down, j) + lattice(i, right) + lattice(i, left); // {-4,-2,0,2,4}
+            sn = s * n;
+            factor_idx = (sn + 4) / 2; // n to idx in Boltzmann factors
 
-                    // std::cout << "Flipped spin at (" << i << ", " << j << ")\n";
-                    
+            dE = 2.0 * J * sn;
+            dM = -2.0 * s;
+
+        
+            bool accept = (dE <= 0.0); // delta eps = 0, -4J, -8J -> always accept
+            if (!accept) {
+                double r = dist_r(generator);
+                accept = (r <= boltz.factors[factor_idx]); // delta eps = 4J, 8J -> accept if rng says so
+            }
+            if (accept){
+                lattice(i, j) = -s; // flip spin
+                E += dE;
+                M += dM;
             }
         }
     }

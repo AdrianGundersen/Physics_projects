@@ -78,15 +78,19 @@ int main(int argc, char** argv) { // argc and argv to get JSON file path (argc i
     std::cout << "\nBurn-in sweeps: " << burn_in << ", Measure sweeps: " << measure_sweeps << "\n";
 
     // Running measure- and burn-in sweeps multiplied by N (number of spins)
+    double E = ising::total_energy(lattice, model);
     for (int s = 0; s< burn_in; ++s) {
-        ising::Metropolis(model, lattice, params, rng);
+        ising::Metropolis(model, lattice, params, rng, E, M);
     }
     std::vector<double> eps_samples, mabs_samples, eps2_samples, mabs2_samples;
     
     double mabs;
     const int N = lattice.num_spins();
+    E = ising::total_energy(lattice, model);
+    M = total_magnetization(lattice);
+    
     for (int s = 0; s < total_sweeps; ++s) {
-        ising::Metropolis(model, lattice, params, rng);
+        ising::Metropolis(model, lattice, params, rng, E, M);
         if (s % measure_sweeps == 0) { // after each sweep
             //std::cout << "Sampling at sweep " << s << "...\n";
             eps = ising::energy_per_spin(lattice, model);
