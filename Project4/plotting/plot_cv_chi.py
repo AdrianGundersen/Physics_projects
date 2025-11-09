@@ -195,7 +195,7 @@ def plot_together(data, L, observable="Cv"):
         T_values.append(float(T_str))
         obs_values.append(values[observable])
 
-    plt.plot(T_values, obs_values, marker='x', linestyle='-', label=f'L={L}', alpha = 0.7)
+    plt.plot(T_values, obs_values, linestyle='-', label=f'L={L}', alpha = 0.7)
     plt.legend()
     plt.grid()
     return None

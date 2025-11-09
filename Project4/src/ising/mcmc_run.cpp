@@ -55,16 +55,21 @@ namespace ising{
         omp_set_num_threads(cores);
         #pragma omp parallel for schedule(static)
         for (int i = 0; i < n_walkers; ++i) {;
-            ising::Walker walker = walkers[i];
+            ising::Walker& walker = walkers[i];
             std::mt19937& rng_i = walker.rng;
-            ising::Lattice lat = walker.lat;
-            ising::Model model = walker.model;
+            ising::Lattice& lat = walker.lat;
+            ising::Model& model = walker.model;
 
             for (int b = 0; b < params.burn_in_sweeps; ++b) {
                 ising::Metropolis(model, lat, params, rng_i);
             }
             
             double eps, mabs;
+            walker.eps_samples.clear(); // just in case not clear
+            walker.mabs_samples.clear(); 
+            walker.n = 0;
+            walker.eps_samples.reserve(total_sweeps / measure_sweeps + 1); // preallocate memory
+            walker.mabs_samples.reserve(total_sweeps / measure_sweeps + 1); 
             for (int s = 0; s < total_sweeps; ++s) {
                 ising::Metropolis(model, lat, params, rng_i);
                 if (s % measure_sweeps == 0) {

@@ -23,7 +23,7 @@ namespace ising {
             Lattice(int L) : L(L), N(L * L), spins(N) {} // constructor (assumes LxL lattice)
             void init_spin_from_mat(const std::vector<std::vector<int>>& spin_mat) {};
 
-            void init_spin_rand(std::mt19937 rng); // initialize spins randomly
+            void init_spin_rand(std::mt19937& rng); // initialize spins randomly
 
             void init_spin_same(bool up = true); // initialize all spins to same value (+1 by default)
 
