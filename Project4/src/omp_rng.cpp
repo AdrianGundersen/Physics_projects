@@ -21,10 +21,7 @@ namespace omp_rng
         seeds.push_back(s);
     }
     return seeds;
-
-    
-
     } // End parallel region
-
+}
   
 
