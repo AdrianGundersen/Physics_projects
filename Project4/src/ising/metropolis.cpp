@@ -44,9 +44,9 @@ namespace ising{
             right = (j + 1) % L;
             left = (j + L - 1) % L; // right/left in cols
 
-            n = lattice(up, j) + lattice(down, j) + lattice(i, right) + lattice(i, left); // {-4,-2,0,2,4}
+            n = lattice(up, j) + lattice(down, j) + lattice(i, right) + lattice(i, left);
             sn = s * n;
-            factor_idx = (sn + 4) / 2; // n to idx in Boltzmann factors
+            factor_idx = (sn + 4) / 2; // n to idx in Boltzmann factors {-4,-2,0,2,4}
 
             dE = 2.0 * J * sn;
             dM = -2.0 * s;

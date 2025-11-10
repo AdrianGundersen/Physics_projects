@@ -24,7 +24,7 @@ using json = nlohmann::json;
 
 int main(int argc, char** argv) { // argc and argv to get JSON file path (argc is number of arguments, argv is array of arguments)
     if (argc < 2) {
-        std::cerr << "Usage: " << argv[0] << " <configs/multiple_walkers.json>\n";
+        std::cerr << "Usage: " << argv[0] << " <configs/*.json>\n";
         return 1;
     }
     
