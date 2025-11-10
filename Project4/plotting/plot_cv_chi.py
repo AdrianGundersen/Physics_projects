@@ -28,6 +28,17 @@ ROOT = Path(__file__).resolve().parents[2]
 fig_dir = ROOT / "Project4/data/figures/Cv_chi"
 fig_dir.mkdir(parents=True, exist_ok=True)
 
+
+def load_JSON(filepath) -> dict:
+    """Load JSON data from a file.
+    
+    structure of json: { L : { T : {chi, Cv, sweeps, walkers} } }
+    """
+    with open(filepath, 'r') as f:
+        data = json.load(f) # loads into dictionary
+    return data
+
+
 def get_max(data, L, observable="Cv"):
     """
     Get maximum value of observable and index for given L.
@@ -76,15 +87,6 @@ def uncertainty_cv_chi(data, L, index_cv, index_chi):
     sigma_chi = N/(kB*T_chi)*np.sqrt(var_m2/M_chi + 4*m**2*var_m/M_chi)
 
     return sigma_chi, sigma_cv
-
-def load_JSON(filepath) -> dict:
-    """Load JSON data from a file.
-    
-    structure of json: { L : { T : {chi, Cv, sweeps, walkers} } }
-    """
-    with open(filepath, 'r') as f:
-        data = json.load(f) # loads into dictionary
-    return data
 
 def sort_data(data, min_sweeps=1e4):
     """
@@ -265,9 +267,24 @@ def plot_together(data, L, observable="Cv"):
         T_values.append(float(T_str))
         obs_values.append(values[observable])
 
+    # left plot (full range)
+    plt.subplot(1, 2, 1)
+    if observable == "chi":
+        plt.yscale('log')
     plt.plot(T_values, obs_values, linestyle='-', label=f'L={L}', alpha = 0.7)
     plt.legend()
     plt.grid()
+
+    # right plot (zoomed in at [2.1, 2.4])
+    plt.subplot(1, 2, 2)
+    if observable == "chi":
+        plt.yscale('log')
+    plt.plot(T_values, obs_values, linestyle='-', label=f'L={L}', alpha = 0.7)
+    plt.legend(labels='_nolegend_')
+    plt.xlim(2.1, 2.4)
+    plt.legend()
+    plt.grid()
+
     return None
 
 
