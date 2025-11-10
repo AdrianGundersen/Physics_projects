@@ -3,6 +3,7 @@
 #pragma once
 #include "ising/model.hpp"
 #include "ising/lattice.hpp"
+#include "ising/metropolis.hpp"
 #include "ising/observables.hpp"
 #include <string>
 #include <nlohmann/json.hpp>

@@ -56,7 +56,7 @@ int main(int argc, char** argv) { // argc and argv to get JSON file path (argc i
     if (use_Trange){
         T_values = linspace(params.Tmin, params.Tmax, params.Tsteps);
 
-    // running the simulation for a single temperature if uste_Trange is false
+    // running the simulation for a single temperature if use_Trange is false
     } else {
         ising::Lattice initial_lat = ising::io::lattice_from_json(j.at("lattice"));
         double T = params.temperature;
@@ -81,12 +81,37 @@ int main(int argc, char** argv) { // argc and argv to get JSON file path (argc i
             output_file_name = write_json.at("output_filename").get<std::string>();
         }
         ising::io::write_results_to_file(j, result, output_file_name); // takes the entire input json as argument
+
+        double eps_sum = 0.0; double mabs_sum = 0.0;
+        double eps2_sum = 0.0; double mabs2_sum = 0.0;
+        int count = 0;
+        for (const auto& w : result.all_walkers) {
+                for (const auto& e : w.eps_samples) {
+                    eps_sum += e;
+                    eps2_sum += e * e;
+                    count += 1;
+                }
+                for (const auto& m : w.mabs_samples) {
+                    mabs_sum += m;
+                    mabs2_sum += m * m;
+                }
+            }
+
+            double avg_eps = eps_sum / count;
+            double avg_mabs = mabs_sum / count;
+            double avg_eps2 = eps2_sum / count;
+            double avg_mabs2 = mabs2_sum / count;
+
+            const double Cv   = ising::heat_capacity(result.all_walkers.front().lat, avg_eps2, avg_eps, T);
+            const double chi = ising::susceptibility(result.all_walkers.front().lat, avg_mabs2, avg_mabs, T);
+        std::cout << "Results for T = " << T << ":\n";
+        std::cout << "c_V = " << Cv << "\nchi_s = " << chi << "\n";
+        std::cout << "Results written to " << output_file_name << "\n";
+        return 0;
     }
 
     std::cout << "\nRunning simulations for lattice size " << ising::io::lattice_from_json(j.at("lattice")).size() << "\n";
     std::cout << "Tmax = " << params.Tmax << ", Tmin = " << params.Tmin << ", Tsteps = " << params.Tsteps << "\n";
-    std::vector<double> heat_cap_values;
-    std::vector<double> susc_values;
 
     for (double T : T_values){
         json jT = j;

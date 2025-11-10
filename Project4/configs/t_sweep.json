@@ -3,7 +3,7 @@
     {
         "J": 1.0,
         "double_count" : false,
-        "spin_config": "random"
+        "spin_config": "all_up"
     },
     "lattice":
     {
@@ -12,11 +12,11 @@
     "simulation":
     {
         "seed": 67,
-        "temperature": 1.5,
+        "temperature": 1.0,
         "use_Trange": true,
         "Trange": {
-            "Tmin": 2.2,
-            "Tmax": 2.36,
+            "Tmin": 2.1,
+            "Tmax": 2.1,
             "Tsteps": 11
         },
         "total_steps": "N",

@@ -74,6 +74,9 @@ namespace ising{
             double eps;
             double mabs;
 
+            E = ising::total_energy(w_lat, w_model);
+            M = total_magnetization(w_lat); 
+
             int total_spins = w_lat.num_spins();
             for (int s = 0; s < total_sweeps; ++s) {
                 ising::Metropolis(w_model, w_lat, params, rng_i, E, M);
