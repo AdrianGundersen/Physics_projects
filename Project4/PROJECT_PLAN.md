@@ -107,6 +107,27 @@ Things to pick:
   - Code documentation
 ---------------------------------------------------------------------------------
 
+### Simulation Plan
+| Priority 1 | ---- | ----| ----|--------|--------------|---------|
+| Name | L values | Tmin | Tmax | Tsteps | Total sweeps | Walkers |  
+| Casper | 100, 90, 80 | 2.1 | 2.4 | 11 | 1e6 | 12 | 
+| Adrian | 70, 80, 60 | 2.1 | 2.4 | 11 | 1e6 | 12 | 
+| Victor | 50, 40, 30, 20, 10, 5 | 2.1 | 2.4 | 11 | 1e6 | 12 | 
+| Priority 2 | ---- | ----| ----|--------|--------------|---------|
+| Casper | 100, 90, 80 | Around top | Around top| 11 | 1e6 | 12 | 
+| Adrian | 70, 80, 60 | Around top | Around top | 11 | 1e6 | 12 | 
+| Victor | 50, 40, 30, 20, 10, 5 | Around top | Around top | 11 | 1e6 | 12 |
+| Priority 3 | ---- | ----| ----|--------|--------------|---------|
+| Casper | 100, 90, 80 | 1.5 | 2.1 | 11 | 1e5 | 12 | 
+| Adrian | 70, 80, 60 | 1.5 | 2.1 | 11 | 1e5 | 12 | 
+| Victor | 50, 40, 30, 20, 10, 5 | 1.5 | 2.1 | 11 | 1e5 | 12 |
+| Priority 4 | ---- | ----| ----|--------|--------------|---------|
+| Casper | 100, 90, 80 | 2.1 | 5.0 | 11 | 1e5 | 12 | 
+| Adrian | 70, 80, 60 | 2.1 | 5.0 | 11 | 1e5 | 12 | 
+| Victor | 50, 40, 30, 20, 10, 5 | 2.1 | 5.0 | 11 | 1e5 | 12 |
+
+
+
 ### Task List
 **Note**: Should weekly agree on tasks to be done and update the plan according to status.
 | Task ID | Task Description      | Assigned To | Start Date | End Date   | Status     |
