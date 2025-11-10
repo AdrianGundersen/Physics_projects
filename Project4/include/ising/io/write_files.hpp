@@ -148,7 +148,7 @@ inline void write_results_to_file(const nlohmann::json& jin,
             double avg_mabs4 = mabs4_sum / count;
 
             const double Cv   = ising::heat_capacity(result.all_walkers.front().lat, avg_eps2, avg_eps, T);
-            const double chi = ising::susceptibility(result.all_walkers.front().lat, avg_mabs, avg_mabs2, T);
+            const double chi = ising::susceptibility(result.all_walkers.front().lat, avg_mabs2, avg_mabs, T);
             ising::io::T_to_json(jout, jin, T, Cv, chi, avg_eps, avg_mabs, avg_eps2, avg_mabs2, avg_eps3, avg_mabs3, avg_eps4, avg_mabs4);
 
             std::ofstream out(filename);

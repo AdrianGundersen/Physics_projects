@@ -21,37 +21,36 @@ Project4/
 ├── Makefile                 # Build targets (consider switching to CMake if desired)
 ├── README.md                # Project overview and quickstart
 ├── PROJECT_PLAN.md          # Internal project plan (scope, timeline, tasks)
-│
 ├── configs/                 # JSON configs for different runs
 │   └── ...
-│
-│
-├── data/                 # Numerical outputs, logs, tables
+├── data/                    # Numerical outputs, logs, tables
 │   └── auto-generated data files
-│
 ├── figs/                    # Plots and figures generated from results
 │   └── (auto-generated images)
-│
 ├── include/                 # Header files
 │   ├── ising/
+│   │   ├── io/
+│   │   │   ├── json_util.hpp
+│   │   │   └── write_files.hpp
 │   │   ├── lattice.hpp
 │   │   └── metropolis.hpp
 │   └── constants.hpp
-│
 ├── src/                     # Implementation files
-│   └── metropolis.cpp
-│
+│   └── ising/
+│       ├── io/
+│       │   └── write_files.cpp
+│       ├── lattice.cpp
+│       ├── metropolis.cpp
+│       ├── model.cpp
+│       ├── observables.cpp
+│       └── omp_rng.cpp
 ├── apps/                    # Executables running JSON configs
-│   └── Ln.cpp               # Main application for lattice size Ln
-│   └── runtime.cpp          # Compare runtime of parallel vs serial
+│   ├── Ln.cpp               # Main application for lattice size Ln
+│   ├── runtime.cpp          # Compare runtime of parallel vs serial
 │   └── validate2x2.cpp      # Validate against analytical 2x2 solution
-│
-├── Plotting/                  # Plotting scripts (Python)
-│   └── L20.py
-│   └── plot_cv_chi.py
-│
-└── scripts/                 # Analysis & plotting (Python scripts)
-    └── analyze.py
+└── Plotting/                # Plotting scripts (Python)
+    ├── L20.py               # Plots results for L = 20 lattice
+    └── plot_cv_chi.py       # Plots T vs Cv and Chi and marks Tc
 ```
 
 ## Installation and Dependencies
