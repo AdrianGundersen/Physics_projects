@@ -107,8 +107,8 @@ inline void write_results_to_file(const nlohmann::json& jin,
         double avg_eps2 = ising::average(eps2);
         double avg_mabs2 = ising::average(mabs2);
         // std::cout << "lattice size: " << w.lat.size() << ", avg energy per spin: " << avg_eps << ", avg abs magnetization per spin: " << avg_mabs << "\n";
-        double heat_cap = ising::heat_capacity(w.lat, avg_eps2, avg_eps, jin.at("simulation").at("temperature").get<double>());
-        double susc = ising::susceptibility(w.lat, avg_mabs2, avg_mabs, jin.at("simulation").at("temperature").get<double>());
+        double heat_cap = ising::heat_capacity(w.lat, avg_eps2, avg_eps, T);
+        double susc = ising::susceptibility(w.lat, avg_mabs2, avg_mabs, T);
         // std::cout << "Calculated heat capacity Cv: " << heat_cap << ", susceptibility chi: " << susc << "\n";
         ising::io::T_to_json(jout, jin, T, heat_cap, susc);
 

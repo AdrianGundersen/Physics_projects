@@ -4,7 +4,6 @@
 #include "ising/model.hpp"
 #include "ising/lattice.hpp"
 #include "ising/observables.hpp"
-#include "ising/metropolis.hpp"
 #include <string>
 #include <nlohmann/json.hpp>
 #include <cstdint>
