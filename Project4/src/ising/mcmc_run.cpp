@@ -77,6 +77,8 @@ namespace ising{
             E = ising::total_energy(w_lat, w_model);
             M = total_magnetization(w_lat); 
 
+           const int recompute_interval = 50000; // recompute E and M every 50000 sweeps to avoid accumulation errors (arbitrary choice) 
+
             int total_spins = w_lat.num_spins();
             for (int s = 0; s < total_sweeps; ++s) {
                 ising::Metropolis(w_model, w_lat, params, rng_i, E, M);
@@ -86,6 +88,10 @@ namespace ising{
                     walker.eps_samples.push_back(eps);
                     walker.mabs_samples.push_back(mabs);
                     walker.n += 1;
+                }
+                if (s % recompute_interval == 0) { // recompute to avoid accumulation
+                    E = ising::total_energy(w_lat, w_model);
+                    M = total_magnetization(w_lat);
                 }
             }
         }
