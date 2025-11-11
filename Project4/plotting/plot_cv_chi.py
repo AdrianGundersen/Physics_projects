@@ -1,11 +1,12 @@
 # src/plotting/plot_Cv.py
+# With much help from ChatGPT
 import numpy as np
 import matplotlib as mpl
 mpl.use("Agg") # to avoid wayland issues
 import matplotlib.pyplot as plt
 import json
 from scipy.stats import linregress
-
+import math
 from pathlib import Path
 
 # plotting style
@@ -209,7 +210,7 @@ def Tc_regress(data, L, observable="Cv", plot = False):
 
     obs_max = max(obs_values)
     max_index = obs_values.index(obs_max)
-    delta_idx = 4 # number of points on each side of the maximum to consider
+    delta_idx = 3 # number of points on each side of the maximum to consider
     start_idx = max(0, max_index - delta_idx)
     end_idx = min(len(T_values), max_index + delta_idx + 1)
 
@@ -255,42 +256,28 @@ def Tc_regress(data, L, observable="Cv", plot = False):
 
     return T_c, observable_max, sigma_obs_max, sigma_Tc
 
-
-def plot_together(data, L, observable="Cv"):
-    """
-    Plot observable for all L in the same plot
-    """
-    T_values = []
-    obs_values = []
-
+def plot_together(ax_left, ax_right, data, L, observable="Cv"):
+    T_values, obs_values = [], []
     for T_str, values in data[str(L)].items():
         T_values.append(float(T_str))
         obs_values.append(values[observable])
 
     # left plot (full range)
-    plt.subplot(1, 2, 1)
     if observable == "chi":
-        plt.yscale('log')
-    plt.plot(T_values, obs_values, linestyle='-', label=f'L={L}', alpha = 0.7)
-    plt.legend()
-    plt.grid()
+        ax_left.set_yscale('log')
+    ax_left.plot(T_values, obs_values, linestyle='-', label=f'{L}', alpha=0.8)
+    ax_left.grid(True)
 
     # right plot (zoomed in at [2.1, 2.4])
-    plt.subplot(1, 2, 2)
     if observable == "chi":
-        plt.yscale('log')
-    plt.plot(T_values, obs_values, linestyle='-', label=f'L={L}', alpha = 0.7)
-    plt.legend(labels='_nolegend_')
-    plt.xlim(2.1, 2.4)
-    plt.legend()
-    plt.grid()
-
-    return None
-
+        ax_right.set_yscale('log')
+    ax_right.plot(T_values, obs_values, linestyle='-', alpha=0.8)
+    ax_right.set_xlim(2.1, 2.4)
+    ax_right.grid(True)
 
 
 # Load data and plot for L
-L = np.array([5, 10, 20, 30])# 40, 50, 100])#, 60, 70, 80, 90, 100, 110, 120, 130])
+L = np.array([5, 10, 20, 30, 40, 50, 60, 70, 100])# 40, 50, 100])#, 60, 70, 80, 90, 100, 110, 120, 130])
 min_sweeps = 1e5
 json_path = ROOT / "Project4/data/outputs/tsweep_results.json"
 raw_data = load_JSON(json_path)
@@ -304,12 +291,12 @@ sigma_Cv_vals = []
 sigma_chi_vals = []
 
 for l in L:
-    plot_Cv_vs_T(data, l)
-    plot_chi_vs_T(data, l)
-    plot_eps_vs_T(data, l)
-    plot_m_vs_T(data, l)
-    Tc_Cv, Cv_max, sigma_Cv, sigma_TcCv = Tc_regress(data, l, observable="Cv", plot=True)
-    Tc_chi, chi_max, sigma_chi, sigma_TcChi = Tc_regress(data, l, observable="chi", plot=True)
+    # plot_Cv_vs_T(data, l)
+    # plot_chi_vs_T(data, l)
+    # plot_eps_vs_T(data, l)
+    # plot_m_vs_T(data, l)
+    Tc_Cv, Cv_max, sigma_Cv, sigma_TcCv = Tc_regress(data, l, observable="Cv", plot=False)
+    Tc_chi, chi_max, sigma_chi, sigma_TcChi = Tc_regress(data, l, observable="chi", plot=False)
     Tc_Cv_vals.append(Tc_Cv)
     Tc_chi_vals.append(Tc_chi)
     sigma_TcCv_vals.append(sigma_TcCv)
@@ -351,16 +338,57 @@ plt.grid()
 plt.savefig(fig_dir / 'Tc_vs_invL.pdf')
 plt.close()
 
-# plot together
-plt.figure()
+# plot-together for multiple observables with stacked legends (Courtesy of ChatGPT to make it look nice)
 for observable in ["Cv", "chi", "avg_eps", "avg_mabs"]:
-    plt.clf()
+    fig, axes = plt.subplots(ncols=2, figsize=(8, 4))
+    left, right = axes[0], axes[1]
+
     for l in L:
-        plot_together(data, l, observable)
-    plt.xlabel('Temperature T')
-    plt.ylabel(f'{observable}')
-    plt.legend()
-    plt.grid()
-    plt.tight_layout()
-    plt.savefig(fig_dir / f'{observable}_vs_T_all_L.pdf')
-    plt.close()
+        plot_together(left, right, data, l, observable)
+
+    fig.supxlabel('Temperature T', y=0.06)
+    if observable == "Cv":
+        fig.supylabel(r'$c_V$')
+    elif observable == "chi":
+        fig.supylabel(r'$\chi$')
+    elif observable == "avg_eps":
+        fig.supylabel(r'$\langle \epsilon \rangle$')
+    elif observable == "avg_mabs":
+        fig.supylabel(r'$\langle |m| \rangle$')
+
+    # gather unique handles/labels from left axis only (one per L)
+    handles, labels = left.get_legend_handles_labels()
+
+    # auto split across top and bottom if many entries
+    max_cols = 6  # number of columns per row
+    if len(labels) > max_cols:
+        mid = int(math.ceil(len(labels) / 2))
+        top_h, top_l = handles[:mid], labels[:mid]
+        bot_h, bot_l = handles[mid:], labels[mid:]
+
+        leg_top = fig.legend(
+            top_h, top_l, loc='upper center', ncol=min(max_cols, len(top_l)),
+            bbox_to_anchor=(0.5, 1.02), handlelength=1.0, handletextpad=0.4, columnspacing=0.8,
+            frameon=False
+        )
+        leg_bot = fig.legend(
+            bot_h, bot_l, loc='lower center', ncol=min(max_cols, len(bot_l)),
+            bbox_to_anchor=(0.5, -0.04), handlelength=1.0, handletextpad=0.4, columnspacing=0.8,
+            frameon=False
+        )
+        fig.add_artist(leg_top)
+        fig.subplots_adjust(top=0.86, bottom=0.22)
+    else:
+        fig.legend(
+            handles, labels, loc='lower center', ncol=len(labels),
+            bbox_to_anchor=(0.5, -0.04), handlelength=1.0, handletextpad=0.4, columnspacing=0.8,
+            frameon=False
+        )
+        fig.subplots_adjust(bottom=0.22)
+
+    for ax in axes:
+        ax.grid(True)
+
+    fig.tight_layout()
+    fig.savefig(fig_dir / f'{observable}_vs_T_all_L.pdf')
+    plt.close(fig)
