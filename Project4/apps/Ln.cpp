@@ -128,8 +128,16 @@ int main(int argc, char** argv) { // argc and argv to get JSON file path (argc i
         T_numbers += 1;
         int steps_left = params.Tsteps - T_numbers;
         double estimated_time = steps_left * total_time;
+
+        int hours = static_cast<int>(estimated_time) / 3600;
+        int minutes = (static_cast<int>(estimated_time) % 3600) / 60;
+        int seconds = static_cast<int>(estimated_time) % 60;
+
         std::cout << "Temperature step " << T_numbers << "/" << params.Tsteps << " complete, and took " << total_time << " s\n";
-        std::cout << "Estimated time remaining: " << estimated_time << " s\n";
+        std::cout << "Estimated time remaining: " 
+        << std::setfill('0') << std::setw(2) << hours << ":" 
+        << std::setw(2) << minutes << ":" 
+        << std::setw(2) << seconds << "\n";
     }
     return 0;
 }

@@ -277,7 +277,7 @@ def plot_together(ax_left, ax_right, data, L, observable="Cv"):
 
 
 # Load data and plot for L
-L = np.array([5, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100])# 40, 50, 100])#, 60, 70, 80, 90, 100, 110, 120, 130])
+L = np.array([5, 10, 80, 90, 120])# 40, 50, 100])#, 60, 70, 80, 90, 100, 110, 120, 130])
 min_sweeps = 1e5
 json_path = ROOT / "Project4/data/outputs/tsweep_results.json"
 raw_data = load_JSON(json_path)
@@ -295,15 +295,15 @@ for l in L:
     # plot_chi_vs_T(data, l)
     # plot_eps_vs_T(data, l)
     # plot_m_vs_T(data, l)
-    Tc_Cv, Cv_max, sigma_Cv, sigma_TcCv = Tc_regress(data, l, observable="Cv", plot=False)
-    Tc_chi, chi_max, sigma_chi, sigma_TcChi = Tc_regress(data, l, observable="chi", plot=False)
+    Tc_Cv, Cv_max, sigma_Cv, sigma_TcCv = Tc_regress(data, l, observable="Cv", plot=True)
+    Tc_chi, chi_max, sigma_chi, sigma_TcChi = Tc_regress(data, l, observable="chi", plot=True)
     Tc_Cv_vals.append(Tc_Cv)
     Tc_chi_vals.append(Tc_chi)
     sigma_TcCv_vals.append(sigma_TcCv)
     sigma_TcChi_vals.append(sigma_TcChi)
     sigma_Cv_vals.append(sigma_Cv)
     sigma_chi_vals.append(sigma_chi)
-    print(f"L={l}: Tc from Cv = {Tc_Cv:.4f}+-{sigma_TcCv:.4f} (max Cv = {Cv_max:.4f}+-{sigma_Cv:.4f}), Tc from chi = {Tc_chi:.4f}+-{sigma_TcChi:.4f} (max chi = {chi_max:.4f}+-{sigma_chi:.4f})")
+    print(f"L={l}: Tc from Cv = {Tc_Cv:.8f}+-{sigma_TcCv:.4f} (max Cv = {Cv_max:.4f}+-{sigma_Cv:.4f}), Tc from chi = {Tc_chi:.4f}+-{sigma_TcChi:.4f} (max chi = {chi_max:.4f}+-{sigma_chi:.4f})")
 
 # 1/L vs Tc plot
 Tc_Cv_vals = np.array(Tc_Cv_vals)
@@ -326,6 +326,9 @@ inv_L_mean = np.mean(inv_L)
 intercept_err = std_err * np.sqrt(np.sum(inv_L**2) / (N*np.sum((inv_L - inv_L_mean)**2)))
 
 print(f"Tc(inf) = {intercept:.5f} ± {intercept_err:.5f}")
+tc_inf = 2.269185311421
+print("According to Lars Onsage's value")
+print(f"Tc(inf) ≈ {tc_inf}")
 
 plt.figure()
 plt.plot(inv_L, Tc_vals, 'o', label='Tc')
