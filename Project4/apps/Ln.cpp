@@ -111,15 +111,25 @@ int main(int argc, char** argv) { // argc and argv to get JSON file path (argc i
     }
 
     std::cout << "\nRunning simulations for lattice size " << ising::io::lattice_from_json(j.at("lattice")).size() << "\n";
-    std::cout << "Tmax = " << params.Tmax << ", Tmin = " << params.Tmin << ", Tsteps = " << params.Tsteps << "\n";
+    std::cout << "Tmax = " << params.Tmax << ", Tmin = " << params.Tmin << ", Tsteps = " << params.Tsteps << "\n\n";
 
+    int T_numbers = 0;
     for (double T : T_values){
         json jT = j;
         jT["simulation"]["temperature"] = T;
+        double start_time = omp_get_wtime();
 
         ising::Lattice initial_lat = ising::io::lattice_from_json(jT.at("lattice"));
         ising::Result result = ising::mcmc_run(initial_lat, model, jT);
         ising::io::write_results_to_file(j, result, "data/outputs/tsweep_results.json", T);
+
+        double end_time = omp_get_wtime();
+        double total_time = end_time - start_time; 
+        T_numbers += 1;
+        int steps_left = params.Tsteps - T_numbers;
+        double estimated_time = steps_left * total_time;
+        std::cout << "Temperature step " << T_numbers << "/" << params.Tsteps << " complete, and took " << total_time << " s\n";
+        std::cout << "Estimated time remaining: " << estimated_time << " s\n";
     }
     return 0;
 }

@@ -6,6 +6,8 @@ Validate 2x2 against analytical results
 #include <iostream>
 #include <fstream>
 #include <cmath>
+#include <chrono>
+#include <omp.h>
 #include <nlohmann/json.hpp>
 #include "ising/lattice.hpp"
 #include "ising/io/json_util.hpp"
@@ -75,13 +77,16 @@ int main(int argc, char** argv) { // argc and argv to get JSON file path (argc i
     int measure_sweeps = params.measure_sweeps;
     int total_sweeps = params.total_sweeps;
     
-    std::cout << "\nBurn-in sweeps: " << burn_in << ", Measure sweeps: " << measure_sweeps << "\n";
-
+    std::cout << "\nBurn-in sweeps: " << burn_in << "\n";
+    double start_time = omp_get_wtime();
     // Running measure- and burn-in sweeps multiplied by N (number of spins)
     double E = ising::total_energy(lattice, model);
     for (int s = 0; s< burn_in; ++s) {
         ising::Metropolis(model, lattice, params, rng, E, M);
     }
+    std::cout << "Burn-in complete.\n"; 
+    std::cout << "Starting simulation with " << total_sweeps - burn_in << " sweeps and\n";
+    std::cout << "Measure sweeps: " << measure_sweeps << "\n";
     std::vector<double> eps_samples, mabs_samples, eps2_samples, mabs2_samples;
     
     double mabs;
@@ -108,6 +113,10 @@ int main(int argc, char** argv) { // argc and argv to get JSON file path (argc i
     double heat_cap = ising::heat_capacity(lattice, avg_eps2, avg_eps, T);
     double susc = ising::susceptibility(lattice, avg_mabs2, avg_mabs, T);
 
+    double end_time = omp_get_wtime();
+    double total_time = end_time - start_time;
+
+    std::cout << "\nSimulation took in total " << total_time << " seconds" << "\n";
     std::cout << "After Metropolis sampling:\n";
     std::cout << "Average absolute magnetization per spin <|m|>: " << avg_mabs << "\n"; 
     std::cout << "Average energy per spin <ε>: " << avg_eps << "\n";
