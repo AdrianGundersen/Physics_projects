@@ -277,7 +277,7 @@ def plot_together(ax_left, ax_right, data, L, observable="Cv"):
 
 
 # Load data and plot for L
-L = np.array([5, 10, 20, 30, 40, 50, 60, 70, 100])# 40, 50, 100])#, 60, 70, 80, 90, 100, 110, 120, 130])
+L = np.array([5, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100])# 40, 50, 100])#, 60, 70, 80, 90, 100, 110, 120, 130])
 min_sweeps = 1e5
 json_path = ROOT / "Project4/data/outputs/tsweep_results.json"
 raw_data = load_JSON(json_path)
