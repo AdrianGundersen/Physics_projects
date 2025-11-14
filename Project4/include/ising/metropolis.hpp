@@ -33,9 +33,9 @@ namespace ising{
         std::array<double, 5> factors;
 
         void set(double beta, double J){
-            factors[0] = 1.0;
-            factors[1] = 1.0;
-            factors[2] = 1.0;
+            factors[0] = 1.0; // always accept for dE <= 0
+            factors[1] = 1.0; 
+            factors[2] = 1.0; 
             factors[3] = std::exp(-beta * 4.0 * J);
             factors[4] = std::exp(-beta * 8.0 * J);
         }
