@@ -27,6 +27,7 @@ SRC_CORE := \
   src/ising/observables.cpp \
   src/ising/metropolis.cpp \
   src/ising/mcmc_run.cpp \
+  src/ising/io/write_files.cpp \
   src/omp_rng.cpp
 
 # --- Apps ---
