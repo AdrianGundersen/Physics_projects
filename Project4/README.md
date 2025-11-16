@@ -30,27 +30,30 @@ Project4/
 ├── include/                 # Header files
 │   ├── ising/
 │   │   ├── io/
-│   │   │   ├── json_util.hpp
-│   │   │   └── write_files.hpp
-│   │   ├── lattice.hpp
+│   │   │   ├── json_util.hpp # JSON helper functions.
+│   │   │   └── write_files.hpp 
+│   │   ├── lattice.hpp 
 │   │   └── metropolis.hpp
-│   └── constants.hpp
+│   └── 
 ├── src/                     # Implementation files
-│   └── ising/
-│       ├── io/
-│       │   └── write_files.cpp
-│       ├── lattice.cpp
-│       ├── metropolis.cpp
-│       ├── model.cpp
-│       ├── observables.cpp
-│       └── omp_rng.cpp
+│   ├── ising/
+│   |   ├── io/
+│   |   │   └── write_files.cpp
+│   |   ├── lattice.cpp
+│   |   ├── metropolis.cpp
+│   |   ├── model.cpp
+│   |    ├── observables.cpp
+│   └── omp_rng.cpp
 ├── apps/                    # Executables running JSON configs
 │   ├── Ln.cpp               # Main application for lattice size Ln
 │   ├── runtime.cpp          # Compare runtime of parallel vs serial
 │   └── validate2x2.cpp      # Validate against analytical 2x2 solution
 └── Plotting/                # Plotting scripts (Python)
     ├── L20.py               # Plots results for L = 20 lattice
-    └── plot_cv_chi.py       # Plots T vs Cv and Chi and marks Tc
+    ├── plot_cv_chi.py       # Plots T vs Cv and Chi and marks Tc
+    ├── 2x2.py               # Plots 2x2 validation results
+    └── runtime.py           # Compares runtime of parallel vs serial
+    
 ```
 
 ## Installation and Dependencies
@@ -127,6 +130,16 @@ The executables in the `apps/` folder read parameters from JSON config files loc
 }
 ```
 
+**Caveats**
+- For writing to json:
+  - Only T_range mode is supported. 
+  - Will not care about "observables" field. Always writes (Cv, chi, avg_eps, avg_mabs, avg_eps2, avg_mabs2, avg_eps3, avg_mabs3, avg_eps4, avg_mabs4).
+
+- For writing to txt:
+    - T_range mode not supported.
+    - Only eps and m supported. Gives energy and magnetization per spin.
+    - Recommended to use only one walker for ordered data.
+
 ### Compile
 To compile the code to `bin/`, use:
 ```bash
@@ -145,7 +158,8 @@ make run-2x2 JSON=configs/2x2_test.json
 ```
 
 
-On raspberry pi, use:
+**Raspberry Pi**
+We have also used a raspberry pi 5 for extra computational power. To run raspberry pi, use:
 ```bash
 make PI_HOST=<your_pi_host>
 ```
@@ -154,19 +168,20 @@ or set the `PI_HOST` variable in the `Makefile` and run:
 ```bash
 make run-pi
 ```
+Depending on your version and OS, you might need to change `PI_ARCH` variable in the `Makefile` to match your architecture.
 
 
 ### Plotting
 
-### Example usage:
-
-
 ### What different scripts do:
+- `L20.py`: Plots results for lattice size L =20. Mainly used to look at burn-in.
+- `plot_cv_chi.py`: Plots specific heat capacity and magnetic susceptibility vs temperature for different lattice sizes, marking the critical temperature.
+- `runtime.py`: Compares runtime of parallel vs serial implementation of Metropolis algorithm.
 
 
 ## Future work
 - Generalize Metropolis for any model.
-- 
+- Make a better write_to_file script that can have more options and raises errors when unsupported options are chosen. Also structure it into multiple functions for better readability.
 
 ## Declaration of Use of Generative AI
 
