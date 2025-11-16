@@ -2,8 +2,6 @@
 /*
 Write results to files
 */
-
-#pragma once
 #include <string>
 #include <vector>
 #include <fstream>
@@ -11,16 +9,17 @@ Write results to files
 #include <iostream>
 #include <filesystem>
 #include <nlohmann/json.hpp>
+#include "ising/io/write_files.hpp"
 #include "ising/io/json_util.hpp"
 #include "ising/observables.hpp"
 #include "ising/mcmc_run.hpp"
 
 namespace ising::io {
 
-inline void write_results_to_file(const nlohmann::json& jin,
+void write_results_to_file(const nlohmann::json& jin,
                                   const ising::Result& result,
                                   const std::string& filename,
-                                  const double T = 1.0) {
+                                  const double T) {
     const nlohmann::json& jwrite = jin.value("write_to_file", nlohmann::json::object()); // get "write" section
 
     const std::string type   = jwrite.value("type", "txt");
