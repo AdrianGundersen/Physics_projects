@@ -13,7 +13,7 @@ Write results to files
 namespace ising::io {
 
 
-inline void write_results_to_file(const nlohmann::json& jin,
+void write_results_to_file(const nlohmann::json& jin,
                                   const ising::Result& result,
                                   const std::string& filename,
                                   const double T = 1.0);

@@ -27,14 +27,14 @@ fig_dir = ROOT / "Project4/data/figures/"
 fig_dir.mkdir(parents=True, exist_ok=True)
 
 runtimes = {  # manually inputted
-    "1": 27.9066,
-    "2": 14.3911,
-    "3": 9.59728,
-    "4": 7.76355,
-    "6": 5.29927,
-    "8": 5.07468,
-    "12": 3.73100,
-    "16": 3.38115,
+    "1": 25.9618,
+    "2": 13.1849,
+    "3": 8.94716,
+    "4": 6.81619,
+    "6": 4.55323,
+    "8": 3.51539,
+    "12": 2.46687,
+    "16": 2.02883,
 }
 
 # cores and speedup
@@ -54,5 +54,5 @@ plt.xlabel('Number of threads')
 plt.ylabel('Speedup $t_1 / t_p$')
 plt.legend()
 plt.tight_layout()
-plt.savefig(fig_dir / "speedup_plot.png", bbox_inches='tight')
+plt.savefig(fig_dir / "speedup_plot.pdf", bbox_inches='tight')
 plt.close()

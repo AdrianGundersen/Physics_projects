@@ -90,7 +90,7 @@ def uncertainty_cv_chi(data, L, index_cv, index_chi):
     cov_m = m3 - m*m2
 
     sigma_cv = N/(kB*T_cv**2)*np.sqrt(var_eps2/M_cv + 4*eps**2*var_eps/M_cv - 4*eps* cov_eps/M_cv)
-    sigma_chi = N/(kB*T_chi)*np.sqrt(var_m2/M_chi + 4*m**2*var_m/M_chi - 4*m*cov_m*cov_m/M_chi)
+    sigma_chi = N/(kB*T_chi)*np.sqrt(var_m2/M_chi + 4*m**2*var_m/M_chi - 4*m*cov_m/M_chi)
 
     return sigma_chi, sigma_cv
 

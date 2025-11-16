@@ -27,6 +27,7 @@ SRC_CORE := \
   src/ising/observables.cpp \
   src/ising/metropolis.cpp \
   src/ising/mcmc_run.cpp \
+  src/ising/io/write_files.cpp \
   src/omp_rng.cpp
 
 # --- Apps ---
@@ -45,16 +46,13 @@ BIN_RUNTIME := $(BIN_DIR)/runtime
 JSON_RUNTIME ?= configs/multiple_walkers.json
 
 # --- Aggregate ---
-APPS := $(BIN_VALIDATE) $(BIN_LN) $(BIN_RUNTIME)
+APPS := $(BIN_LN) $(BIN_RUNTIME)
 
 # --- Build rules (single-step link, no object dir) ---
 $(BIN_DIR):
 	@mkdir -p $@
 $(OUT_DIR):
 	@mkdir -p $@
-
-$(BIN_VALIDATE): $(SRC_CORE) $(APP_VALIDATE) | $(BIN_DIR)
-	$(CXX) $(CXXFLAGS) $(INCLUDE) $^ -o $@
 
 $(BIN_LN): $(SRC_CORE) $(APP_LN) | $(BIN_DIR)
 	$(CXX) $(CXXFLAGS) $(INCLUDE) $^ -o $@
@@ -64,9 +62,6 @@ $(BIN_RUNTIME): $(SRC_CORE) $(APP_RUNTIME) | $(BIN_DIR)
 
 # --- Top-level ---
 all: $(APPS) | $(OUT_DIR)
-
-run-2x2: $(BIN_VALIDATE)
-	./$(BIN_VALIDATE) $(JSON_2x2)
 
 run-LN: $(BIN_LN)
 	./$(BIN_LN) $(JSON_LN)
@@ -118,9 +113,6 @@ pirsync:
 
 pibuild: pirsync
 	ssh $(PI_HOST) 'cd $(PI_DIR) && $(MAKE) MODE=$(MODE) ARCH="$(PI_ARCH)" -j$$(nproc)'
-
-run-pi-2x2: pibuild
-	ssh $(PI_HOST) 'cd $(PI_DIR) && ./$(BIN_VALIDATE) $(JSON_2x2)'
 
 run-pi-LN: pibuild
 	ssh $(PI_HOST) 'cd $(PI_DIR) && ./$(BIN_LN) $(JSON_LN)'
