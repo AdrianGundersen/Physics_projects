@@ -68,15 +68,17 @@ def uncertainty_cv_chi(data, L, index_cv, index_chi):
     N = L * L
     kB = 1.0
 
-    M_cv = vals_cv["sweeps"] * vals_cv["walkers"]
-    M_chi = vals_chi["sweeps"] * vals_chi["walkers"]
+    M_cv = vals_cv["sweeps"] * vals_cv["walkers"] 
+    M_chi = vals_chi["sweeps"] * vals_chi["walkers"] 
 
     eps = vals_cv["avg_eps"]
     eps2 = vals_cv["avg_eps2"]
+    eps3 = vals_cv["avg_eps3"]
     eps4 = vals_cv["avg_eps4"]
 
     m = vals_chi["avg_mabs"]
     m2 = vals_chi["avg_mabs2"]
+    m3 = vals_chi["avg_mabs3"]
     m4 = vals_chi["avg_mabs4"]
 
     var_eps = eps2 - eps**2
@@ -84,8 +86,11 @@ def uncertainty_cv_chi(data, L, index_cv, index_chi):
     var_eps2 = eps4 - eps2**2
     var_m2 = m4 - m2**2
 
-    sigma_cv = N/(kB*T_cv**2)*np.sqrt(var_eps2/M_cv + 4*eps**2*var_eps/M_cv)
-    sigma_chi = N/(kB*T_chi)*np.sqrt(var_m2/M_chi + 4*m**2*var_m/M_chi)
+    cov_eps = eps3 - eps*eps2
+    cov_m = m3 - m*m2
+
+    sigma_cv = N/(kB*T_cv**2)*np.sqrt(var_eps2/M_cv + 4*eps**2*var_eps/M_cv - 4*eps* cov_eps/M_cv)
+    sigma_chi = N/(kB*T_chi)*np.sqrt(var_m2/M_chi + 4*m**2*var_m/M_chi - 4*m*cov_m*cov_m/M_chi)
 
     return sigma_chi, sigma_cv
 
@@ -208,14 +213,29 @@ def Tc_regress(data, L, observable="Cv", plot = False):
         else:
             raise ValueError("Observable must be 'Cv' or 'chi'.")
 
+    
+
     obs_max = max(obs_values)
     max_index = obs_values.index(obs_max)
     delta_idx = 3 # number of points on each side of the maximum to consider
     start_idx = max(0, max_index - delta_idx)
     end_idx = min(len(T_values), max_index + delta_idx + 1)
 
+    sigma_obs_vals = []
+    for i, T_str in enumerate(T_sorted):
+        if observable == "Cv":
+            sigma_obs = uncertainty_cv_chi(data, L, i, i)[1]
+        elif observable == "chi":
+            sigma_obs = uncertainty_cv_chi(data, L, i, i)[0]
+        else:
+            raise ValueError("Observable must be 'Cv' or 'chi'.")
+        sigma_obs_vals.append(sigma_obs)
+
+    sigma_obs_max = sigma_obs_vals[max_index]
+
     T_fit = np.array(T_values[start_idx:end_idx])
     obs_fit = np.array(obs_values[start_idx:end_idx])
+    sigma_obs_vals = np.array(sigma_obs_vals[start_idx:end_idx])
 
     coeffs, cov = np.polyfit(T_fit, obs_fit, 2, cov=True)
     a, b, c = coeffs
@@ -226,28 +246,29 @@ def Tc_regress(data, L, observable="Cv", plot = False):
     
     var_a = cov[0,0]
     var_b = cov[1,1]
-    var_ab = cov[0,1]
+    cov_ab = cov[0,1]
 
     dTda = b / (2.0 * a**2)
     dTdb = -1.0 / (2.0 * a)
-    sigma_Tc = np.sqrt(dTda**2 * var_a + dTdb**2 * var_b + 2 * dTda * dTdb * var_ab)
+    sigma_Tc = np.sqrt(dTda**2 * var_a + dTdb**2 * var_b + 2 * dTda * dTdb * cov_ab)
 
-    if observable == "Cv":
-        sigma_obs_max = uncertainty_cv_chi(data, L, max_index, max_index)[1]
-    elif observable == "chi":
-        sigma_obs_max = uncertainty_cv_chi(data, L, max_index, max_index)[0]
-    else:
-        raise ValueError("Observable must be 'Cv' or 'chi'.")
 
     # Plotting
     if plot:
+        left = abs(T_c - min(T_fit))
+        right = abs(T_c - max(T_fit))
+        limits = max(left, right)
         plt.figure()
-        T_plot = np.linspace(min(T_fit) - abs(min(T_fit)*0.01), max(T_fit) + abs(max(T_fit)*0.01), 100)
+        T_plot = np.linspace(min(T_fit) - abs(min(T_fit)*0.001), max(T_fit) + abs(max(T_fit)*0.001), 100)
+        T_plot = np.linspace(T_c - limits - 0.1*limits, T_c + limits + 0.1*limits, 100)
         plt.plot(T_plot, poly(T_plot), label='Fitted curve')
-        plt.scatter(T_fit, obs_fit, color='orange', label='Data points')
-        plt.axvline(T_c, color='r', linestyle='--', label=f'T_c = {T_c:.2f}')
+        plt.errorbar(T_fit, obs_fit, yerr=sigma_obs_vals, fmt="o", color='orange', ecolor="g", capsize=3,  label='Data + errorbars')
+        plt.axvline(T_c, color='r', linestyle='--', label=r'$T_c$'+f' = {T_c:.3f}')
         plt.xlabel('Temperature T')
-        plt.ylabel(f'{observable} (max: {observable_max:.2f} at T_c: {T_c:.2f})')
+        if observable == "Cv":
+            plt.ylabel(r'Heat Capacity $c_v$')
+        else:
+            plt.ylabel(r'Magnetic Susceptibility $\chi_s$')
         plt.legend()
         plt.tight_layout()
         plt.grid()
@@ -277,10 +298,10 @@ def plot_together(ax_left, ax_right, data, L, observable="Cv"):
 
 
 # Load data and plot for L
-L = np.array([5, 10, 80, 90, 120])# 40, 50, 100])#, 60, 70, 80, 90, 100, 110, 120, 130])
-min_sweeps = 1e5
+L = np.array([5, 7, 10, 15, 20, 30, 40, 50, 60, 70, 80, 90, 100, 120])
 json_path = ROOT / "Project4/data/outputs/tsweep_results.json"
 raw_data = load_JSON(json_path)
+min_sweeps = 1e5 + 1
 data = sort_data(raw_data, min_sweeps=min_sweeps)
 
 Tc_Cv_vals = []
@@ -316,8 +337,6 @@ Tc_errs = 0.5 * np.sqrt(sigma_TcCv_vals**2 + sigma_TcChi_vals**2)
 
 inv_L = 1.0 / L
 
-wheights = 1.0 / Tc_errs**2
-
 # linregress
 slope, intercept, r_value, p_val, std_err = linregress(inv_L, Tc_vals)
 
@@ -325,21 +344,25 @@ N = len(L)
 inv_L_mean = np.mean(inv_L)
 intercept_err = std_err * np.sqrt(np.sum(inv_L**2) / (N*np.sum((inv_L - inv_L_mean)**2)))
 
-print(f"Tc(inf) = {intercept:.5f} ± {intercept_err:.5f}")
+print(f"Tc(inf) = {intercept:.12f} ± {intercept_err:.5f}")
+print(f"The slope m = {slope:.3f} ± {std_err:.3f}")
 tc_inf = 2.269185311421
 print("According to Lars Onsage's value")
 print(f"Tc(inf) ≈ {tc_inf}")
 
 plt.figure()
-plt.plot(inv_L, Tc_vals, 'o', label='Tc')
-plt.plot(inv_L, intercept + slope * inv_L, 'r--', label=f'Fit Cv: Tc={intercept:.3f} + {slope:.3f}/L')
+plt.plot(inv_L, Tc_vals, 'o', label=r'$\hat{T}_c$')
+plt.plot(inv_L, intercept + slope * inv_L, 'r--', label=r'$\hat{T}_c$='+f"{intercept:.3f} + {slope:.3f}/L")
 plt.xlabel('1/L')
-plt.ylabel('Critical Temperature Tc')
+plt.ylabel(r'Critical Temperature $\hat{T}_c$')
 plt.legend()
 plt.tight_layout()
 plt.grid()
 plt.savefig(fig_dir / 'Tc_vs_invL.pdf')
 plt.close()
+
+min_sweeps = 1e5
+data = sort_data(raw_data, min_sweeps=min_sweeps)
 
 # plot-together for multiple observables with stacked legends (Courtesy of ChatGPT to make it look nice)
 for observable in ["Cv", "chi", "avg_eps", "avg_mabs"]:
@@ -353,7 +376,7 @@ for observable in ["Cv", "chi", "avg_eps", "avg_mabs"]:
     if observable == "Cv":
         fig.supylabel(r'$c_V$')
     elif observable == "chi":
-        fig.supylabel(r'$\chi$')
+        fig.supylabel(r'$\chi_s$')
     elif observable == "avg_eps":
         fig.supylabel(r'$\langle \epsilon \rangle$')
     elif observable == "avg_mabs":
@@ -363,7 +386,7 @@ for observable in ["Cv", "chi", "avg_eps", "avg_mabs"]:
     handles, labels = left.get_legend_handles_labels()
 
     # auto split across top and bottom if many entries
-    max_cols = 6  # number of columns per row
+    max_cols = 7  # number of columns per row
     if len(labels) > max_cols:
         mid = int(math.ceil(len(labels) / 2))
         top_h, top_l = handles[:mid], labels[:mid]
@@ -371,7 +394,7 @@ for observable in ["Cv", "chi", "avg_eps", "avg_mabs"]:
 
         leg_top = fig.legend(
             top_h, top_l, loc='upper center', ncol=min(max_cols, len(top_l)),
-            bbox_to_anchor=(0.5, 1.02), handlelength=1.0, handletextpad=0.4, columnspacing=0.8,
+            bbox_to_anchor=(0.5, 1.04), handlelength=1.0, handletextpad=0.4, columnspacing=0.8,
             frameon=False
         )
         leg_bot = fig.legend(
