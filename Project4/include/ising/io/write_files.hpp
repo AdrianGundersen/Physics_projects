@@ -11,10 +11,9 @@ Write results to files
 #include "ising/mcmc_run.hpp"
 
 namespace ising::io {
-
-
+    
 void write_results_to_file(const nlohmann::json& jin,
                                   const ising::Result& result,
                                   const std::string& filename,
                                   const double T = 1.0);
-} // namespace ising::io
+} // namespace ising::io 
