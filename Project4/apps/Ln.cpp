@@ -56,8 +56,8 @@ int main(int argc, char** argv) { // argc and argv to get JSON file path (argc i
     if (use_Trange){
         T_values = linspace(params.Tmin, params.Tmax, params.Tsteps);
 
-    // running the simulation for a single temperature if use_Trange is false
-    } else {
+
+    } else {     // running the simulation for a single temperature if use_Trange is false
         ising::Lattice initial_lat = ising::io::lattice_from_json(j.at("lattice"));
         double T = params.temperature;
         ising::Result result = ising::mcmc_run(initial_lat, model, j);
@@ -110,6 +110,8 @@ int main(int argc, char** argv) { // argc and argv to get JSON file path (argc i
         return 0;
     }
 
+
+    // running simulation for temperature sweep
     std::cout << "\nRunning simulations for lattice size " << ising::io::lattice_from_json(j.at("lattice")).size() << "\n";
     std::cout << "Tmax = " << params.Tmax << ", Tmin = " << params.Tmin << ", Tsteps = " << params.Tsteps << "\n\n";
 
