@@ -12,7 +12,7 @@
     "simulation":
     {
         "seed": 67,
-        "temperature": 1.0,
+        "temperature": 2.377,
         "use_Trange": false,
         "Trange": {
             "Tmin": 2.25,
@@ -24,7 +24,8 @@
         "measure_sweeps": 1,
         "total_sweeps": 40000,
         "cores": 10,
-        "walkers": 10
+        "walkers": 10,
+        "qr": false
     },
     "write_to_file": 
     {

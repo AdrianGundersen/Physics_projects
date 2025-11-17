@@ -107,6 +107,15 @@ int main(int argc, char** argv) { // argc and argv to get JSON file path (argc i
         std::cout << "Results for T = " << T << ":\n";
         std::cout << "c_V = " << Cv << "\nchi_s = " << chi << "\n";
         std::cout << "Results written to " << output_file_name << "\n";
+        
+        const bool write_QR = params.QR;
+        if (write_QR) {
+            output_file_name = default_file_name;
+            std::string QR_filename = "data/outputs/QR_"+ std::to_string(L) + "_T=" + std::to_string(T)+".txt";
+            std::ofstream QR_save(QR_filename);
+            result.all_walkers.front().lat.print(QR_save);
+            std::cout << "QR-code written to " << QR_filename << "\n";
+        }
         return 0;
     }
 

@@ -25,6 +25,7 @@ namespace ising{
         int walkers;
 
         // file writing
+        bool QR;
         bool write_enabled;
         std::string write_type;
     };

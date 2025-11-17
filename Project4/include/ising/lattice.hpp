@@ -6,6 +6,7 @@ For the Ising model. To represent the lattice and its spins.
 #pragma once
 #include <vector>
 #include <random>
+#include <fstream>
 
 namespace ising {
     class Lattice {
@@ -42,5 +43,17 @@ namespace ising {
             // helper functions
             int size() const { return L; } // return lattice size L
             double num_spins() const { return N; } // return number of spins N
+
+            // QR-code to file
+            void print(std::ofstream& os) const {
+                for (int i = 0; i < L; ++i){
+                    for (int j = 0; j < L; ++j){
+                        int s = operator()(i, j);
+                        char c = (s > 0 ? '1' : '0');
+                        os << c;
+                    }
+                    os << "\n";
+                }
+            }
     };
 }

@@ -50,6 +50,7 @@ namespace ising::io {
         params.total_sweeps = js.value("total_sweeps", 10000);
         params.cores = js.value("cores", 1);
         params.walkers = js.value("walkers", 1);
+        params.QR = js.value("qr", false); // default false
     }
 
     inline void write_to_file_from_json(const nlohmann::json& jwrite, ising::simParams& params) {
