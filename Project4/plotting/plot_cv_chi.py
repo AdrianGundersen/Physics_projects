@@ -15,11 +15,11 @@ plt.rcParams.update({
     'font.size': 14,
     'figure.figsize': (6, 4),
     'axes.titlesize': 14,
-    'axes.labelsize': 14,
+    'axes.labelsize': 15,
     'xtick.labelsize': 12,
     'ytick.labelsize': 12,
     'lines.linewidth': 2.0,
-    'legend.fontsize': 14,
+    'legend.fontsize': 15,
     'figure.dpi': 300,
 })
 
@@ -28,7 +28,12 @@ ROOT = Path(__file__).resolve().parents[2]
 
 fig_dir = ROOT / "Project4/data/figures/Cv_chi"
 fig_dir.mkdir(parents=True, exist_ok=True)
+L = np.array([5, 7, 10, 15, 20, 30, 40, 50, 60, 70, 80, 90, 100, 120])
+min_sweeps = 1e5
+min_sweeps_fit = 1e5+1
+json_path = ROOT / "Project4/data/outputs/tsweep_finale.json"
 
+plot_all = False # whether to plot
 
 def load_JSON(filepath) -> dict:
     """Load JSON data from a file.
@@ -283,26 +288,28 @@ def plot_together(ax_left, ax_right, data, L, observable="Cv"):
         T_values.append(float(T_str))
         obs_values.append(values[observable])
 
+    if L > 40:
+        linestyle = '--'
+    else:
+        linestyle = '-'
     # left plot (full range)
     if observable == "chi":
         ax_left.set_yscale('log')
-    ax_left.plot(T_values, obs_values, linestyle='-', label=f'{L}', alpha=0.8)
+    ax_left.plot(T_values, obs_values, linestyle=linestyle, label=f'{L}', alpha=0.8)
     ax_left.grid(True)
 
     # right plot (zoomed in at [2.1, 2.4])
     if observable == "chi":
         ax_right.set_yscale('log')
-    ax_right.plot(T_values, obs_values, linestyle='-', alpha=0.8)
+    ax_right.plot(T_values, obs_values, linestyle=linestyle, alpha=0.8)
     ax_right.set_xlim(2.1, 2.4)
     ax_right.grid(True)
 
 
 # Load data and plot for L
-L = np.array([5, 7, 10, 15, 20, 30, 40, 50, 60, 70, 80, 90, 100, 120])
-json_path = ROOT / "Project4/data/outputs/tsweep_finale.json"
 raw_data = load_JSON(json_path)
-min_sweeps = 1e5 + 1
 data = sort_data(raw_data, min_sweeps=min_sweeps)
+data_fit = sort_data(raw_data, min_sweeps=min_sweeps_fit)
 
 Tc_Cv_vals = []
 Tc_chi_vals = []
@@ -312,12 +319,13 @@ sigma_Cv_vals = []
 sigma_chi_vals = []
 
 for l in L:
-    # plot_Cv_vs_T(data, l)
-    # plot_chi_vs_T(data, l)
-    # plot_eps_vs_T(data, l)
-    # plot_m_vs_T(data, l)
-    Tc_Cv, Cv_max, sigma_Cv, sigma_TcCv = Tc_regress(data, l, observable="Cv", plot=True)
-    Tc_chi, chi_max, sigma_chi, sigma_TcChi = Tc_regress(data, l, observable="chi", plot=True)
+    if plot_all:
+        plot_Cv_vs_T(data, l)
+        plot_chi_vs_T(data, l)
+        plot_eps_vs_T(data, l)
+        plot_m_vs_T(data, l)
+    Tc_Cv, Cv_max, sigma_Cv, sigma_TcCv = Tc_regress(data_fit, l, observable="Cv", plot=plot_all)
+    Tc_chi, chi_max, sigma_chi, sigma_TcChi = Tc_regress(data_fit, l, observable="chi", plot=plot_all)
     Tc_Cv_vals.append(Tc_Cv)
     Tc_chi_vals.append(Tc_chi)
     sigma_TcCv_vals.append(sigma_TcCv)
@@ -363,12 +371,11 @@ plt.grid()
 plt.savefig(fig_dir / 'Tc_vs_invL.pdf')
 plt.close()
 
-min_sweeps = 1e5
 data = sort_data(raw_data, min_sweeps=min_sweeps)
 
 # plot-together for multiple observables with stacked legends (Courtesy of ChatGPT to make it look nice)
 for observable in ["Cv", "chi", "avg_eps", "avg_mabs"]:
-    fig, axes = plt.subplots(ncols=2, figsize=(8, 4))
+    fig, axes = plt.subplots(ncols=2, figsize=(8, 4.4))
     left, right = axes[0], axes[1]
 
     for l in L:
