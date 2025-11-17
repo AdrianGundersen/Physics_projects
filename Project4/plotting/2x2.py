@@ -25,7 +25,6 @@ N = 4
 k_b = 1.0
 T = "2.000000" #change depending on the file you wish to analyze
 J = 1.0
-# p10 = 1000 # amount of points 
 
 
 # Finds project root
@@ -76,14 +75,8 @@ avg_mabs = np.cumsum(mabs)/(np.arange(len(mabs)) + 1)
 avg_mabs2 = np.cumsum(mabs2)/(np.arange(len(mabs2)) + 1)
 
 
-# p10 = int(math.log10(len(eps)))
-# avg_eps, avg_eps2, avg_mabs, avg_mabs2 = np.zeros(p10), np.zeros(p10), np.zeros(p10), np.zeros(p10) 
-# part = int(len(eps)//p10)
-# for i in range(0,p10):
-#     avg_eps[i] = np.average(eps[:part*(i+1)])
-#     avg_eps2[i] = np.average(eps2[:part*(i+1)])
-#     avg_mabs[i] = np.average(mabs[:part*(i+1)])
-#     avg_mabs2[i] = np.average(mabs2[:part*(i+1)])
+
+
 
 c_v = N/(k_b*T**2) * (avg_eps2 - avg_eps**2)
 chi = N/(k_b*T) * (avg_mabs2 - avg_mabs**2)
