@@ -23,7 +23,7 @@ plt.rcParams.update({
 
 N = 4
 k_b = 1.0
-T = "1.000000" #change depending on the file you wish to analyze
+T = "2.000000" #change depending on the file you wish to analyze
 J = 1.0
 # p10 = 1000 # amount of points 
 
@@ -154,6 +154,12 @@ plt.legend()
 plt.savefig(fig_dir/f"chi_evolution_T={T}.pdf", bbox_inches='tight')
 plt.close()
 
+##remove first 1000 points to see better convergence
+# rel_error_eps = rel_error_eps[1000:]    
+# rel_error_mabs = rel_error_mabs[1000:]
+# rel_error_cv = rel_error_cv[1000:]
+# rel_error_chi = rel_error_chi[1000:]
+# n_cycles = n_cycles[1000:]
 
 #all in same plot
 plt.figure()
@@ -273,7 +279,7 @@ plt.close()
 # Cv vs T
 plt.figure()
 plt.plot(T_values, Cv_values, linestyle='-', label='Numerical')
-plt.plot(T_values, c_v_analytical/N, linestyle='--', label='Analytical')
+plt.plot(T_values, c_v_analytical, linestyle='--', label='Analytical')
 plt.xlabel('Temperature T')
 plt.ylabel(r'Heat Capacity $C_v$')
 plt.legend()
@@ -285,7 +291,7 @@ plt.close()
 # Chi vs T
 plt.figure()
 plt.plot(T_values, chi_values, linestyle='-', label='Numerical')
-plt.plot(T_values, chi_analytical/N, linestyle='--', label='Analytical')
+plt.plot(T_values, chi_analytical, linestyle='--', label='Analytical')
 plt.xlabel(r'Temperature $T$')
 plt.ylabel(r'Susceptibility $\chi_s$')
 plt.legend()
