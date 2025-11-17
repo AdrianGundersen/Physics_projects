@@ -343,7 +343,7 @@ sigma_TcChi_vals = np.array(sigma_TcChi_vals)
 Tc_vals = 0.5 * (Tc_Cv_vals + Tc_chi_vals)
 Tc_errs = 0.5 * np.sqrt(sigma_TcCv_vals**2 + sigma_TcChi_vals**2)
 
-sigma_y = np.mean(Tc_errs)
+sigma_y = np.sqrt(np.mean(Tc_errs**2))
 
 inv_L = 1.0 / L
 
