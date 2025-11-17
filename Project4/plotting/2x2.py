@@ -23,9 +23,9 @@ plt.rcParams.update({
 
 N = 4
 k_b = 1.0
-T = "2.000000" #change depending on the file you wish to analyze
+T = "1.000000" #change depending on the file you wish to analyze
 J = 1.0
-p10 = 1000 # amount of points 
+# p10 = 1000 # amount of points 
 
 
 # Finds project root
@@ -70,17 +70,23 @@ for T_str, values in data[str(L)].items():
 
 
 
-# p10 = int(math.log10(len(eps)))
-exp_eps, exp_eps2, exp_mabs, exp_mabs2 = np.zeros(p10), np.zeros(p10), np.zeros(p10), np.zeros(p10) 
-part = int(len(eps)//p10)
-for i in range(0,p10):
-    exp_eps[i] = np.average(eps[:part*(i+1)])
-    exp_eps2[i] = np.average(eps2[:part*(i+1)])
-    exp_mabs[i] = np.average(mabs[:part*(i+1)])
-    exp_mabs2[i] = np.average(mabs2[:part*(i+1)])
+avg_eps = np.cumsum(eps)/(np.arange(len(eps)) + 1)
+avg_eps2 = np.cumsum(eps2)/(np.arange(len(eps2)) + 1)
+avg_mabs = np.cumsum(mabs)/(np.arange(len(mabs)) + 1)
+avg_mabs2 = np.cumsum(mabs2)/(np.arange(len(mabs2)) + 1)
 
-c_v = N/(k_b*T**2) * (exp_eps2 - exp_eps**2)
-chi = N/(k_b*T) * (exp_mabs2 - exp_mabs**2)
+
+# p10 = int(math.log10(len(eps)))
+# avg_eps, avg_eps2, avg_mabs, avg_mabs2 = np.zeros(p10), np.zeros(p10), np.zeros(p10), np.zeros(p10) 
+# part = int(len(eps)//p10)
+# for i in range(0,p10):
+#     avg_eps[i] = np.average(eps[:part*(i+1)])
+#     avg_eps2[i] = np.average(eps2[:part*(i+1)])
+#     avg_mabs[i] = np.average(mabs[:part*(i+1)])
+#     avg_mabs2[i] = np.average(mabs2[:part*(i+1)])
+
+c_v = N/(k_b*T**2) * (avg_eps2 - avg_eps**2)
+chi = N/(k_b*T) * (avg_mabs2 - avg_mabs**2)
 
 beta = 1/(k_b*T)
 Z = 12 + 4*np.cosh(8*J*beta)
@@ -93,11 +99,11 @@ chi_analytical = N/(k_b*T) * (exp_mabs2_analytical - exp_mabs_analytical**2)
 
 
 
-n_cycles = np.linspace(1, len(eps), p10)
+n_cycles = np.linspace(1, len(eps), len(eps))
 
 
-rel_error_eps = np.abs((exp_eps - exp_eps_analytical)/exp_eps_analytical)
-rel_error_mabs = np.abs((exp_mabs - exp_mabs_analytical)/exp_mabs_analytical)
+rel_error_eps = np.abs((avg_eps - exp_eps_analytical)/exp_eps_analytical)
+rel_error_mabs = np.abs((avg_mabs - exp_mabs_analytical)/exp_mabs_analytical)
 rel_error_cv = np.abs((c_v - c_v_analytical)/c_v_analytical)
 rel_error_chi = np.abs((chi - chi_analytical)/chi_analytical)
 
@@ -131,7 +137,7 @@ plt.close()
 plt.figure()
 plt.plot(n_cycles, rel_error_cv, label='relative error')
 plt.xlabel(f'Cycles for T = {T}')
-plt.ylabel(r'Relative error $C_V/N$')
+plt.ylabel(r'Relative error $c_V$')
 plt.grid(True, alpha=0.6)
 plt.legend()
 plt.savefig(fig_dir/f"cv_evolution_T={T}.pdf", bbox_inches='tight')
@@ -153,8 +159,8 @@ plt.close()
 plt.figure()
 plt.plot(n_cycles, (rel_error_eps), label=r'$\langle \epsilon \rangle$')
 plt.plot(n_cycles, (rel_error_mabs), label=r'$\langle |m| \rangle$')
-plt.plot(n_cycles, (rel_error_cv), label=r'$C_V/N$')
-plt.plot(n_cycles, (rel_error_chi), label=r'$\chi/N$')
+plt.plot(n_cycles, (rel_error_cv), label=r'$c_V$')
+plt.plot(n_cycles, (rel_error_chi), label=r'$\chi_S$')
 plt.xscale('log')   
 # plt.yscale('log')
 plt.xlabel(f'Cycles for T = {T}')
@@ -220,7 +226,7 @@ plt.figure()
 plt.plot(T_values, rel_error_cv, marker='o', linestyle='-', label='relative error')
 plt.grid(True, alpha=0.6)
 plt.xlabel(f'Temperature T')
-plt.ylabel(r'$C_V/N$')
+plt.ylabel(r'$c_V$')
 plt.legend()
 plt.savefig(fig_dir/f"cv_vs_T_rel_error_L=2.pdf", bbox_inches='tight')
 plt.close() 
@@ -230,32 +236,46 @@ plt.figure()
 plt.plot(T_values, rel_error_chi, marker='o', linestyle='-', label ='relative error')
 plt.grid(True, alpha=0.6)
 plt.xlabel(f'Temperature T')
-plt.ylabel(r'$\chi/N$')
+plt.ylabel(r'$\chi_s$')
 plt.legend()
 plt.savefig(fig_dir/f"chi_vs_T_rel_error_L=2.pdf", bbox_inches='tight')
 plt.close()
 
 #all relative errors in same plot
 plt.figure()
-plt.plot(T_values, (rel_error_eps), marker='o', linestyle='-', label=r'$\langle \epsilon \rangle$')
-plt.plot(T_values, (rel_error_mabs), marker='o', linestyle='-', label=r'$\langle |m| \rangle$')
-plt.plot(T_values, (rel_error_cv), marker='o', linestyle='-', label=r'$C_V/N$')
-plt.plot(T_values, (rel_error_chi), marker='o', linestyle='-', label=r'$\chi/N$')
-plt.xscale('log')
+# plt.plot(T_values, (rel_error_eps), linestyle='-', label=r'$\langle \epsilon \rangle$')
+# plt.plot(T_values, (rel_error_mabs), linestyle='-', label=r'$\langle |m| \rangle$')
+plt.plot(T_values, (rel_error_cv), linestyle='-', label=r'$c_V$')
+plt.plot(T_values, (rel_error_chi), linestyle='-', label=r'$\chi_s$')
+# plt.xscale('log')
 # plt.yscale('log')
 plt.xlabel(f'Temperature T')
 plt.ylabel('Relative error')
 plt.grid(True, alpha=0.6)
 plt.legend()
-plt.savefig(fig_dir/f"all_rel_error_vs_T_L=2.pdf", bbox_inches='tight')
+plt.savefig(fig_dir/f"combi_rel_error_cv_chi_vs_T_L=2.pdf", bbox_inches='tight')
+plt.close() 
+
+plt.figure()
+plt.plot(T_values, (rel_error_eps), linestyle='-', label=r'$\langle \epsilon \rangle$')
+plt.plot(T_values, (rel_error_mabs), linestyle='-', label=r'$\langle |m| \rangle$')
+# plt.plot(T_values, (rel_error_cv), linestyle='-', label=r'$c_V$')
+# plt.plot(T_values, (rel_error_chi), linestyle='-', label=r'$\chi_s$')
+# plt.xscale('log')
+# plt.yscale('log')
+plt.xlabel(f'Temperature T')
+plt.ylabel('Relative error')
+plt.grid(True, alpha=0.6)
+plt.legend()
+plt.savefig(fig_dir/f"combi_rel_error_eps_mabs_vs_T_L=2.pdf", bbox_inches='tight')
 plt.close() 
 
 # Cv vs T
 plt.figure()
-plt.plot(T_values, Cv_values, linestyle='-', label='Numbercal')
+plt.plot(T_values, Cv_values, linestyle='-', label='Numerical')
 plt.plot(T_values, c_v_analytical/N, linestyle='--', label='Analytical')
 plt.xlabel('Temperature T')
-plt.ylabel('Heat Capacity Cv')
+plt.ylabel(r'Heat Capacity $C_v$')
 plt.legend()
 plt.tight_layout()
 plt.grid(True, alpha=0.6)
@@ -267,7 +287,7 @@ plt.figure()
 plt.plot(T_values, chi_values, linestyle='-', label='Numerical')
 plt.plot(T_values, chi_analytical/N, linestyle='--', label='Analytical')
 plt.xlabel(r'Temperature $T$')
-plt.ylabel(r'Susceptibility $\chi$')
+plt.ylabel(r'Susceptibility $\chi_s$')
 plt.legend()
 plt.tight_layout()
 plt.grid(True, alpha=0.6)
