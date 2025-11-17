@@ -299,7 +299,7 @@ def plot_together(ax_left, ax_right, data, L, observable="Cv"):
 
 # Load data and plot for L
 L = np.array([5, 7, 10, 15, 20, 30, 40, 50, 60, 70, 80, 90, 100, 120])
-json_path = ROOT / "Project4/data/outputs/tsweep_results.json"
+json_path = ROOT / "Project4/data/outputs/tsweep_finale.json"
 raw_data = load_JSON(json_path)
 min_sweeps = 1e5 + 1
 data = sort_data(raw_data, min_sweeps=min_sweeps)
@@ -335,14 +335,16 @@ sigma_TcChi_vals = np.array(sigma_TcChi_vals)
 Tc_vals = 0.5 * (Tc_Cv_vals + Tc_chi_vals)
 Tc_errs = 0.5 * np.sqrt(sigma_TcCv_vals**2 + sigma_TcChi_vals**2)
 
+sigma_y = np.mean(Tc_errs)
+
 inv_L = 1.0 / L
 
 # linregress
 slope, intercept, r_value, p_val, std_err = linregress(inv_L, Tc_vals)
 
-N = len(L)
+n = len(L)
 inv_L_mean = np.mean(inv_L)
-intercept_err = std_err * np.sqrt(np.sum(inv_L**2) / (N*np.sum((inv_L - inv_L_mean)**2)))
+intercept_err = sigma_y * np.sqrt(np.sum(inv_L**2) / (n*np.sum((inv_L - inv_L_mean)**2)))
 
 print(f"Tc(inf) = {intercept:.12f} ± {intercept_err:.5f}")
 print(f"The slope m = {slope:.3f} ± {std_err:.3f}")
