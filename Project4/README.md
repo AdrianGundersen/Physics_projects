@@ -114,7 +114,8 @@ The executables in the `apps/` folder read parameters from JSON config files loc
         "measure_sweeps": 10, // Measure observables every n sweeps
         "total_sweeps": 3000, // Total number of sweeps after burn-in
         "cores": 4, // Number of CPU cores to use
-        "walkers": 4 // Number of independent walkers (should be = n * cores for best performance)
+        "walkers": 4, // Number of independent walkers (should be = n * cores for best performance)
+        "qr": false // Bool to write lattice spins to file, only works if "use_Trange": false.
     },
     "write_to_file": 
     {

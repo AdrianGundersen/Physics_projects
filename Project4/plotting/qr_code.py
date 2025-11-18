@@ -53,9 +53,10 @@ def plot_lattice_qr(lattice_file, out_file):
     plt.close(fig)
 
 if __name__ == "__main__":
-    
-    lattice_path = file_dir / "QR_40_T=2.377000.txt"
-    qr_fig_path = fig_dir / "ising_lattice_qr.pdf"
+
+    file = "QR_40_T=2.324000"
+    lattice_path = file_dir / f"{file}.txt"
+    qr_fig_path = fig_dir / f"{file}.pdf"
 
     plot_lattice_qr(lattice_path, qr_fig_path)
     print(f"Saved QR-style lattice plot to {qr_fig_path}")
