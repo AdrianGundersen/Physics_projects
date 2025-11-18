@@ -1,3 +1,18 @@
+//apps/Ln.cpp
+/*
+Main program for running MCMC simulations of the Ising model.
+
+High level steps:
+
+1. Parse JSON config file for model, lattice, and simulation parameters.
+2. Initialize the Ising model and lattice based on config.
+3. If temperature range is specified, generate temperature values.
+4. For each temperature:
+   a. Run MCMC simulation using the Metropolis algorithm.
+   b. Collect observables (energy, magnetization).
+   c. Write results to output files (JSON, QR-code if specified).
+*/
+
 #include <iostream>
 #include <fstream>
 #include <iomanip>

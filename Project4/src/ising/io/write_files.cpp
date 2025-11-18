@@ -49,7 +49,7 @@ void write_results_to_file(const nlohmann::json& jin,
                 if (obs == "Cv" || obs == "heat_capacity" || obs == "chi" || obs == "susc" || obs == "susceptibility") {
                     std::cerr << "Observable " << obs << " not supported in txt output. Use json output instead.\n";
                 }
-                if (obs == "energy_per_spin" || obs == "energy" || obs == "e" || obs == "eps") {
+                if (obs == "energy_per_spin" || obs == "energy" || obs == "e" || obs == "eps") { 
                     ofile << eps[i];
                 } else if (obs == "magnetization_per_spin" || obs == "magnetization" || obs == "m" || obs == "mabs") {
                     ofile << mabs[i];

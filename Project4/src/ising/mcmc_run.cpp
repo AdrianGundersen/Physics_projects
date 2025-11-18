@@ -1,6 +1,13 @@
 // src/ising/mcmc_run.cpp
 /*
 Runs a Markov Chain Monte Carlo with Metropolis algorithm with different walkers in parallel.
+
+What it does high level:
+1. Parse simulation parameters from JSON.
+2. Initialize multiple walkers with different random seeds and initial spin configurations.
+3. For each walker, perform burn-in sweeps followed by measurement sweeps, collecting observables.
+4. Use OpenMP to parallelize across multiple walkers.
+5. Return results including all walkers and their average.
 */
 #include <vector>
 #include <omp.h>
