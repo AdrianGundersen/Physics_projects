@@ -305,6 +305,22 @@ def plot_together(ax_left, ax_right, data, L, observable="Cv"):
     ax_right.set_xlim(2.1, 2.4)
     ax_right.grid(True)
 
+def plot_cv_logL(cv_max, L_list):
+    """
+    Plot Cv_max vs log(L)
+    """
+    log_L = np.log(L_list)
+
+    plt.figure()
+    plt.plot(log_L, cv_max, 'o-')
+    plt.xlabel(r'$\log(L)$')
+    plt.ylabel(r'$c_{v_{max}}$')
+    plt.grid()
+    plt.legend()
+    plt.tight_layout()
+    plt.savefig(fig_dir / 'cv_max_vs_logL.pdf')
+    plt.close()
+    return None 
 
 # Load data and plot for L
 raw_data = load_JSON(json_path)
@@ -317,6 +333,7 @@ sigma_TcCv_vals = []
 sigma_TcChi_vals = []
 sigma_Cv_vals = []
 sigma_chi_vals = []
+c_v_max_list = []
 
 for l in L:
     if plot_all:
@@ -332,7 +349,10 @@ for l in L:
     sigma_TcChi_vals.append(sigma_TcChi)
     sigma_Cv_vals.append(sigma_Cv)
     sigma_chi_vals.append(sigma_chi)
+    c_v_max_list.append(Cv_max)
     print(f"L={l}: Tc from Cv = {Tc_Cv:.8f}+-{sigma_TcCv:.4f} (max Cv = {Cv_max:.4f}+-{sigma_Cv:.4f}), Tc from chi = {Tc_chi:.4f}+-{sigma_TcChi:.4f} (max chi = {chi_max:.4f}+-{sigma_chi:.4f})")
+
+plot_cv_logL(c_v_max_list, L)
 
 # 1/L vs Tc plot
 Tc_Cv_vals = np.array(Tc_Cv_vals)
