@@ -29,8 +29,8 @@ ROOT = Path(__file__).resolve().parents[2]
 fig_dir = ROOT / "Project4/data/figures/Cv_chi"
 fig_dir.mkdir(parents=True, exist_ok=True)
 L = np.array([5, 7, 10, 15, 20, 30, 40, 50, 60, 70, 80, 90, 100, 120])
-min_sweeps = 1e5
-min_sweeps_fit = 1e5+1
+min_sweeps = 1e5 + 1
+min_sweeps_fit = 1e5
 json_path = ROOT / "Project4/data/outputs/tsweep_finale.json"
 
 plot_all = False # whether to plot
@@ -130,7 +130,7 @@ def plot_Cv_vs_T(data, L):
     plt.plot(T_values, Cv_values, marker='o', linestyle='-')
 
     plt.xlabel('Temperature T')
-    plt.ylabel('Heat Capacity Cv')
+    plt.ylabel(r'Heat Capacity $c_v$')
     plt.tight_layout()
     plt.grid()
     plt.savefig(fig_dir / f'Cv_vs_T_L{L}.pdf')
@@ -151,7 +151,7 @@ def plot_chi_vs_T(data, L):
     plt.figure()
     plt.plot(T_values, chi_values, marker='o', linestyle='-')
     plt.xlabel('Temperature T')
-    plt.ylabel('Magnetic Susceptibility χ')
+    plt.ylabel(r'Magnetic Susceptibility $\chi_s$')
     plt.grid()
     plt.tight_layout()
     plt.savefig(fig_dir / f'chi_vs_T_L{L}.pdf')
@@ -172,7 +172,7 @@ def plot_eps_vs_T(data, L):
     plt.figure()
     plt.plot(T_values, eps_values, marker='o', linestyle='-')
     plt.xlabel('Temperature T')
-    plt.ylabel('Energy per spin ε')
+    plt.ylabel(r'Energy per spin $\langle \epsilon \rangle$')
     plt.grid()
     plt.tight_layout()
     plt.savefig(fig_dir / f'eps_vs_T_L{L}.pdf')
@@ -193,7 +193,7 @@ def plot_m_vs_T(data, L):
     plt.figure()
     plt.plot(T_values, m_values, marker='o', linestyle='-')
     plt.xlabel('Temperature T')
-    plt.ylabel('Magnetization per spin m')
+    plt.ylabel(r'Magnetization per spin $\langle|m|\rangle$')
     plt.grid()
     plt.tight_layout()
     plt.savefig(fig_dir / f'm_vs_T_L{L}.pdf')

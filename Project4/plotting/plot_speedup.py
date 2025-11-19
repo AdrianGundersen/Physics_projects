@@ -46,6 +46,9 @@ speedup = y[0] / y                                            # S(p) = T1 / Tp
 # ideal scaling S_ideal(p) = p
 ideal_speedup = x
 
+time_saved_factor = runtimes["1"]/runtimes["12"]
+print(f"Factor for saved trime = {time_saved_factor:.1f}")
+
 plt.figure()
 plt.plot(x, ideal_speedup, '--', label='Ideal speedup')
 plt.plot(x, speedup, 'o', label='Measured speedup')
