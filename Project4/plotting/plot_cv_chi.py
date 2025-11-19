@@ -313,7 +313,7 @@ def plot_cv_logL(cv_max, L_list):
 
     plt.figure()
     plt.plot(log_L, cv_max, 'o-')
-    plt.xlabel(r'$\log(L)$')
+    plt.xlabel(r'$\ln(L)$')
     plt.ylabel(r'$c_{v_{max}}$')
     plt.grid()
     plt.legend()
