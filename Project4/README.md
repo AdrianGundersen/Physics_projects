@@ -5,10 +5,13 @@ Simulation of the 2D Ising model using the Metropolis algorithm.
 
 ## Physical Model
 We consider a 2D square $L \times L$ lattice of spins $s_i = \pm 1$ with periodic boundary conditions and without an external magnetic field. The total energy of the system is given by:
+
 $$
 E = -J \sum_{\langle i,j \rangle}^N s_i s_j, \qquad J>0,\; N = L^2
 $$
+
 where the sum runs over all nearest-neighbor pairs \(\langle i,j \rangle\). The magnetization is defined as:
+
 $$
 M = \sum_{i=1}^N s_i
 $$
@@ -18,6 +21,7 @@ We also have the specific heat capacity $c_V$ and magnetic susceptibility $\chi_
 $$
 c_V = \frac{1}{N k_B T^2} \left( \langle E^2 \rangle - \langle E \rangle^2 \right)
 $$
+
 $$
 \chi_s = \frac{1}{N k_B T} \left( \langle M^2 \rangle - \langle |M| \rangle^2 \right)
 $$
