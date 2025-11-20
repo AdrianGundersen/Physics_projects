@@ -4,7 +4,7 @@
 Simulation of the 2D Ising model using the Metropolis algorithm.
 
 ## Physical Model
-We consider a 2D square \(L\times L\) lattice of spins \(s_i = \pm 1\) with periodic boundary conditions and without an external magnetic field. The total energy of the system is given by:
+We consider a 2D square $L \times L$ lattice of spins $s_i = \pm 1$ with periodic boundary conditions and without an external magnetic field. The total energy of the system is given by:
 $$
 E = -J \sum_{\langle i,j \rangle}^N s_i s_j, \qquad J>0,\; N = L^2
 $$
@@ -13,6 +13,15 @@ $$
 M = \sum_{i=1}^N s_i
 $$
 
+We also have the specific heat capacity $c_V$ and magnetic susceptibility $\chi_s$ defined as:
+
+$$
+c_V = \frac{1}{N k_B T^2} \left( \langle E^2 \rangle - \langle E \rangle^2 \right)
+$$
+$$
+\chi_s = \frac{1}{N k_B T} \left( \langle M^2 \rangle - \langle |M| \rangle^2 \right)
+$$
+We will however work in units where \(J = 1\) and \(k_B = 1\), so these expressions simplify to and only look at per spin quantitites.
 We will use this to study phase transitions in the system as we vary the temperature \(T\). 
 
 ## Project Structure
