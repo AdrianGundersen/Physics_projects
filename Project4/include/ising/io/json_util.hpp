@@ -1,5 +1,10 @@
 // include/ising/io/json_util.hpp
 
+
+/*
+For JSON utilities like reading and parsing input files or processing output data.
+*/
+
 #pragma once
 #include "ising/model.hpp"
 #include "ising/lattice.hpp"
@@ -14,18 +19,19 @@ namespace ising::io {
     inline void model_from_json(const nlohmann::json& jm, ising::Model& m) {
         m.J = jm.value("J", 1.0); // default J=1.0
         m.double_count = jm.value("double_count", false); // default false
+        m.spin_config = jm.value("spin_config", "random"); // default random
     }
-
+    //usage: Lattice lat = lattice_from_json(lattice_json);
     inline ising::Lattice lattice_from_json(const nlohmann::json& jl) {
-        const int L = jl.at("L").get<int>();
+        const int L = jl.at("L").get<int>(); // lattice size L
         ising::Lattice lat(L);
         return lat;
     }
-
+    //usage: simparams_from_json(sim_json, lattice_json, params);
     inline void simparams_from_json(const nlohmann::json& js, const nlohmann::json& jl, ising::simParams& params) {
-        const int L = jl.at("L").get<int>();
-        const int N = L*L;
-        if (js.value("total_steps", "N") == "N") {
+        const int L = jl.at("L").get<int>(); // lattice size L
+        const int N = L*L; // number of spins N
+        if (js.value("total_steps", "N") == "N") { // number of steps in Metropolis. Default is N=L*L
             params.total_steps = N; // one sweep
         } else {
             params.total_steps = js.value("total_steps", N); // default N
@@ -39,7 +45,7 @@ namespace ising::io {
             params.Tmax = jr.value("Tmax", 2.4); // default Tmax=3.0
             params.Tsteps = jr.value("Tsteps", 10); // default Tsteps=5
         }
-        else {
+        else { // sweeps over single temperature
             params.Tmin = params.temperature;
             params.Tmax = params.temperature;
             params.Tsteps = 1;
@@ -59,8 +65,8 @@ namespace ising::io {
     }
 
     inline void observables_to_json(nlohmann::json& j, const ising::Observables& obs) {
-        j["E"] = obs.E;
-        j["M"] = obs.M;
+        j["E"] = obs.E; // total energy
+        j["M"] = obs.M; // total magnetization (absolute)
     }
 
     inline void T_to_json(nlohmann::json& jout, const nlohmann::json& jin, 
@@ -68,14 +74,15 @@ namespace ising::io {
             const double& avg_eps = 0.0, const double& avg_mabs = 0.0, 
             const double& avg_eps2 = 0.0, const double& avg_mabs2 = 0.0, 
             const double& avg_eps3 = 0.0, const double& avg_mabs3 = 0.0,
-            const double& avg_eps4 = 0.0, const double& avg_mabs4 = 0.0) {
+            const double& avg_eps4 = 0.0, const double& avg_mabs4 = 0.0) { // for each T entry
 
 
-        const int L = jin.at("lattice").at("L").get<int>();
-        const int sweeps = jin.at("simulation").value("total_sweeps", 10000);
-        const int walkers = jin.at("simulation").value("walkers", 1);
+        const int L = jin.at("lattice").at("L").get<int>(); // lattice size L
+        const int sweeps = jin.at("simulation").value("total_sweeps", 10000); // total sweeps per walker after burn-in
+        const int walkers = jin.at("simulation").value("walkers", 1); // number of walkers
 
         double tol = 1e-5; // tolerance for overwriting existing T entry
+        // should later add tolerance for overwriting based on number of sweeps and walkers as well
 
         nlohmann::json& entry = jout[std::to_string(L)]; // order L : T : values
         
@@ -99,7 +106,7 @@ namespace ising::io {
             }
         }
 
-        // no match -> create a new exact T key
+        // create new T entry if no match
         nlohmann::json& T_entry = entry[std::to_string(T)];
         T_entry["chi"]     = chi;
         T_entry["Cv"]      = heat_cap;

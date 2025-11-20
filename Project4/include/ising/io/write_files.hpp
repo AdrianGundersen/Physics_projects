@@ -1,6 +1,6 @@
 // include/ising/io/write_files.hpp
 /*
-Write results to files
+Write results to files.
 */
 
 #pragma once

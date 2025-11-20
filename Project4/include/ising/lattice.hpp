@@ -45,7 +45,7 @@ namespace ising {
             double num_spins() const { return N; } // return number of spins N
 
             // QR-code to file
-            inline void print(std::ofstream& os) const {
+            inline void print(std::ofstream& os) const { // print lattice as "QR-code"
                 for (int i = 0; i < L; ++i){
                     for (int j = 0; j < L; ++j){
                         int s = operator()(i, j);

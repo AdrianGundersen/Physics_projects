@@ -1,5 +1,8 @@
 // src/ising/metropolis.cpp
 /*
+Implements the Metropolis algorithm for the Ising model.
+Runs over a specified number of steps (standard is one sweep = N spins attempted flips).
+Also updates energy and magnetization passed by reference so one does not need to recompute them each time.
 */
 
 #include "ising/metropolis.hpp"
@@ -27,7 +30,7 @@ namespace ising{
         int i, j;
         int right, left, up, down;
         
-        int s;
+        int s; // spin at (i,j)
         int n, sn, factor_idx;        
 
         double dE;
@@ -53,11 +56,11 @@ namespace ising{
 
         
             bool accept = (dE <= 0.0); // delta eps = 0, -4J, -8J -> always accept
-            if (!accept) {
-                double r = dist_r(generator);
+            if (!accept) { // if dE > 0
+                double r = dist_r(generator); // random number (0,1)
                 accept = (r <= boltz.factors[factor_idx]); // delta eps = 4J, 8J -> accept if rng says so
             }
-            if (accept){
+            if (accept){ // flip spin and update lattice, E, M
                 lattice(i, j) = -s; // flip spin
                 E += dE;
                 M += dM;

@@ -24,12 +24,10 @@ What it does high level:
 
 
 namespace ising{
-    Result mcmc_run(const Lattice& initial_lat, const Model& model, const nlohmann::json& j) {
+    Result mcmc_run(const Model& model, const nlohmann::json& j) {
         nlohmann::json lattice_json = j.at("lattice");
         nlohmann::json sim_json = j.at("simulation");
-        nlohmann::json model_json = j.at("model");
-        std::string spin_config = model_json.at("spin_config");
-
+        std::string spin_config = model.spin_config;
        
         ising::simParams params;
         ising::io::simparams_from_json(sim_json, lattice_json, params);
@@ -59,7 +57,7 @@ namespace ising{
         }
         omp_set_num_threads(cores);
         #pragma omp parallel for schedule(static)
-        for (int i = 0; i < n_walkers; ++i) {
+        for (int i = 0; i < n_walkers; ++i) { 
             ising::Walker& walker = walkers[i];
             std::mt19937& rng_i = walker.rng;
             ising::Lattice& w_lat = walker.lat;
@@ -89,7 +87,7 @@ namespace ising{
             int total_spins = w_lat.num_spins();
             for (int s = 0; s < total_sweeps; ++s) {
                 ising::Metropolis(w_model, w_lat, params, rng_i, E, M);
-                if (s % measure_sweeps == 0) {
+                if (s % measure_sweeps == 0) { // record observables every measure_sweeps
                     eps  = E / static_cast<double>(total_spins);
                     mabs = std::abs(M / static_cast<double>(total_spins));
                     walker.eps_samples.push_back(eps);

@@ -10,7 +10,7 @@
 
 namespace ising{
     // energy
-    double total_energy(const Lattice& lat, const Model& model) {
+    double total_energy(const Lattice& lat, const Model& model) { // total energy of the lattice
         double J = model.J;
         int L = static_cast<int>(lat.size());
         double E = 0.0;
@@ -18,8 +18,8 @@ namespace ising{
         int s;
         int right, down;
         int s_down, s_right;
-        if (!double_count) {       
-        for (int i = 0; i < L; ++i) {
+        if (!double_count) {   // count each pair only once     (so only right and down)
+        for (int i = 0; i < L; ++i) { // loop over all spins
             for (int j = 0; j < L; ++j) {
                 s = lat(i, j);
                 right = (i+1) % L;
@@ -31,7 +31,7 @@ namespace ising{
             }
         } 
 
-        else {
+        else { // count each pair twice
         int s_left, s_up;
         int left, up;
         for (int i = 0; i < L; ++i) {
@@ -79,7 +79,7 @@ namespace ising{
         return M_tot / N;
     }
 
-    double average(const std::vector<double>& data) {
+    double average(const std::vector<double>& data) { // simple average
         double sum = 0.0;
         double size = data.size();
         for (double x : data) {
@@ -90,14 +90,14 @@ namespace ising{
 
     double heat_capacity(const Lattice& Lat, double eps2_avg, double eps_avg, double T) {
         int N = Lat.num_spins();
-        double C_V = N * (eps2_avg - eps_avg * eps_avg) / (T * T);
+        double C_V = N * (eps2_avg - eps_avg * eps_avg) / (T * T); // heat capacity per spin
         return C_V;
     }
 
     double susceptibility(const Lattice& Lat, double m2_avg, double m_avg, double T) {
         int N = Lat.num_spins();
-        double chi = N * (m2_avg - m_avg * m_avg) / T;
-        return chi;
+        double chi = N * (m2_avg - m_avg * m_avg) / T; // susceptibility per spin
+        return chi; 
     }
 }
 

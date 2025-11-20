@@ -34,5 +34,5 @@ namespace ising {
         Walker avg_walker; // average over all walkers as walker structure
         std::vector<Walker> all_walkers; // individual walker results
     };
-    Result mcmc_run(const Lattice& initial_lat, const Model& model, const nlohmann::json& j);
+    Result mcmc_run(const Model& model, const nlohmann::json& j);
 }

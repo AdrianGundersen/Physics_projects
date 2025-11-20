@@ -60,10 +60,10 @@ int main(int argc, char** argv) { // argc and argv to get JSON file path (argc i
 
     json j; f >> j; // parse JSON file into json object
 
-    ising::Model model;
-    ising::io::model_from_json(j.at("model"), model); // populate model
+    ising::Model model; // Ising model 
+    ising::io::model_from_json(j.at("model"), model); // populate model (J, double_count)
 
-    ising::simParams params;
+    ising::simParams params; // simulation parameters
     ising::io::simparams_from_json(j.at("simulation"), j.at("lattice"), params);
     const bool use_Trange = params.use_Trange;
     
@@ -73,9 +73,8 @@ int main(int argc, char** argv) { // argc and argv to get JSON file path (argc i
 
 
     } else {     // running the simulation for a single temperature if use_Trange is false
-        ising::Lattice initial_lat = ising::io::lattice_from_json(j.at("lattice"));
         double T = params.temperature;
-        ising::Result result = ising::mcmc_run(initial_lat, model, j);
+        ising::Result result = ising::mcmc_run(model, j);
 
         // writing setup
         nlohmann::json write_json = j.at("write_to_file");
@@ -84,7 +83,7 @@ int main(int argc, char** argv) { // argc and argv to get JSON file path (argc i
         // parameters for default filename
         //double T = j.at("simulation").at("temperature").get<double>();
         std::string spin_config = j.at("model").at("spin_config").get<std::string>();
-        int L = initial_lat.size();
+        int L = ising::io::lattice_from_json(j.at("lattice")).size();
     
         std::string default_file_name = "data/outputs/L" + std::to_string(L)
                                         + "_T=" + std::to_string(T)
@@ -145,8 +144,7 @@ int main(int argc, char** argv) { // argc and argv to get JSON file path (argc i
         jT["simulation"]["temperature"] = T;
         double start_time = omp_get_wtime();
 
-        ising::Lattice initial_lat = ising::io::lattice_from_json(jT.at("lattice"));
-        ising::Result result = ising::mcmc_run(initial_lat, model, jT);
+        ising::Result result = ising::mcmc_run(model, jT);
         ising::io::write_results_to_file(j, result, "data/outputs/tsweep_results.json", T);
 
         double end_time = omp_get_wtime();

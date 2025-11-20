@@ -10,7 +10,7 @@ For the metropolis algorithm
 
 namespace ising{
 
-    struct simParams{
+    struct simParams{ // simulation parameters
         int total_steps;
         double temperature;
         bool use_Trange;
@@ -30,7 +30,7 @@ namespace ising{
         std::string write_type;
     };
 
-    struct Boltzmannfactors{
+    struct Boltzmannfactors{ // precomputed Boltzmann factors for possible energy changes
         std::array<double, 5> factors;
 
         void set(double beta, double J){

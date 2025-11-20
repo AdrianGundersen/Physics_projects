@@ -1,6 +1,8 @@
 // apps/runtime.cpp
 /*
-To compare time for parallell and serial execution.
+To compare time for parallell and serial execution. Was run with same JSON as other runs, but by varying cores for a fixed number of walkers. 
+Only prints time, does not write any files.
+Measures time over the mcmc_run function, not the entire main function.
 */
 #include <iostream>
 #include <fstream>
@@ -41,11 +43,9 @@ int main(int argc, char** argv) { // argc and argv to get JSON file path (argc i
     ising::Model model;
     ising::io::model_from_json(j.at("model"), model); // populate model
 
-    ising::Lattice initial_lat = ising::io::lattice_from_json(j.at("lattice"));
-
 
     double start_time = omp_get_wtime();
-    ising::Result result = ising::mcmc_run(initial_lat, model, j);
+    ising::Result result = ising::mcmc_run(model, j);
 
     double end_time = omp_get_wtime();
     double elapsed_time = end_time - start_time;

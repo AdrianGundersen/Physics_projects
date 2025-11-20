@@ -1,6 +1,8 @@
 // src/ising/io/write_files.cpp
 /*
-Write results to files
+Write results to files. 
+Per now only txt and json formats are supported. 
+Everything is written in one big write_results_to_file function, but could be split up for easier readability.
 */
 #include <string>
 #include <vector>
@@ -22,30 +24,30 @@ void write_results_to_file(const nlohmann::json& jin,
                                   const double T) {
     const nlohmann::json& jwrite = jin.value("write_to_file", nlohmann::json::object()); // get "write" section
 
-    const std::string type   = jwrite.value("type", "txt");
-    const std::string delim  = jwrite.value("delimiter", ",");
-    const int precision      = jwrite.value("precision", 10);
-    const bool header        = jwrite.value("header", true);
-    const std::string mode   = jwrite.value("average_or_concatenate", "concatenate");
+    const std::string type   = jwrite.value("type", "txt"); // txt or json
+    const std::string delim  = jwrite.value("delimiter", ","); // only relevant for txt files
+    const int precision      = jwrite.value("precision", 10); // how many digits to write for floating point numbers
+    const bool header        = jwrite.value("header", true); // only relevant for txt files
+    const std::string mode   = jwrite.value("average_or_concatenate", "concatenate"); // write average walker or concatenate all walkers
     const std::vector<std::string> observables =
-        jwrite.value("observables", std::vector<std::string>{"energy_per_spin", "magnetization_per_spin"});
+        jwrite.value("observables", std::vector<std::string>{"energy_per_spin", "magnetization_per_spin"}); // which observables to write to file (only relevant for txt files)
 
-    if (type != "txt" && type != "json") {
+    if (type != "txt" && type != "json") { // unsupported file type
         std::cerr << "Unknown file type: " << type << "\n";
         return;
     }
-    if (type == "txt") {
+    if (type == "txt") { // write to txt file
         std::ofstream ofile(filename);
-        if (!ofile) {
+        if (!ofile) { 
             std::cerr << "Could not open file for writing: " << filename << "\n";
             return;
         }
 
-        ofile << std::fixed << std::setprecision(precision);
+        ofile << std::fixed << std::setprecision(precision); 
 
-        auto write_row = [&](const std::vector<double>& eps, const std::vector<double>& mabs, int i) {
-            for (std::size_t k = 0; k < observables.size(); ++k) { // int did not work size_t needed as observables.size() is type size_t
-                const std::string& obs = observables[k];
+        auto write_row = [&](const std::vector<double>& eps, const std::vector<double>& mabs, int i) { // lambda to write one row
+            for (std::size_t k = 0; k < observables.size(); ++k) { // size_t needed as observables.size() is type size_t
+                const std::string& obs = observables[k]; // which observable to write
                 if (obs == "Cv" || obs == "heat_capacity" || obs == "chi" || obs == "susc" || obs == "susceptibility") {
                     std::cerr << "Observable " << obs << " not supported in txt output. Use json output instead.\n";
                 }
@@ -62,9 +64,9 @@ void write_results_to_file(const nlohmann::json& jin,
             ofile << "\n";
         };
 
-        if (header) {
+        if (header) { // writes header
             for (std::size_t k = 0; k < observables.size(); ++k) {
-                ofile << "# " << observables[k];
+                ofile << "# " << observables[k]; // comments start with # (assumes Python)
                 if (k + 1 < observables.size()) ofile << delim;
             }
             ofile << "\n";
@@ -86,14 +88,14 @@ void write_results_to_file(const nlohmann::json& jin,
         ofile.close();
     } // end type txt
 
-    if (type == "json") {
-        nlohmann::json jout = nlohmann::json::object();
-        if (std::ifstream in{filename}; in.good()) {
+    if (type == "json") { // write to json file
+        nlohmann::json jout = nlohmann::json::object(); // output json object
+        if (std::ifstream in{filename}; in.good()) { // reads existing file to preserve previous entries
             try { in >> jout; } catch (...) { /* leave as empty object */ }
         } // copied from chatGPT (it never worked for me :( ))
-        if (mode == "average") {
-            std::cerr << "Warning! Not recommended.\n";
-            const ising::Walker& w = result.avg_walker;
+        if (mode == "average") { // write average walker data to json
+            std::cerr << "Warning! Not recommended.\n"; // warn user that this is not recommended 
+            const ising::Walker& w = result.avg_walker; 
         // std::cout << "first epsilon of avg walker: " << w.eps_samples[0] << "\n";
         std::vector<double> eps = w.eps_samples;
         std::vector<double> mabs = w.mabs_samples;
@@ -121,22 +123,22 @@ void write_results_to_file(const nlohmann::json& jin,
             double eps_3_sum = 0.0; double mabs_3_sum = 0.0;
             double eps4_sum = 0.0; double mabs4_sum = 0.0;
             int count = 0;
-            for (const auto& w : result.all_walkers) {
-                for (const auto& e : w.eps_samples) {
+            for (const auto& w : result.all_walkers) { // sum over all walkers
+                for (const auto& e : w.eps_samples) { // sum over all samples
                     eps_sum += e;
                     eps2_sum += e * e;
                     eps_3_sum += e * e * e;
                     eps4_sum += e * e * e * e;
                     count += 1;
                 }
-                for (const auto& m : w.mabs_samples) {
+                for (const auto& m : w.mabs_samples) { // sum over all samples
                     mabs_sum += m;
                     mabs2_sum += m * m;
                     mabs_3_sum += m * m * m;
                     mabs4_sum += m * m * m * m;
                 }
             }
-
+            // calculate averages
             double avg_eps = eps_sum / count;
             double avg_mabs = mabs_sum / count;
             double avg_eps2 = eps2_sum / count;
@@ -146,12 +148,14 @@ void write_results_to_file(const nlohmann::json& jin,
             double avg_eps4 = eps4_sum / count;
             double avg_mabs4 = mabs4_sum / count;
 
+            // calculate heat capacity and susceptibility
             const double Cv   = ising::heat_capacity(result.all_walkers.front().lat, avg_eps2, avg_eps, T);
             const double chi = ising::susceptibility(result.all_walkers.front().lat, avg_mabs2, avg_mabs, T);
-            ising::io::T_to_json(jout, jin, T, Cv, chi, avg_eps, avg_mabs, avg_eps2, avg_mabs2, avg_eps3, avg_mabs3, avg_eps4, avg_mabs4);
+
+            ising::io::T_to_json(jout, jin, T, Cv, chi, avg_eps, avg_mabs, avg_eps2, avg_mabs2, avg_eps3, avg_mabs3, avg_eps4, avg_mabs4); // write to json object
 
             std::ofstream out(filename);
-            out << std::setw(jwrite.value("indent", 2)) << jout;
+            out << std::setw(jwrite.value("indent", 2)) << jout; // write to json file
             out.close();
         }
     }
