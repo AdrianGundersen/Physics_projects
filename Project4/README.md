@@ -18,43 +18,67 @@ We will use this to study phase transitions in the system as we vary the tempera
 ## Project Structure
 ```text
 Project4/
-├── Makefile                 # Build targets (consider switching to CMake if desired)
+├── Makefile                 # Build targets for simulators/plotting helpers
 ├── README.md                # Project overview and quickstart
-├── PROJECT_PLAN.md          # Internal project plan (scope, timeline, tasks)
-├── configs/                 # JSON configs for different runs
-│   └── ...
-├── data/                    # Numerical outputs, logs, tables
-│   └── auto-generated data files
-├── figs/                    # Plots and figures generated from results
-│   └── (auto-generated images)
-├── include/                 # Header files
-│   ├── ising/
-│   │   ├── io/
-│   │   │   ├── json_util.hpp # JSON helper functions.
-│   │   │   └── write_files.hpp 
-│   │   ├── lattice.hpp 
-│   │   └── metropolis.hpp
-│   └── 
-├── src/                     # Implementation files
-│   ├── ising/
-│   |   ├── io/
-│   |   │   └── write_files.cpp
-│   |   ├── lattice.cpp
-│   |   ├── metropolis.cpp
-│   |   ├── model.cpp
-│   |    ├── observables.cpp
-│   └── omp_rng.cpp
-├── apps/                    # Executables running JSON configs
-│   ├── Ln.cpp               # Main application for lattice size Ln
-│   ├── runtime.cpp          # Compare runtime of parallel vs serial
-│   └── validate2x2.cpp      # Validate against analytical 2x2 solution
-└── Plotting/                # Plotting scripts (Python)
-    ├── L20.py               # Plots results for L = 20 lattice
-    ├── plot_cv_chi.py       # Plots T vs Cv and Chi and marks Tc
-    ├── 2x2.py               # Plots 2x2 validation results
-    └── runtime.py           # Compares runtime of parallel vs serial
-    
+├── PROJECT_PLAN.md          # Internal scope/timeline notes
+├── configs/                 # JSON configs for reproducible runs
+│   ├── 2x2_test.json        # Analytical validation
+│   ├── L20.json             # Burn-in diagnostics
+│   ├── multiple_walkers.json # Scaling test (cores x walkers)
+│   └── t_sweep.json         # Temperature sweep definition
+├── data/                    # Generated artifacts (git-ignored)
+│   ├── figures/             # Saved plots
+│   └── outputs/             # Time series, QR lattices, JSON aggregates
+├── include/                 # C++ headers
+│   ├── omp_rng.hpp
+│   └── ising/
+│       ├── lattice.hpp
+│       ├── metropolis.hpp
+│       ├── mcmc_run.hpp
+│       ├── model.hpp
+│       ├── observables.hpp
+│       └── io/
+│           ├── json_util.hpp
+│           └── write_files.hpp
+├── src/                     # C++ implementations
+│   ├── omp_rng.cpp
+│   └── ising/
+│       ├── lattice.cpp
+│       ├── metropolis.cpp
+│       ├── mcmc_run.cpp
+│       ├── observables.cpp
+│       └── io/
+│           └── write_files.cpp
+├── apps/                    # Entry-point executables
+│   ├── Ln.cpp               # Production simulator (single T or sweeps)
+│   └── runtime.cpp          # Timing harness for scaling studies
+├── plotting/                # Python analysis + visualization
+│   ├── 2x2.py               # Numerical vs analytical L=2 comparison
+│   ├── L20.py               # Burn-in inspection for L=20 data
+│   ├── exp_vals.py          # CLI helper for averaged observables/errors
+│   ├── plot_cv_chi.py       # Cv/chi curves and Tc extrapolation
+│   ├── plot_speedup.py      # Parallel speedup plot from measurements
+│   └── qr_code.py           # Convert saved lattices to QR-style images
+├── bin/                     # Compiled executables (generated)
+│   ├── Ln
+│   └── runtime
+└── test/
+    └── JSON_example/        # Reference output / fixtures
 ```
+
+## Plot Config overview
+
+All other parameters like `measure_sweeps: 1` and `seed: 67` are fixed for all simulations. `"burn_in_sweeps": 10000` unless said otherwise
+
+| Plot/Script & App                  | Config file(s)             | Lattice size(s) | Temperature setup                              | Walkers x threads                 | Monte Carlo cycles (`total_sweeps`) | Notes / TODO |
+|-----------------------------------|----------------------------|-----------------|-----------------------------------------------|-----------------------------------|-------------------------------------|--------------|
+| `plotting/L20.py` + `Ln.cpp`      | `configs/L20.json`         | 20              | Single-T runs at 1.0 and 2.4                   | 1 x 1                             | 1e6                  | Burn-in traces + histograms |
+| `plotting/2x2.py` + `Ln.cpp`      | `configs/2x2_test.json`    | 2               | Both `use_Trange=true` and `false`, \(T\in[1,4]\) | 1 x 1                             | 1e6 and 1e7                         | Compare numerics vs analytical solution |
+| `plotting/plot_cv_chi.py` + `Ln.cpp` | `configs/t_sweep.json`   | 5-120           | `use_Trange=true`, see `data/tsweep_finale.json` | 12 x 12                           | see `data/tsweep_finale.json`                | Extract Cv/chi peaks + Tc estimate |
+| `plotting/plot_speedup.py` + `apps/runtime.cpp` | `configs/multiple_walkers.json` | 20 | Single T                                      | 48 walkers, threads \([1,16])     | 1e4, no burn-in.                                 | Update runtimes/core counts manually |
+| `plotting/qr_code.py` + `Ln.cpp`  | `configs/multiple_walkers.json` w/ `qr=true` | 40 | Single T = 2.377                               | 12 x 12                           | 1e6               | Produces QR-style lattice snapshot |
+
+
 
 ## Installation and Dependencies
 
@@ -88,17 +112,18 @@ make help
 The executables in the `apps/` folder read parameters from JSON config files located in the `configs/` folder. You can create your own config files by copying and modifying the existing templates. The argument `use_Trange` tells the program to run for a single temeprature of not. 
 
 **Example**
+How we did the first search for peaks at $L=20$.
 ```json
 {
     "model": // Model parameters
     {
         "J": 1.0, // Interaction strength
         "double_count" : false, // Whether to double count energy
-        "spin_config": "all_up" // Initial spin configuration: "all_up", "all_down", "random"
+        "spin_config": "random" // Initial spin configuration: "all_up", "all_down", "random"
     },
     "lattice": // Lattice parameters
     {
-        "L" : 2 // Lattice size (LxL)
+        "L" : 20 // Lattice size (LxL)
     },
     "simulation": // Simulation parameters (Metropolis)
     {
@@ -111,17 +136,18 @@ The executables in the `apps/` folder read parameters from JSON config files loc
             "Tsteps": 11    // Number of temerature steps from Tmin to Tmax
         },
         "total_steps": "N", // Total Monte Carlo steps ("N" means number af spins but can also be any integer)
-        "measure_sweeps": 10, // Measure observables every n sweeps
-        "total_sweeps": 3000, // Total number of sweeps after burn-in
-        "cores": 4, // Number of CPU cores to use
-        "walkers": 4, // Number of independent walkers (should be = n * cores for best performance)
+        "burn_in_sweeps": 10000, // Burn-in-cycles before starting mearuring
+        "measure_sweeps": 1, // Measure observables every n sweeps
+        "total_sweeps": 1e6, // Total number of sweeps after burn-in
+        "cores": 12, // Number of CPU cores to use
+        "walkers": 12, // Number of independent walkers (should be = n * cores for best performance)
         "qr": false // Bool to write lattice spins to file, only works if "use_Trange": false.
     },
     "write_to_file": 
     {
         "enabled": true, // whether to write results to file
-        "observables": ["e", "m"], // what observables to write [e, m] for txt [cv, chi] for json
-        "type": "txt", // file type: "txt", "json" (only txt & json supported currently)
+        "observables": ["Cv", "chi"], // what observables to write [e, m] for txt [cv, chi] for json
+        "type": "json", // file type: "txt", "json" (only txt & json supported currently)
         "delimiter": ",", // delimiter for txt files
         "precision": 6, // number of decimal places
         "output_filename": "default", // output filename (if "default", uses autogenerated name)
@@ -155,9 +181,9 @@ make <target>
 ### Run
 To run the code locally, use:
 ```bash 
-make run-2x2 JSON=configs/2x2_test.json
+make run
 ```
-
+and the cinfig file `multiple_walkers.json` we be automatically used.
 
 **Raspberry Pi**
 We have also used a raspberry pi 5 for extra computational power. To run raspberry pi, use:
@@ -174,10 +200,21 @@ Depending on your version and OS, you might need to change `PI_ARCH` variable in
 
 ### Plotting
 
-### What different scripts do:
-- `L20.py`: Plots results for lattice size L =20. Mainly used to look at burn-in.
-- `plot_cv_chi.py`: Plots specific heat capacity and magnetic susceptibility vs temperature for different lattice sizes, marking the critical temperature.
-- `runtime.py`: Compares runtime of parallel vs serial implementation of Metropolis algorithm.
+### What different scripts do
+
+**Simulation apps**
+- `apps/Ln.cpp`: Main entry point for Ising simulations; reads a JSON config, runs either a single-temperature Metropolis sweep or a full temperature range, writes observables, and optionally stores a QR-style lattice snapshot.
+- `apps/runtime.cpp`: Minimal harness that runs one simulation from a JSON config and prints elapsed time together with the requested OpenMP core count—used for scaling studies and sanity checks.
+
+**Plotting and analysis utilities (Python)**
+- `plotting/L20.py`: Inspects burn-in for \(L=20\) runs by plotting raw energies, running means, and post burn-in histograms for different initial spin configurations.
+- `plotting/plot_cv_chi.py`: Aggregates JSON sweep outputs for many lattice sizes, plots \(C_V(T)\) and \(\chi(T)\), and extracts peak locations/uncertainties used to estimate the critical temperature.
+- `plotting/2x2.py`: Compares \(L=2\) simulations against the analytical solution; tracks running relative errors, observable-vs-temperature curves, and saves all diagnostic figures.
+- `plotting/exp_vals.py`: CLI helper (`python exp_vals.py <file> <L> <T>`) that reads a two-column data file, computes averaged observables, and reports relative errors vs the exact \(L=2\) solution.
+- `plotting/plot_speedup.py`: Uses hard-coded timing measurements to plot measured vs ideal parallel speedup and prints the corresponding time-saving factor.
+- `plotting/qr_code.py`: Turns a saved lattice snapshot (written when `qr=true`) into a black/white QR-style image for visualizing spin domains.
+
+## Important parameters for reproducability
 
 
 ## Future work
