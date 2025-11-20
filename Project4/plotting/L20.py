@@ -21,7 +21,7 @@ plt.rcParams.update({
 # Finds project root
 ROOT = Path(__file__).resolve().parents[2]
 
-fig_dir = ROOT / "data/figures/L20"
+fig_dir = ROOT / "Project4/data/figures/L20"
 fig_dir.mkdir(parents=True, exist_ok=True)
 
 def load_data(T, spin_config):
@@ -34,7 +34,7 @@ def load_data(T, spin_config):
     Returns:
         _type_: _description_
     """    
-    p = ROOT / f"data/outputs/L20_T={T:0.6f}_spin={spin_config}.txt"
+    p = ROOT / f"Project4/data/outputs/L20_T={T:0.6f}_spin={spin_config}.txt"
     data = np.genfromtxt(
         p,
         delimiter=',',
@@ -51,10 +51,6 @@ def load_data(T, spin_config):
 def cummean(x):
     return np.cumsum(x) / np.arange(1, len(x) + 1)
 
-
-# Spin configs and temps
-spin_configs = ["all_up", "all_down", "random"]
-temperatures = [1.0, 2.40]  # flere kan legges til
 
 epsT10_u = load_data(1.0, "random")[:, 0]
 epsT10_o = load_data(1.0, "all_up")[:, 0]
