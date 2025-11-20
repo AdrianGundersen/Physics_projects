@@ -31,7 +31,7 @@ fig_dir.mkdir(parents=True, exist_ok=True)
 L = np.array([5, 7, 10, 15, 20, 30, 40, 50, 60, 70, 80, 90, 100, 120])
 min_sweeps = 1e5 + 1
 min_sweeps_fit = 1e5
-json_path = ROOT / "Project4/data/outputs/tsweep_finale.json"
+json_path = ROOT / "Project4/data/tsweep_finale.json"
 
 plot_all = False # whether to plot
 
