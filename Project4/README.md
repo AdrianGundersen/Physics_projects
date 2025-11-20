@@ -25,8 +25,9 @@ $$
 $$
 \chi_s = \frac{1}{N k_B T} \left( \langle M^2 \rangle - \langle |M| \rangle^2 \right)
 $$
-We will however work in units where \(J = 1\) and \(k_B = 1\), so these expressions simplify to and only look at per spin quantitites.
-We will use this to study phase transitions in the system as we vary the temperature \(T\). 
+
+We will however work in units where $J = 1$ and $k_B = 1$, so these expressions simplify to and only look at per spin quantitites.
+We will use this to study phase transitions in the system as we vary the temperature $T$. 
 
 ## Project Structure
 ```text
