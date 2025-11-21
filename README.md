@@ -19,7 +19,9 @@ This repository contains the solutions to projects from **FYS3150 – Computatio
 ---
 - [Project 4: The Ising Model](./Project4)  
   Simulating the 2D Ising model using the Metropolis algorithm.
-  
+---
+- [Project 5: Double Slit Experiment](./Project5)  
+  Simulating the double slit experiment using Crank-Nicolson method on the 2D time-dependent Schrödinger equation.
 ---
 - [Rapports](./Rapports)  
   Contains all the reports for the projects in PDF format.
