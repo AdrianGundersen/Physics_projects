@@ -1,0 +1,22 @@
+{
+    "grid" : {
+        "M" : 10,
+        "L" : 1
+    },
+    "simulation" : {
+        "steps" : 1000,
+        "time_step" : 0.01
+    },
+    "output" : {
+        "file_name" : "default"
+    },
+    "solver" : {
+        "method" : "jacobi",
+        "tolerance" : 1e-5,
+        "max_iterations" : 10000
+    },
+    "potential" : {
+        "type" : "harmonic",
+        "frequency" : 1.0
+    }
+}
