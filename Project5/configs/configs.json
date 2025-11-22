@@ -1,22 +1,42 @@
 {
     "grid" : {
-        "M" : 10,
+        "M" : 200,
         "L" : 1
     },
     "simulation" : {
-        "steps" : 1000,
-        "time_step" : 0.01
+        "N" : 200,
+        "dt" : 2.5e-5,
+        "xC" : 0.25,
+        "sigma_x" : 0.05,
+        "px" : 200,
+        "yC" : 0.5,
+        "py" : 0,
+        "sigma_y" : 0.2
+
     },
     "output" : {
-        "file_name" : "default"
+        "file_name" : "output/probability_density_harmonic.txt"
     },
     "solver" : {
         "method" : "jacobi",
-        "tolerance" : 1e-5,
+        "tolerance" : 1e-4,
         "max_iterations" : 10000
     },
     "potential" : {
-        "type" : "harmonic",
-        "frequency" : 1.0
+        "type" : "none",
+        "frequency" : 1.0,
+        "V0" : 1e10
+    },
+    "slits" : {
+        "enabled" : false,
+        "wall_center" : 0.5,
+        "wall_thickness" : 0.02,
+        "slit_aperture" : 0.05,
+        "num_slits" : 2,
+        "slit_starts" : [0.4, 0.6],
+        "slit_ends" : [0.45, 0.65]
+    },
+    "parallelization" : {
+        "threads" : 12
     }
 }

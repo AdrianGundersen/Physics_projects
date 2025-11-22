@@ -34,15 +34,16 @@ int main(int argc, char** argv) { // argc and argv to get JSON file path (argc i
         return 1;
     }
 
-    json j; f >> j; // parse JSON file into json object
+    nlohmann::json j; f >> j; // parse JSON file into json object
 
     ds::simParams sim_params;
     ds::Grid grid(0,0); // temporary initialization
     ds::SolverParams solver_params;
     ds::PotentialParams potential_params;
+    std::string filename;
 
-    ds::params_from_json(j, sim_params, grid, solver_params, potential_params);
+    ds::params_from_json(j, sim_params, grid, solver_params, potential_params, filename);
+    ds::simulation(sim_params, grid, solver_params, potential_params, filename);
 
-    ds::simulation(sim_params, grid, solver_params, potential_params);
-
+    return 0;
 }

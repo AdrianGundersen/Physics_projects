@@ -9,5 +9,6 @@ namespace ds {
         ds::rvec values;
     };
 
-    void initialize_potential(ds::Potential& V, const ds::Grid& grid, const ds::PotentialParams& potential_params);
+    void initialize_potential(ds::Potential& V, const ds::Grid& grid, 
+                            const ds::PotentialParams& potential_params);
 } // namespace ds
