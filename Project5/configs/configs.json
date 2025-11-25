@@ -4,7 +4,7 @@
         "L" : 1
     },
     "simulation" : {
-        "N" : 200,
+        "N" : 400,
         "dt" : 2.5e-5,
         "xC" : 0.25,
         "sigma_x" : 0.05,
@@ -15,20 +15,21 @@
 
     },
     "output" : {
-        "file_name" : "output/probability_density_harmonic.txt"
+        "file_name" : "output/probability_density.txt",
+        "file_name_wavefunction" : "output/wavefunction.txt"
     },
     "solver" : {
         "method" : "jacobi",
         "tolerance" : 1e-4,
-        "max_iterations" : 10000
+        "max_iterations" : 2000
     },
     "potential" : {
         "type" : "none",
         "frequency" : 1.0,
         "V0" : 1e10
     },
-    "slits" : {
-        "enabled" : false,
+    "slits" : { 
+        "enabled" : true,
         "wall_center" : 0.5,
         "wall_thickness" : 0.02,
         "slit_aperture" : 0.05,

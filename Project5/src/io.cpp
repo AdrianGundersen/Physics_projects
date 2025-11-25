@@ -10,7 +10,7 @@ namespace ds {
 
     void params_from_json(const nlohmann::json& j, ds::simParams& params, 
                         ds::Grid& grid, ds::SolverParams& solver_params, 
-                        ds::PotentialParams& potential_params, std::string& filename) {
+                        ds::PotentialParams& potential_params, std::string& filename, std::string& filename_wavefunction) {
         try {
             // Simulation parameters
             nlohmann::json simulation_json = j.at("simulation");
@@ -51,6 +51,12 @@ namespace ds {
 
             // Filename
             filename = j.at("output").at("file_name").get<std::string>(); 
+            filename_wavefunction = j.at("output").at("file_name_wavefunction").get<std::string>();
+
+            // Paralellization parameters
+            nlohmann::json parallelization_json = j.at("parallelization");
+            params.threads = parallelization_json.at("threads").get<ds::Index>();
+
         } catch (const nlohmann::json::exception& e) { // if mismatch or missing
             std::cerr << "Error reading JSON parameters: " << e.what() << std::endl;
             throw;
@@ -59,7 +65,11 @@ namespace ds {
 
     void write_prob_to_file(const std::string& filename, const ds::rvec& prob_density, Index timestep) {
         std::ofstream file;
-        file.open(filename, std::ios::app);
+        std::ios_base::openmode mode = std::ios::app;
+        if (timestep == 0) {
+            mode = std::ios::trunc; // overwrite file on first timestep
+        }
+        file.open(filename, mode);
         if (!file.is_open()) {
             std::cerr << "Error opening file for writing: " << filename << std::endl;
             return;
@@ -68,6 +78,25 @@ namespace ds {
         file << "Timestep " << timestep << ":\n";
         for (const auto& val : prob_density) {
             file << val << "\n";
+        }
+        file << "\n"; // new time step
+        file.close();
+    }
+    void write_wavefunction_to_file(const std::string& filename, const ds::cvec& wavefunction, Index timestep) {
+        std::ofstream file;
+        std::ios_base::openmode mode = std::ios::app;
+        if (timestep == 0) {
+            mode = std::ios::trunc; // overwrite file on first timestep
+        }
+        file.open(filename, mode);
+        if (!file.is_open()) {
+            std::cerr << "Error opening file for writing: " << filename << std::endl;
+            return;
+        }
+
+        file << "Timestep " << timestep << ":\n";
+        for (const auto& val : wavefunction) {
+            file << val.real() << "," << val.imag() << "\n";
         }
         file << "\n"; // new time step
         file.close();

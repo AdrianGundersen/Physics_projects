@@ -9,8 +9,8 @@ def read_prob_file(filename):
     Read file with blocks of the form
 
     Timestep 0:
-    v_0
-    v_1
+    Re0, Im0,
+    Re_1, Im_1,
     ...
 
     separated by blank lines.
@@ -18,6 +18,7 @@ def read_prob_file(filename):
     """
     blocks = []
     current_vals = []
+    grid_size = 200  # adjust if needed
 
     with open(filename, "r") as f:
         for line in f:
@@ -31,7 +32,14 @@ def read_prob_file(filename):
             if line.startswith("Timestep"):
                 continue
 
-            current_vals.append(float(line))
+            #read values
+            parts = line.split(",")
+            if len(parts) != 2:
+                raise ValueError(f"Line does not have two comma-separated values: {line}")
+            re = float(parts[0])
+            im = float(parts[1])
+            psi2 = (re*re + im*im) / (grid_size*grid_size)  # normalize here
+            current_vals.append(psi2)
 
     if current_vals:
         blocks.append(current_vals)
@@ -129,7 +137,7 @@ def animate_prob(prob_fields, dt=1.0, frame_stride=1):
 
 
 if __name__ == "__main__":
-    filename = "output/probability_density_harmonic.txt"  # adjust path if needed
+    filename = "output/wavefunction.txt"  # adjust path if needed
     prob_fields = read_prob_file(filename)
 
     # Example: static plot of a single timestep

@@ -18,6 +18,7 @@ Everything else is handled under the hood in other files.
 #include <iostream>
 #include <nlohmann/json.hpp>
 #include <fstream>
+#include <omp.h>
 
 
 int main(int argc, char** argv) { // argc and argv to get JSON file path (argc is number of arguments, argv is array of arguments)
@@ -41,9 +42,21 @@ int main(int argc, char** argv) { // argc and argv to get JSON file path (argc i
     ds::SolverParams solver_params;
     ds::PotentialParams potential_params;
     std::string filename;
+    std::string filename_wavefunction;
 
-    ds::params_from_json(j, sim_params, grid, solver_params, potential_params, filename);
-    ds::simulation(sim_params, grid, solver_params, potential_params, filename);
+    double start_time = omp_get_wtime();
+    ds::params_from_json(j, sim_params, grid, solver_params, potential_params, filename, filename_wavefunction);
+    ds::simulation(sim_params, grid, solver_params, potential_params, filename, filename_wavefunction);
+
+    double end_time = omp_get_wtime();
+    double total_time = end_time - start_time;
+    int hours = static_cast<int>(total_time) / 3600;
+    int minutes = (static_cast<int>(total_time) % 3600) / 60;
+    int seconds = static_cast<int>(total_time) % 60;
+    std::cout << "Total simulation time: " 
+        << std::setfill('0') << std::setw(2) << hours << ":" 
+        << std::setw(2) << minutes << ":" 
+        << std::setw(2) << seconds << "\n";
 
     return 0;
 }

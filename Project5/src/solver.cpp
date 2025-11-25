@@ -8,6 +8,7 @@
 #include <cmath>
 #include <complex>
 #include <iostream>
+#include <omp.h>
 
 namespace ds {
     void initialize_wavefunction(ds::solver::SolverData& data,
@@ -26,6 +27,7 @@ namespace ds {
         ds::Real norm_factor = 0.0;
 
         // Fill v_curr with unormalized Gaussian
+        //#pragma omp parallel for collapse(2) reduction(+:norm_factor)
         for (ds::Index i = 0; i < M; ++i) {
              const ds::Real x = static_cast<ds::Real>(i) * h;
              for (ds::Index j = 0; j < M; ++j) {
@@ -51,6 +53,7 @@ namespace ds {
         }
         norm_factor = std::sqrt(norm_factor * h * h); // normalization factor
         if (norm_factor > 0.0) {
+            #pragma omp parallel for
             for (ds::Index k = 0; k < grid.size(); ++k) {
                 data.v_curr[k] /= norm_factor;
             }
@@ -59,6 +62,7 @@ namespace ds {
 
     void probability_density(const ds::solver::SolverData& data, ds::rvec& prob_density, const ds::Grid& grid) { // |psi|^2
         const ds::Index size = data.v_curr.size();
+        #pragma omp parallel for
         for (ds::Index k = 0; k < size; ++k) {
             prob_density[k] = std::norm(data.v_curr[k]) * grid.h * grid.h; // multiply by area element
         }
@@ -116,6 +120,7 @@ namespace ds::solver {
         const Complex I(0.0, 1.0);
         const Complex lambda = I * (dt / (2.0 * h * h));
 
+        #pragma omp parallel for collapse(2)
         for (Index i = 0; i < M; ++i) {
             for (Index j = 0; j < M; ++j) { 
                 const Index k = grid.idx(i, j); // idx in array
@@ -144,31 +149,32 @@ namespace ds::solver {
 
     void jacobi_solve(SolverData& data, const ds::Grid& grid, Index max_iters, Real tol) {
         const Index M = grid.M;
-
-        cvec& v = data.v_next; // next solution
+        
         const cvec& rhs = data.rhs; // right-hand side
+        cvec& v = data.v_next; // next solution
         const cvec& invD = data.invD; // precomputed inverse diagonal
-
+        
         if (v.size() != data.v_curr.size()) {
             v = data.v_curr; // initialize v_next if not same size (first call)
         }
         cvec v_old = v; // store old solution
-
+        
         for (Index iter = 0; iter < max_iters; ++iter) {
             v_old = v; // store old solution
             Real max_diff = tol + 1.0; // maximum of all differences
-
-        for (Index i = 1; i < M - 1; ++i) { // skip boundaries
-            for (Index j = 1; j < M - 1; ++j) { // skip boundaries
+            
+            #pragma omp parallel for collapse(2) reduction(max:max_diff)
+            for (Index i = 1; i < M - 1; ++i) { // skip boundaries
+                for (Index j = 1; j < M - 1; ++j) { // skip boundaries
                     const Index k = grid.idx(i, j);
                     
-
+                    
                     const Complex sumN = // sum of neighbors
                     v_old[grid.idx(i + 1, j)] +
                     v_old[grid.idx(i - 1, j)] +
                     v_old[grid.idx(i, j + 1)] +
                     v_old[grid.idx(i, j - 1)];
-
+                    
                     const Complex new_val = invD[k] * (rhs[k] - data.beta * sumN);
                     const Real diff = std::abs(new_val - v_old[k]);
                     if (diff > max_diff) {
@@ -183,38 +189,44 @@ namespace ds::solver {
         }
     }
     void crank_nicolson_step(SolverData& data,
-                             const ds::simParams& params,
-                             const ds::Grid& grid,
-                             const ds::Potential& V,
-                             const ds::SolverParams& solver_params) 
-    {
-        build_RHS(data, params, grid, V);
-        data.v_next = data.v_curr;
-        jacobi_solve(data, grid, solver_params.max_iters, solver_params.tol);
-        data.v_curr.swap(data.v_next);
-    }
-} // namespace ds::solver
-
-namespace ds {
-
-    void simulation(const simParams& sim_params,
-                    const Grid& grid,
-                    const SolverParams& solver_params,
-                    PotentialParams& potential_params,
-                    const std::string& filename)
-    {
-        Potential V;
-        initialize_potential(V, grid, potential_params);
-
-        solver::SolverData data;
-        solver::precompute_coeff(data, sim_params, grid, V);
-        ds::initialize_wavefunction(data, grid, sim_params);
-
+        const ds::simParams& params,
+        const ds::Grid& grid,
+        const ds::Potential& V,
+        const ds::SolverParams& solver_params) 
+        {
+            build_RHS(data, params, grid, V);
+            data.v_next = data.v_curr;
+            jacobi_solve(data, grid, solver_params.max_iters, solver_params.tol);
+            data.v_curr.swap(data.v_next);
+        }
+    } // namespace ds::solver
+    
+    namespace ds {
+        
+        void simulation(const simParams& sim_params,
+            const Grid& grid,
+            const SolverParams& solver_params,
+            PotentialParams& potential_params,
+            const std::string& filename,
+            const std::string& filename_wavefunction)
+            {
+                Potential V;
+                initialize_potential(V, grid, potential_params);
+                
+                solver::SolverData data;
+                solver::precompute_coeff(data, sim_params, grid, V);
+                ds::initialize_wavefunction(data, grid, sim_params);
+                
+                omp_set_num_threads(sim_params.threads);
         ds::rvec prob_density(grid.size()); // allocates
         for (Index n = 0; n < sim_params.N; ++n) {
             solver::crank_nicolson_step(data, sim_params, grid, V, solver_params);
             ds::probability_density(data, prob_density, grid);
-            ds::write_prob_to_file(filename, prob_density, n);
+            ds::write_wavefunction_to_file(filename_wavefunction, data.v_curr, n);
+
+            //uncomment to directryly calculate and write probability density to file
+            //ds::write_prob_to_file(filename, prob_density, n);
+            
         }
     }
 

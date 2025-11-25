@@ -38,6 +38,7 @@ namespace ds {
         Real yC; // initial y center
         Real py; // initial y momentum
         Real sigma_y; // initial y width
+        Index threads; // number of threads for parallelization
     };
 
     struct SolverParams { // only jacobi for now
