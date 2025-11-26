@@ -84,11 +84,11 @@ namespace ds {
     }
     void write_wavefunction_to_file(const std::string& filename, const ds::cvec& wavefunction, Index timestep) {
         std::ofstream file;
-        std::ios_base::openmode mode = std::ios::app;
-        if (timestep == 0) {
+        std::ios_base::openmode mode = std::ios::app; // append mode
+        if (timestep == 0) { // if first timestep overwrite
             mode = std::ios::trunc; // overwrite file on first timestep
         }
-        file.open(filename, mode);
+        file.open(filename, mode); // append mode
         if (!file.is_open()) {
             std::cerr << "Error opening file for writing: " << filename << std::endl;
             return;

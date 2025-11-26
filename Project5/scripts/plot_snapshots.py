@@ -127,7 +127,9 @@ def plot_re_im_timestep(psi_fields, t_index=0, dt=1.0, dx=1.0):
 
 
 if __name__ == "__main__":
-    filename = "output/wavefunction.txt"  # adjust path if needed
+    filename = "output/wavefunction_slit_p8.txt"  # adjust path if needed
+    filename_p9_single_slit = "output/wavefunction_single_slit.txt"
+    
     psi_fields = read_wavefile(filename)
     
     dt = 2.5e-5  # time step size in seconds

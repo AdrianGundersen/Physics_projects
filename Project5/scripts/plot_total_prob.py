@@ -87,7 +87,9 @@ def plot(prob_fields):
     return total_probs
 
 if __name__ == "__main__":
-    filename = "output/wavefunction.txt" 
-    prob_fields = read_prob_file(filename)
-    total_probs = plot(prob_fields)
-    print("Total probabilities at each timestep:", total_probs)
+    filename_with_slit = "output/wavefunction_slit_p7.txt"
+    filename_no_slit = "output/wavefunction_no_slit.txt"
+    prob_fields_with_slit = read_prob_file(filename_with_slit)
+    total_probs_with_slit = plot(prob_fields_with_slit)
+    prob_fields_no_slit = read_prob_file(filename_no_slit)
+    total_probs_no_slit = plot(prob_fields_no_slit)

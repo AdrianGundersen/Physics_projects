@@ -16,7 +16,7 @@
     },
     "output" : {
         "file_name" : "output/probability_density_p8.txt",
-        "file_name_wavefunction" : "output/wavefunction_p8.txt"
+        "file_name_wavefunction" : "output/wavefunction_single_slit.txt"
     },
     "solver" : {
         "method" : "jacobi",
@@ -33,9 +33,9 @@
         "wall_center" : 0.5,
         "wall_thickness" : 0.02,
         "slit_aperture" : 0.05,
-        "num_slits" : 2,
-        "slit_starts" : [0.4, 0.6],
-        "slit_ends" : [0.45, 0.65]
+        "num_slits" : 1,
+        "slit_starts" : [0.475],
+        "slit_ends" : [0.525]
     },
     "parallelization" : {
         "threads" : 12

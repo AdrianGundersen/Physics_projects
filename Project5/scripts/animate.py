@@ -137,7 +137,7 @@ def animate_prob(prob_fields, dt=1.0, frame_stride=1):
 
 
 if __name__ == "__main__":
-    filename = "output/wavefunction.txt"  # adjust path if needed
+    filename = "output/wavefunction_single_slit.txt"  # adjust path if needed
     prob_fields = read_prob_file(filename)
 
     # Example: static plot of a single timestep
