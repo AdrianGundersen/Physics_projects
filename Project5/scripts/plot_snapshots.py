@@ -53,7 +53,7 @@ def read_wavefile(filename):
     return psi_fields
 
 
-def plot_prob_timestep(psi_fields, t_index=0, dt=1.0):
+def plot_prob_timestep(psi_fields, t_index=0, dt=1.0, dx=1.0):
     """
     Plot probability density |psi|^2 for a given timestep index.
     Normalised by the total number of grid points.
@@ -62,15 +62,15 @@ def plot_prob_timestep(psi_fields, t_index=0, dt=1.0):
     field = np.abs(psi) ** 2 / psi.size
 
     plt.figure()
-    im = plt.imshow(field, origin="lower")
+    im = plt.imshow(field, origin="lower", extent=[0, field.shape[1]*dx, 0, field.shape[0]*dx])
     plt.colorbar(im, label=r"$|\psi_{ij}|^2$")
-    plt.xlabel("j")
-    plt.ylabel("i")
+    plt.xlabel("y")
+    plt.ylabel("x")
     plt.tight_layout()
     plt.show()
 
 
-def plot_re_im_timestep(psi_fields, t_index=0, dt=1.0):
+def plot_re_im_timestep(psi_fields, t_index=0, dt=1.0, dx=1.0):
     """
     Plot colourmaps of Re(psi_ij) and Im(psi_ij) for a given timestep index.
     """
@@ -78,15 +78,15 @@ def plot_re_im_timestep(psi_fields, t_index=0, dt=1.0):
 
     fig, axes = plt.subplots(1, 2, figsize=(10, 4))
 
-    im_re = axes[0].imshow(psi.real, origin="lower")
+    im_re = axes[0].imshow(psi.real, origin="lower", extent=[0, psi.shape[1]*dx, 0, psi.shape[0]*dx])
     plt.colorbar(im_re, ax=axes[0], label=r"$\Re(u_{ij})$")
-    axes[0].set_xlabel("j")
-    axes[0].set_ylabel("i")
+    axes[0].set_xlabel("y")
+    axes[0].set_ylabel("x")
 
-    im_im = axes[1].imshow(psi.imag, origin="lower")
+    im_im = axes[1].imshow(psi.imag, origin="lower", extent=[0, psi.shape[1]*dx, 0, psi.shape[0]*dx])
     plt.colorbar(im_im, ax=axes[1], label=r"$\Im(u_{ij})$")
-    axes[1].set_xlabel("j")
-    axes[1].set_ylabel("i")
+    axes[1].set_xlabel("y")
+    axes[1].set_ylabel("x")
 
     plt.tight_layout()
     plt.show()
@@ -100,5 +100,9 @@ if __name__ == "__main__":
     T = 0
     t_index = int(T / dt)
 
-    plot_prob_timestep(psi_fields, t_index=t_index, dt=dt)
-    plot_re_im_timestep(psi_fields, t_index=t_index, dt=dt)
+    L = 1.0 # box size
+    M = psi_fields[0].shape[0]
+    dx = L / M
+
+    plot_prob_timestep(psi_fields, t_index=t_index, dt=dt, dx=dx)
+    plot_re_im_timestep(psi_fields, t_index=t_index, dt=dt, dx=dx)
