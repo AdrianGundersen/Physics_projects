@@ -89,14 +89,14 @@ namespace ds::solver {
 
         data.beta = -lambda;
 
-        for (Index i = 0; i < M; ++i) {
-            for (Index j = 0; j < M; ++j) {
+        for (Index i = 1; i < M-1; ++i) {
+            for (Index j = 1; j < M-1; ++j) { // skip boundaries
                 const Index k = grid.idx(i, j);
 
-                if (i == 0 || i == M - 1 || j == 0 || j == M - 1) {
-                    data.invD[k] = Complex(0.0, 0.0);
-                    continue; // Dirichlet BCs
-                }
+                // if (i == 0 || i == M - 1 || j == 0 || j == M - 1) {
+                //     data.invD[k] = Complex(0.0, 0.0);
+                //     continue; // Dirichlet BCs
+                // }
 
                 const Real Vij = V.values[k];
                 const Complex alpha = Complex(1.0, 0.0) + 4.0 * lambda + I * (0.5 * dt * Vij);

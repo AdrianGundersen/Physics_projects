@@ -1,25 +1,26 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-def read_prob_file(filename):
+def read_wavefile(filename):
     """
     Read file with blocks of the form
 
     Timestep 0:
     Re0, Im0,
-    Re_1, Im_1,
+    Re1, Im1,
     ...
 
     separated by blank lines.
-    Returns: list of 2D numpy arrays [prob_t0, prob_t1, ...]
+
+    Returns: list of 2D numpy arrays of complex numbers [psi_t0, psi_t1, ...]
     """
     blocks = []
     current_vals = []
-    grid_size = 200  # adjust if needed
 
     with open(filename, "r") as f:
         for line in f:
             line = line.strip()
+
             if not line:
                 if current_vals:
                     blocks.append(current_vals)
@@ -29,48 +30,72 @@ def read_prob_file(filename):
             if line.startswith("Timestep"):
                 continue
 
-            #read values
-            parts = line.split(",")
+            parts = [p for p in line.split(",") if p != ""]
             if len(parts) != 2:
                 raise ValueError(f"Line does not have two comma-separated values: {line}")
+
             re = float(parts[0])
             im = float(parts[1])
-            psi2 = (re*re + im*im) / (grid_size*grid_size)  # normalize here
-            current_vals.append(psi2)
+            current_vals.append(re + 1j * im)
 
     if current_vals:
         blocks.append(current_vals)
 
-    prob_fields = []
+    psi_fields = []
     for vals in blocks:
         n = len(vals)
         M = int(np.sqrt(n))
         if M * M != n:
             raise ValueError(f"Block has {n} values, which is not a perfect square.")
-        arr = np.array(vals).reshape(M, M)
-        prob_fields.append(arr)
+        arr = np.array(vals, dtype=np.complex128).reshape(M, M)
+        psi_fields.append(arr)
 
-    return prob_fields
+    return psi_fields
 
-def plot_timestep(prob_fields, t_index=0):
+
+def plot_prob_timestep(psi_fields, t_index=0):
     """
-    Plot probability density for a given timestep index.
+    Plot probability density |psi|^2 for a given timestep index.
+    Normalised by the total number of grid points.
     """
-    field = prob_fields[t_index]
+    psi = psi_fields[t_index]
+    field = np.abs(psi) ** 2 / psi.size
 
     plt.figure()
     im = plt.imshow(field, origin="lower")
-    plt.colorbar(im, label=r"$|\psi|^2$")
-    plt.title(f"Probability density, timestep {t_index}")
+    plt.colorbar(im, label=r"$|\psi_{ij}|^2$")
+    plt.title(rf"Probability density, $t={t_index*(2.5e-5)}$")
     plt.xlabel("j")
     plt.ylabel("i")
     plt.tight_layout()
     plt.show()
 
+
+def plot_re_im_timestep(psi_fields, t_index=0):
+    """
+    Plot colourmaps of Re(psi_ij) and Im(psi_ij) for a given timestep index.
+    """
+    psi = psi_fields[t_index]
+
+    fig, axes = plt.subplots(1, 2, figsize=(10, 4))
+
+    im_re = axes[0].imshow(psi.real, origin="lower")
+    plt.colorbar(im_re, ax=axes[0], label=r"$\Re(u_{ij})$")
+    axes[0].set_xlabel("j")
+    axes[0].set_ylabel("i")
+
+    im_im = axes[1].imshow(psi.imag, origin="lower")
+    plt.colorbar(im_im, ax=axes[1], label=r"$\Im(u_{ij})$")
+    axes[1].set_xlabel("j")
+    axes[1].set_ylabel("i")
+
+    plt.tight_layout()
+    plt.show()
+
+
 if __name__ == "__main__":
     filename = "output/wavefunction.txt"  # adjust path if needed
-    prob_fields = read_prob_file(filename)
-    # Example: plot timestep 0
-    plot_timestep(prob_fields, t_index=40)
-    # Example: plot the last timestep
-    # plot_timestep(prob_fields, t_index=len(prob_fields) - 1)
+    psi_fields = read_wavefile(filename)
+
+    plot_prob_timestep(psi_fields, t_index=0)
+    plot_re_im_timestep(psi_fields, t_index=0)
