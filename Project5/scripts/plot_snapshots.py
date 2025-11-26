@@ -53,7 +53,7 @@ def read_wavefile(filename):
     return psi_fields
 
 
-def plot_prob_timestep(psi_fields, t_index=0):
+def plot_prob_timestep(psi_fields, t_index=0, dt=1.0):
     """
     Plot probability density |psi|^2 for a given timestep index.
     Normalised by the total number of grid points.
@@ -64,14 +64,13 @@ def plot_prob_timestep(psi_fields, t_index=0):
     plt.figure()
     im = plt.imshow(field, origin="lower")
     plt.colorbar(im, label=r"$|\psi_{ij}|^2$")
-    plt.title(rf"Probability density, $t={t_index*(2.5e-5)}$")
     plt.xlabel("j")
     plt.ylabel("i")
     plt.tight_layout()
     plt.show()
 
 
-def plot_re_im_timestep(psi_fields, t_index=0):
+def plot_re_im_timestep(psi_fields, t_index=0, dt=1.0):
     """
     Plot colourmaps of Re(psi_ij) and Im(psi_ij) for a given timestep index.
     """
@@ -96,6 +95,10 @@ def plot_re_im_timestep(psi_fields, t_index=0):
 if __name__ == "__main__":
     filename = "output/wavefunction.txt"  # adjust path if needed
     psi_fields = read_wavefile(filename)
+    
+    dt = 2.5e-5  # time step size in seconds
+    T = 0
+    t_index = int(T / dt)
 
-    plot_prob_timestep(psi_fields, t_index=0)
-    plot_re_im_timestep(psi_fields, t_index=0)
+    plot_prob_timestep(psi_fields, t_index=t_index, dt=dt)
+    plot_re_im_timestep(psi_fields, t_index=t_index, dt=dt)
