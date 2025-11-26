@@ -1,6 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import os
+from io_python import read_prob_file
 
 # plotting style
 plt.rcParams.update({
@@ -16,68 +17,9 @@ plt.rcParams.update({
     'figure.dpi': 300,
 })
 
-
 # make output/figures directory
 output_dir = "output/figures"
 os.makedirs(output_dir, exist_ok=True)
-
-
-
-
-
-
-def read_prob_file(filename):
-    """
-    Read file with blocks of the form
-
-    Timestep 0:
-    Re0, Im0,
-    Re_1, Im_1,
-    ...
-
-    separated by blank lines.
-    Returns: list of 2D numpy arrays [prob_t0, prob_t1, ...]
-    """
-    blocks = []
-    current_vals = []
-    grid_size = 200  # adjust if needed
-    L = 1.0
-    h = L/(grid_size - 1)
-    with open(filename, "r") as f:
-        for line in f:
-            line = line.strip()
-            if not line:
-                if current_vals:
-                    blocks.append(current_vals)
-                    current_vals = []
-                continue
-
-            if line.startswith("Timestep"):
-                continue
-
-            #read values
-            parts = line.split(",")
-            if len(parts) != 2:
-                raise ValueError(f"Line does not have two comma-separated values: {line}")
-            re = float(parts[0])
-            im = float(parts[1])
-            psi2 = (re*re + im*im) * (h * h)  # normalize here
-            current_vals.append(psi2)
-
-    if current_vals:
-        blocks.append(current_vals)
-
-    prob_fields = []
-    for vals in blocks:
-        n = len(vals)
-        M = int(np.sqrt(n))
-        if M * M != n:
-            raise ValueError(f"Block has {n} values, which is not a perfect square.")
-        arr = np.array(vals).reshape(M, M)
-        prob_fields.append(arr)
-
-    return prob_fields
-
 
 def plot(prob_fields, output_dir_prefix=None):
     """
