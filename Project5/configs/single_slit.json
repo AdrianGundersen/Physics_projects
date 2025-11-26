@@ -34,8 +34,7 @@
         "wall_thickness" : 0.02,
         "slit_aperture" : 0.05,
         "num_slits" : 1,
-        "slit_starts" : [0.475],
-        "slit_ends" : [0.525]
+        "slit_spacing" : 0.05
     },
     "parallelization" : {
         "threads" : 12

@@ -53,8 +53,7 @@ namespace ds {
         Real wall_thickness; // x-thickness of the wall
         Real slit_aperture; // height of each slit
         Index num_slits; // number of slits
-        std::vector<Real> slit_starts; // starting y-positions of slits
-        std::vector<Real> slit_ends; // ending y-positions of slits
+        Real slit_spacing; // spacing between slits
     };
 
     struct PotentialParams {

@@ -46,8 +46,7 @@ namespace ds {
             potential_params.slits.wall_thickness = slits_json.at("wall_thickness").get<ds::Real>();
             potential_params.slits.slit_aperture = slits_json.at("slit_aperture").get<ds::Real>();
             potential_params.slits.num_slits = slits_json.at("num_slits").get<ds::Index>();
-            potential_params.slits.slit_starts = slits_json.at("slit_starts").get<std::vector<ds::Real>>();
-            potential_params.slits.slit_ends = slits_json.at("slit_ends").get<std::vector<ds::Real>>();
+            potential_params.slits.slit_spacing = slits_json.at("slit_spacing").get<ds::Real>();
 
             // Filename
             filename = j.at("output").at("file_name").get<std::string>(); 
