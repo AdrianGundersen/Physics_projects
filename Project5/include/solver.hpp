@@ -45,7 +45,7 @@ namespace ds::solver {
                             const ds::Potential& V,
                             const ds::SolverParams& solver_params);
 
-
+    void gauss_seidel_solve(SolverData& data, const ds::Grid& grid, Index max_iters, Real tol);
 
 } // namespace ds::solver
 

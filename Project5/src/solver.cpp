@@ -188,6 +188,10 @@ namespace ds::solver {
             }
         }
     }
+
+    void gauss_seidel_solve(SolverData& data, const ds::Grid& grid, Index max_iters, Real tol) {
+    }
+
     void crank_nicolson_step(SolverData& data,
         const ds::simParams& params,
         const ds::Grid& grid,
@@ -221,8 +225,8 @@ namespace ds::solver {
         ds::rvec prob_density(grid.size()); // allocates
         for (Index n = 0; n < sim_params.N; ++n) {
             solver::crank_nicolson_step(data, sim_params, grid, V, solver_params);
-            ds::probability_density(data, prob_density, grid);
-            ds::write_wavefunction_to_file(filename_wavefunction, data.v_curr, n);
+            // ds::probability_density(data, prob_density, grid);
+            // ds::write_wavefunction_to_file(filename_wavefunction, data.v_curr, n);
 
             //uncomment to directryly calculate and write probability density to file
             //ds::write_prob_to_file(filename, prob_density, n);
