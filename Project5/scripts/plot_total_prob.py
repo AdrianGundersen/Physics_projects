@@ -1,6 +1,20 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
+# plotting style
+plt.rcParams.update({
+    'font.family': 'serif',
+    'font.size': 15,
+    'figure.figsize': (6, 4),
+    'axes.titlesize': 17,
+    'axes.labelsize': 20,
+    'xtick.labelsize': 12,
+    'ytick.labelsize': 12,
+    'lines.linewidth': 2.0,
+    'legend.fontsize': 17,
+    'figure.dpi': 300,
+})
+
 def read_prob_file(filename):
     """
     Read file with blocks of the form

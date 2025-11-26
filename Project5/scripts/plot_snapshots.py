@@ -1,5 +1,26 @@
 import numpy as np
 import matplotlib.pyplot as plt
+import os
+
+# plotting style
+plt.rcParams.update({
+    'font.family': 'serif',
+    'font.size': 12,
+    'figure.figsize': (6, 4),
+    'axes.titlesize': 14,
+    'axes.labelsize': 20,
+    'xtick.labelsize': 12,
+    'ytick.labelsize': 12,
+    'lines.linewidth': 2.0,
+    'legend.fontsize': 14,
+    'figure.dpi': 300,
+})
+
+
+# make output/figures directory
+output_dir = "output/figures"
+os.makedirs(output_dir, exist_ok=True)
+
 
 def read_wavefile(filename):
     """
@@ -64,9 +85,10 @@ def plot_prob_timestep(psi_fields, t_index=0, dt=1.0, dx=1.0):
     plt.figure()
     im = plt.imshow(field, origin="lower", extent=[0, field.shape[1]*dx, 0, field.shape[0]*dx])
     plt.colorbar(im, label=r"$|\psi_{ij}|^2$")
-    plt.xlabel("y")
-    plt.ylabel("x")
+    plt.xlabel(r"$y$")
+    plt.ylabel(r"$x$")
     plt.tight_layout()
+    plt.savefig(output_dir + f"/probability_density_timestep={t_index}.pdf")
     plt.show()
 
 
@@ -76,20 +98,32 @@ def plot_re_im_timestep(psi_fields, t_index=0, dt=1.0, dx=1.0):
     """
     psi = psi_fields[t_index]
 
-    fig, axes = plt.subplots(1, 2, figsize=(10, 4))
+    # 2 rows, 1 column
+    fig, axes = plt.subplots(2, 1, figsize = (6,8), sharex=True, sharey=True)
 
-    im_re = axes[0].imshow(psi.real, origin="lower", extent=[0, psi.shape[1]*dx, 0, psi.shape[0]*dx])
+    im_re = axes[0].imshow(
+        psi.real,
+        origin="lower",
+        extent=[0, psi.shape[1] * dx, 0, psi.shape[0] * dx]
+    )
     plt.colorbar(im_re, ax=axes[0], label=r"$\Re(u_{ij})$")
-    axes[0].set_xlabel("y")
-    axes[0].set_ylabel("x")
+    axes[0].set_ylabel(r"$x$")
+    axes[0].set_title(r"Real part $\,\Re(u_{ij})$")
 
-    im_im = axes[1].imshow(psi.imag, origin="lower", extent=[0, psi.shape[1]*dx, 0, psi.shape[0]*dx])
+    im_im = axes[1].imshow(
+        psi.imag,
+        origin="lower",
+        extent=[0, psi.shape[1] * dx, 0, psi.shape[0] * dx]
+    )
     plt.colorbar(im_im, ax=axes[1], label=r"$\Im(u_{ij})$")
-    axes[1].set_xlabel("y")
-    axes[1].set_ylabel("x")
+    axes[1].set_xlabel(r"$y$")
+    axes[1].set_ylabel(r"$x$")
+    axes[1].set_title(r"Imaginary part $\,\Im(u_{ij})$")
 
     plt.tight_layout()
+    plt.savefig(output_dir + f"/re_im_timestep={t_index}.pdf")
     plt.show()
+
 
 
 if __name__ == "__main__":
@@ -97,12 +131,14 @@ if __name__ == "__main__":
     psi_fields = read_wavefile(filename)
     
     dt = 2.5e-5  # time step size in seconds
-    T = 0
-    t_index = int(T / dt)
+    T = np.array([0.0, 0.001, 0.002])
+
+    t_index_list = (T / dt).astype(int)
 
     L = 1.0 # box size
     M = psi_fields[0].shape[0]
     dx = L / M
 
-    plot_prob_timestep(psi_fields, t_index=t_index, dt=dt, dx=dx)
-    plot_re_im_timestep(psi_fields, t_index=t_index, dt=dt, dx=dx)
+    for t_index in t_index_list:
+        plot_prob_timestep(psi_fields, t_index=t_index, dt=dt, dx=dx)
+        plot_re_im_timestep(psi_fields, t_index=t_index, dt=dt, dx=dx)
