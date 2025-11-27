@@ -37,11 +37,12 @@ namespace ds {
         if (Slit.enabled) {
             const Real V0 = potential_params.V0;
 
+            
             const Real wall_x_start = Slit.wall_center - 0.5 * Slit.wall_thickness; // x-start of wall
             const Real wall_x_end = Slit.wall_center + 0.5 * Slit.wall_thickness; // x-end of wall
-
+            
             const Real y_mid = 0.5 * grid.L; // middle of domain in y
-
+            
             const Real half_apperture = 0.5 * Slit.slit_aperture;
             const Real scnter_step = Slit.slit_spacing + Slit.slit_aperture;
 
@@ -56,7 +57,7 @@ namespace ds {
                         bool in_slit = false; // check if in any slit
 
                         for (Index s = 0; s < Slit.num_slits; ++s) { // loop over slits
-                            const Real slit_center = first_center + s * Slit.slit_spacing;
+                            const Real slit_center = first_center + s * scnter_step;
 
                             if (std::abs(y - slit_center) <= half_apperture) { // y in [slit start, slit end]
                                 in_slit = true;
