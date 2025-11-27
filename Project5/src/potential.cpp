@@ -36,20 +36,27 @@ namespace ds {
         
         if (Slit.enabled) {
             const Real V0 = potential_params.V0;
+
             const Real wall_x_start = Slit.wall_center - 0.5 * Slit.wall_thickness; // x-start of wall
             const Real wall_x_end = Slit.wall_center + 0.5 * Slit.wall_thickness; // x-end of wall
+
             const Real y_mid = 0.5 * grid.L; // middle of domain in y
-            const Real total_span = (Slit.num_slits - 1) * Slit.slit_spacing;
+
+            const Real half_apperture = 0.5 * Slit.slit_aperture;
+            const Real scnter_step = Slit.slit_spacing + Slit.slit_aperture;
+
+            const Real total_span = (Slit.num_slits - 1) * scnter_step; // total span of all slits
             const Real first_center = y_mid - 0.5 * total_span; // center of first slit
+
             for (Index i = 0; i < M; ++i) {
                 const Real x = static_cast<Real>(i) * grid.h; // x position
                 if (x >= wall_x_start && x <= wall_x_end) { // within wall region
                     for (Index j = 0; j < M; ++j) {
                         const Real y = static_cast<Real>(j) * grid.h; 
                         bool in_slit = false; // check if in any slit
+
                         for (Index s = 0; s < Slit.num_slits; ++s) { // loop over slits
                             const Real slit_center = first_center + s * Slit.slit_spacing;
-                            const Real half_apperture = 0.5 * Slit.slit_aperture;
 
                             if (std::abs(y - slit_center) <= half_apperture) { // y in [slit start, slit end]
                                 in_slit = true;
