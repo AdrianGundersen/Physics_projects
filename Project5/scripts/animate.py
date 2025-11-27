@@ -86,7 +86,9 @@ def animate_prob(prob_fields, dt=1.0, frame_stride=1):
 
 
 if __name__ == "__main__":
-    filename = "output/wavefunction_p8.txt"  # adjust path if needed
+    filename_suffix = "wavefunction_p8" # problem
+    filename_interfix = "single" # or double, multi etc.
+    filename = f"output/{filename_suffix}_{filename_interfix}.txt"  # adjust path if needed
     prob_fields = read_prob_file(filename)
 
     # Example: static plot of a single timestep
@@ -98,6 +100,6 @@ if __name__ == "__main__":
 
     # To save instead of (or in addition to) showing:
     # anim.save("probability_animation.mp4", writer="ffmpeg", bitrate=10000, fps=15)
-    anim.save("probability_animation.gif", writer="pillow", fps=15)
+    anim.save(f"probability_animation_{filename_interfix}.gif", writer="pillow", fps=15)
     plt.show()
 

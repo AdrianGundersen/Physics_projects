@@ -222,8 +222,10 @@ namespace ds::solver {
                 ds::initialize_wavefunction(data, grid, sim_params);
                 
                 omp_set_num_threads(sim_params.threads);
+                // ds::probability_density(data, prob_density, grid);
+                ds::write_wavefunction_to_file(filename_wavefunction, data.v_curr, 0); // initial wavefunction
         ds::rvec prob_density(grid.size()); // allocates
-        for (Index n = 0; n < sim_params.N; ++n) {
+        for (Index n = 1; n < sim_params.N; ++n) {
             solver::crank_nicolson_step(data, sim_params, grid, V, solver_params);
             ds::probability_density(data, prob_density, grid);
             ds::write_wavefunction_to_file(filename_wavefunction, data.v_curr, n);
