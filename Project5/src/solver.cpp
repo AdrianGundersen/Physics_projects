@@ -190,6 +190,47 @@ namespace ds::solver {
     }
 
     void gauss_seidel_solve(SolverData& data, const ds::Grid& grid, Index max_iters, Real tol) {
+        const Index M = grid.M;
+        
+        const cvec& rhs = data.rhs; // right-hand side
+        cvec& v = data.v_next; // next solution
+        const cvec& invD = data.invD; // precomputed inverse diagonal
+        
+        if (v.size() != data.v_curr.size()) {
+            v = data.v_curr; // initialize v_next if not same size (first call)
+        }
+
+        for (Index iter = 0; iter < max_iters; ++iter) {
+            Real max_diff = 0.0; // maximum of all differences
+            for (Index c = 0; c < 2; ++c) { // red-black
+                #pragma omp parallel for collapse(2) reduction(max:max_diff)
+                for (Index i = 1; i < M - 1; ++i) { // skip boundaries
+                    for (Index j = 1; j < M - 1; ++j) { // skip boundaries
+                        if (((i + j) & 1) != c) continue; // red-black check (either (i+j) even or odd)
+
+                        const Index k = grid.idx(i, j);
+                        
+                        
+                        const Complex sumN = // sum of neighbors
+                        v[grid.idx(i + 1, j)] +
+                        v[grid.idx(i - 1, j)] +
+                        v[grid.idx(i, j + 1)] +
+                        v[grid.idx(i, j - 1)];
+                        
+                        const Complex new_val = invD[k] * (rhs[k] - data.beta * sumN);
+                        const Real diff = std::abs(new_val - v[k]);
+                        if (diff > max_diff) {
+                            max_diff = diff;
+                        }
+                        v[k] = new_val;
+                    }
+                }
+            }
+            if (max_diff < tol) {
+                break; // converged
+            }
+        }
+
     }
 
     void crank_nicolson_step(SolverData& data,
@@ -200,7 +241,13 @@ namespace ds::solver {
         {
             build_RHS(data, params, grid, V);
             data.v_next = data.v_curr;
-            jacobi_solve(data, grid, solver_params.max_iters, solver_params.tol);
+
+            std::string solver = solver_params.method;
+            if (solver == "jacobi") {
+                jacobi_solve(data, grid, solver_params.max_iters, solver_params.tol);
+            } else if (solver == "gauss_seidel") {
+                gauss_seidel_solve(data, grid, solver_params.max_iters, solver_params.tol);
+            }
             data.v_curr.swap(data.v_next);
         }
     } // namespace ds::solver
@@ -230,7 +277,7 @@ namespace ds::solver {
         ds::rvec prob_density(grid.size()); // allocates
         for (Index n = 1; n < sim_params.N; ++n) {
             solver::crank_nicolson_step(data, sim_params, grid, V, solver_params);
-            ds::probability_density(data, prob_density, grid);
+            // ds::probability_density(data, prob_density, grid);
             ds::write_wavefunction_to_file(filename_wavefunction, data.v_curr, n, precision);
 
             //uncomment to directryly calculate and write probability density to file

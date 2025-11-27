@@ -31,6 +31,7 @@ namespace ds {
 
             // Solver parameters
             nlohmann::json solver_json = j.at("solver");
+            solver_params.method = solver_json.at("method").get<std::string>();
             solver_params.max_iters = solver_json.at("max_iterations").get<ds::Index>();
             solver_params.tol = solver_json.at("tolerance").get<ds::Real>();
 

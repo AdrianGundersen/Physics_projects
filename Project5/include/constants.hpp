@@ -42,7 +42,8 @@ namespace ds {
     };
 
     struct SolverParams { // only jacobi for now
-        Index max_iters; // max number of iterations for jacobi
+        std::string method; // solver method: "jacobi" or "gauss_seidel"
+        Index max_iters; // max number of iterations
         Real tol; // tolerance for convergence
     };
 

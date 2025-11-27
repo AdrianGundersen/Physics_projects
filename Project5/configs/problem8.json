@@ -20,7 +20,7 @@
         "precision": 8
     },
     "solver" : {
-        "method" : "jacobi",
+        "method" : "gauss_seidel",
         "tolerance" : 1e-4,
         "max_iterations" : 100
     },

@@ -91,12 +91,12 @@ How we did the first search for peaks at $L=20$.
 
     },
     "output" : {
-        "file_name" : "output/probability_density_p8.txt",                  # file for probability density output
+        "file_name" : "output/probability_density_p8.txt",                  # file for probability density output (not used, to use uncomment in solver.cpp)
         "file_name_wavefunction" : "output/wavefunction_single_slit.txt",   # file for wavefunction output    
         "precision" : 8                                                     # output precision
     },
     "solver" : {
-        "method" : "jacobi",     # solver method (only jacobi implemented)
+        "method" : "jacobi",     # solver method (only jacobi/gauss_seidel implemented)
         "tolerance" : 1e-4,      # solver tolerance for jacobi
         "max_iterations" : 2000  # max iterations for jacobi
     },
