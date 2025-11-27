@@ -16,7 +16,8 @@
     },
     "output" : {
         "file_name" : "output/probability_density.txt",
-        "file_name_wavefunction" : "output/wavefunction.txt"
+        "file_name_wavefunction" : "output/wavefunction.txt",
+        "precision": 8
     },
     "solver" : {
         "method" : "jacobi",

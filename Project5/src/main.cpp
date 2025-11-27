@@ -41,12 +41,13 @@ int main(int argc, char** argv) { // argc and argv to get JSON file path (argc i
     ds::Grid grid(0,0); // temporary initialization
     ds::SolverParams solver_params;
     ds::PotentialParams potential_params;
+    ds::OutputParams output_params;
     std::string filename;
     std::string filename_wavefunction;
 
     double start_time = omp_get_wtime();
-    ds::params_from_json(j, sim_params, grid, solver_params, potential_params, filename, filename_wavefunction);
-    ds::simulation(sim_params, grid, solver_params, potential_params, filename, filename_wavefunction);
+    ds::params_from_json(j, sim_params, grid, solver_params, potential_params, output_params);
+    ds::simulation(sim_params, grid, solver_params, potential_params, output_params);
 
     double end_time = omp_get_wtime();
     double total_time = end_time - start_time;

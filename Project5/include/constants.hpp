@@ -63,4 +63,10 @@ namespace ds {
         SlitsParams slits; // parameters for slits potential
     };
 
+    struct OutputParams {
+        std::string filename_prob; // output filename  for probability density
+        std::string filename_wavefunction; // output filename for wavefunction
+        Index precision; // number of decimal places
+    };
+
 }

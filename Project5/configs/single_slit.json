@@ -16,12 +16,13 @@
     },
     "output" : {
         "file_name" : "output/probability_density_p8.txt",
-        "file_name_wavefunction" : "output/wavefunction_single_slit.txt"
+        "file_name_wavefunction" : "output/wavefunction_single_slit.txt",
+        "precision": 8
     },
     "solver" : {
         "method" : "jacobi",
         "tolerance" : 1e-4,
-        "max_iterations" : 2000
+        "max_iterations" : 100
     },
     "potential" : {
         "type" : "none",

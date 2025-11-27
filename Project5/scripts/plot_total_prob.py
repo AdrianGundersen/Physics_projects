@@ -31,21 +31,28 @@ def plot(prob_fields, output_dir_prefix=None):
         total_prob = np.sum(prob_fields[t])
         total_probs.append(total_prob)
 
+    p0_exp = 1.0
     p0 = total_probs[0]
-    dp =  np.array(total_probs) -p0
+    dp =  np.array(total_probs) - p0_exp
     plt.figure()
     plt.plot(range(t_steps), dp, marker='o')
     plt.xlabel("Timestep")
     plt.ylabel("Total Probability")
-    plt.title("Total Probability vs Timestep")
     plt.grid()
     plt.tight_layout()
     plt.savefig(f"{output_dir_prefix}_total_prob.png")
     plt.show()
 
     # histogram
+    mean = np.mean(dp)
+    std = np.std(dp)
+    print(f"For file {output_dir_prefix}: P0 = {p0}, mean = {mean}, std = {std}")
+
     plt.figure()
     plt.hist(dp, bins=40)
+    plt.axvline(mean, color='r', linestyle='--')
+    plt.axvline(mean + std, color='g', linestyle=':')
+    plt.axvline(mean - std, color='g', linestyle=':')
     plt.xlabel(r"$P(t)-P(0)$")
     plt.ylabel("Count")
     plt.tight_layout()

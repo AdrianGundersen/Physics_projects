@@ -10,7 +10,7 @@ namespace ds {
 
     void params_from_json(const nlohmann::json& j, ds::simParams& params, 
                         ds::Grid& grid, ds::SolverParams& solver_params, 
-                        ds::PotentialParams& potential_params, std::string& filename, std::string& filename_wavefunction) {
+                        ds::PotentialParams& potential_params, ds::OutputParams& output_params) {
         try {
             // Simulation parameters
             nlohmann::json simulation_json = j.at("simulation");
@@ -48,9 +48,10 @@ namespace ds {
             potential_params.slits.num_slits = slits_json.at("num_slits").get<ds::Index>();
             potential_params.slits.slit_spacing = slits_json.at("slit_spacing").get<ds::Real>();
 
-            // Filename
-            filename = j.at("output").at("file_name").get<std::string>(); 
-            filename_wavefunction = j.at("output").at("file_name_wavefunction").get<std::string>();
+            // Output parameters
+            output_params.filename_prob = j.at("output").at("file_name").get<std::string>();
+            output_params.filename_wavefunction = j.at("output").at("file_name_wavefunction").get<std::string>();
+            output_params.precision = j.at("output").at("precision").get<ds::Index>();
 
             // Paralellization parameters
             nlohmann::json parallelization_json = j.at("parallelization");
@@ -62,7 +63,7 @@ namespace ds {
         }
     }
 
-    void write_prob_to_file(const std::string& filename, const ds::rvec& prob_density, Index timestep) {
+    void write_prob_to_file(const std::string& filename, const ds::rvec& prob_density, Index timestep, Index precision) {
         std::ofstream file;
         std::ios_base::openmode mode = std::ios::app;
         if (timestep == 0) {
@@ -75,13 +76,14 @@ namespace ds {
         }
 
         file << "Timestep " << timestep << ":\n";
+        file << std::fixed << std::setprecision(precision);
         for (const auto& val : prob_density) {
             file << val << "\n";
         }
         file << "\n"; // new time step
         file.close();
     }
-    void write_wavefunction_to_file(const std::string& filename, const ds::cvec& wavefunction, Index timestep) {
+    void write_wavefunction_to_file(const std::string& filename, const ds::cvec& wavefunction, Index timestep, Index precision) {
         std::ofstream file;
         std::ios_base::openmode mode = std::ios::app; // append mode
         if (timestep == 0) { // if first timestep overwrite
@@ -94,6 +96,7 @@ namespace ds {
         }
 
         file << "Timestep " << timestep << ":\n";
+        file << std::fixed << std::setprecision(precision);
         for (const auto& val : wavefunction) {
             file << val.real() << "," << val.imag() << "\n";
         }

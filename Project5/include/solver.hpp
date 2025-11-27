@@ -61,7 +61,6 @@ namespace ds {
                     const Grid& grid,
                     const SolverParams& solver_params,
                     PotentialParams& potential_params,
-                    const std::string& filename,
-                    const std::string& filename_wavefunction);
+                    const OutputParams& output_params);
 } // namespace ds
 

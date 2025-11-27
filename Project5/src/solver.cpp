@@ -161,7 +161,7 @@ namespace ds::solver {
         
         for (Index iter = 0; iter < max_iters; ++iter) {
             v_old = v; // store old solution
-            Real max_diff = tol + 1.0; // maximum of all differences
+            Real max_diff = 0.0; // maximum of all differences
             
             #pragma omp parallel for collapse(2) reduction(max:max_diff)
             for (Index i = 1; i < M - 1; ++i) { // skip boundaries
@@ -211,24 +211,27 @@ namespace ds::solver {
             const Grid& grid,
             const SolverParams& solver_params,
             PotentialParams& potential_params,
-            const std::string& filename,
-            const std::string& filename_wavefunction)
+            const OutputParams& output_params)
             {
+                const std::string filename = output_params.filename_prob;
+                const std::string filename_wavefunction = output_params.filename_wavefunction;
+                const ds::Index precision = output_params.precision;
+
                 Potential V;
                 initialize_potential(V, grid, potential_params);
-                
+                omp_set_num_threads(sim_params.threads);
+
                 solver::SolverData data;
                 solver::precompute_coeff(data, sim_params, grid, V);
                 ds::initialize_wavefunction(data, grid, sim_params);
-                
-                omp_set_num_threads(sim_params.threads);
+
+                ds::write_wavefunction_to_file(filename_wavefunction, data.v_curr, 0, precision); // initial wavefunction
                 // ds::probability_density(data, prob_density, grid);
-                ds::write_wavefunction_to_file(filename_wavefunction, data.v_curr, 0); // initial wavefunction
         ds::rvec prob_density(grid.size()); // allocates
         for (Index n = 1; n < sim_params.N; ++n) {
             solver::crank_nicolson_step(data, sim_params, grid, V, solver_params);
             ds::probability_density(data, prob_density, grid);
-            ds::write_wavefunction_to_file(filename_wavefunction, data.v_curr, n);
+            ds::write_wavefunction_to_file(filename_wavefunction, data.v_curr, n, precision);
 
             //uncomment to directryly calculate and write probability density to file
             //ds::write_prob_to_file(filename, prob_density, n);

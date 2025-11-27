@@ -91,8 +91,9 @@ How we did the first search for peaks at $L=20$.
 
     },
     "output" : {
-        "file_name" : "output/probability_density_p8.txt",                # file for probability density output
-        "file_name_wavefunction" : "output/wavefunction_single_slit.txt"  # file for wavefunction output    
+        "file_name" : "output/probability_density_p8.txt",                  # file for probability density output
+        "file_name_wavefunction" : "output/wavefunction_single_slit.txt",   # file for wavefunction output    
+        "precision" : 8                                                     # output precision
     },
     "solver" : {
         "method" : "jacobi",     # solver method (only jacobi implemented)
