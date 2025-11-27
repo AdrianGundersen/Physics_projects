@@ -44,7 +44,7 @@ $$
 
 
 - **C++20 compiler** (e.g. g++ 11 or higher)
-- **Armadillo** 
+- **Armadillo** (Not used for the main solver, but for solving matrix problems as requested per the project description)
 - **OpenMP** 
 - **Python 3.10+**
 - **nhlomann/json** (header-only C++ JSON library) - included in    `include/` folder
@@ -76,29 +76,69 @@ How we did the first search for peaks at $L=20$.
 ```json
 {
     "grid" : {
-        "M" : 10,
-        "L" : 1
+        "M" : 200,          # number of grid points in x and y
+        "L" : 1             # length of box domain
     },
     "simulation" : {
-        "steps" : 1000,
-        "time_step" : 0.01
+        "N" : 81,           # total number of time steps t0, ... tN
+        "dt" : 2.5e-5,      # time step size
+        "xC" : 0.25,        # x center of initial wave packet
+        "sigma_x" : 0.05,   # standard deviation in x
+        "px" : 200,         # initial momentum in x (wavenumber for unitless)
+        "yC" : 0.5,         # y center of initial wave packet
+        "py" : 0,           # initial momentum in y (wavenumber for unitless)
+        "sigma_y" : 0.2     # standard deviation in y
+
     },
     "output" : {
-        "file_name" : "default"
+        "file_name" : "output/probability_density_p8.txt",                # file for probability density output
+        "file_name_wavefunction" : "output/wavefunction_single_slit.txt"  # file for wavefunction output    
     },
     "solver" : {
-        "method" : "jacobi",
-        "tolerance" : 1e-5,
-        "max_iterations" : 10000
+        "method" : "jacobi",     # solver method (only jacobi implemented)
+        "tolerance" : 1e-4,      # solver tolerance for jacobi
+        "max_iterations" : 2000  # max iterations for jacobi
     },
     "potential" : {
-        "type" : "harmonic",
-        "frequency" : 1.0
+        "type" : "none",         # type of base potential (none, harmonic)
+        "frequency" : 1.0,       # frequency for harmonic potential
+        "V0" : 1e10              # potential strength for double slit wall
+    },
+    "slits" : { 
+        "enabled" : true,        # enable/disable slits
+        "wall_center" : 0.5,     # center position of wall in x
+        "wall_thickness" : 0.02, # thickness of wall in x
+        "slit_aperture" : 0.05,  # aperture of slits
+        "num_slits" : 1,         # number of slits
+        "slit_spacing" : 0.05    # spacing between slits
+    },
+    "parallelization" : {
+        "threads" : 12          # number of OpenMP threads
     }
 }
 ```
 
 **Caveats**
+
+**Simulation**
+- Describes initial gaussian wavepacket. 
+- Only Dirichlet BC implemented.
+
+**Potential**
+- Harmonic potential was only used for testing, so may not be fully functional.
+
+**Solver**
+- Only the Jacobi iterative method is implemented. 
+- Slow convergence for large grids. 
+- Gives larger errors at first time steps. 
+- max_iters is per time step.
+- tolerance is the maximum change at any grid point.
+
+**Slits**
+- The slits are spaced uniformly around the center of the wall with equal spacing.
+- The total width of all slits and spacings must fit within the wall thickness. There is no test for this, so be careful.
+- If the wavepacket is initialized over the wall, unexpected behavior may occur.
+  
 
 ### Compile
 To compile the code to `bin/`, use:
