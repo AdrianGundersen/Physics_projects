@@ -40,6 +40,7 @@ namespace ds {
             potential_params.type = potential_json.at("type").get<std::string>();
             potential_params.frequency = potential_json.at("frequency").get<ds::Real>();
             potential_params.V0 = potential_json.at("V0").get<ds::Real>();
+
             // Slits params (part of potential)
             nlohmann::json slits_json = j.at("slits");
             potential_params.slits.enabled = slits_json.at("enabled").get<bool>();
@@ -53,6 +54,7 @@ namespace ds {
             output_params.filename_prob = j.at("output").at("file_name").get<std::string>();
             output_params.filename_wavefunction = j.at("output").at("file_name_wavefunction").get<std::string>();
             output_params.precision = j.at("output").at("precision").get<ds::Index>();
+            output_params.write_interval = j.at("output").at("write_interval").get<ds::Index>();
 
             // Paralellization parameters
             nlohmann::json parallelization_json = j.at("parallelization");

@@ -68,6 +68,7 @@ namespace ds {
         std::string filename_prob; // output filename  for probability density
         std::string filename_wavefunction; // output filename for wavefunction
         Index precision; // number of decimal places
+        Index write_interval; // interval for writing output
     };
 
 }
