@@ -21,17 +21,17 @@ output_dir = "output/figures"
 os.makedirs(output_dir, exist_ok=True)
 
 
-def plot_screen_distribution(prob_fields, dt, T, x_screen=0.8, L=1.0, slits="single"):
+def plot_screen_distribution(prob_fields, dt, T, filename, x_screen=0.8, L=1.0, slits="single"):
     """
     Plots p(y | x=x_screen, t=T).
 
     """
-    fileneme = f"detection_probability_{slits}_slit.pdf"
 
     t_index = int(T / dt)
     field = prob_fields[t_index]      
     M = field.shape[0]
-    dx = L / (M - 1)
+    dx = L / (M)
+    
 
     # index to find x_screen
     j_screen = int(round(x_screen / dx))
@@ -47,25 +47,29 @@ def plot_screen_distribution(prob_fields, dt, T, x_screen=0.8, L=1.0, slits="sin
 
 
     plt.figure()
-    plt.plot(y, p_y_given_x)
+    plt.plot(y, p_y_given_x, marker='o', linestyle='-', markersize=3)
     plt.xlabel(r"$y$")
     plt.ylabel(r"$p(y \mid x=0.8;\, t=0.002)$")
+    plt.grid()
     plt.tight_layout()
-    out_path = os.path.join(output_dir, fileneme)
+    out_path = os.path.join(output_dir, filename)
     plt.savefig(out_path)
     plt.close()
     print("Saved figure:", out_path)
 
 
 if __name__ == "__main__":
-    filename = "output/wavefunction_p8_200.txt"  # juster sti
-    prob_fields = read_prob_file(filename)
-
-    slits = "200grid"
-
+    filenames_prefix = "output/wavefunction"
+    filename_suffices = ["1slit", "2slit", "3slit"]
+    
     dt = 2.5e-5
     T = 0.002
     L = 1.0
     x_screen = 0.8
 
-    plot_screen_distribution(prob_fields, dt, T, x_screen=x_screen, L=L, slits=slits)
+    for suffix in filename_suffices:
+        filename = f"{filenames_prefix}_{suffix}.txt"
+        prob_fields = read_prob_file(filename)
+        out_filename = f"screen_distribution_{suffix}.png"
+        
+        plot_screen_distribution(prob_fields, dt, T, out_filename, x_screen=x_screen, L=L, slits=suffix)

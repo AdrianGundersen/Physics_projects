@@ -15,14 +15,15 @@
 
     },
     "output" : {
-        "file_name" : "output/probability_density_p8.txt",
-        "file_name_wavefunction" : "output/wavefunction_p8.txt",
-        "precision": 8
+        "file_name" : "output/probability_density_2slit.txt",
+        "file_name_wavefunction" : "output/wavefunction_2slit.txt",
+        "precision": 8,
+        "write_interval": 1
     },
     "solver" : {
         "method" : "gauss_seidel",
-        "tolerance" : 1e-4,
-        "max_iterations" : 100
+        "tolerance" : 1e-10,
+        "max_iterations" : 1000
     },
     "potential" : {
         "type" : "none",
@@ -33,11 +34,11 @@
         "enabled" : true,
         "wall_center" : 0.5,
         "wall_thickness" : 0.02,
-        "slit_aperture" : 0.08,
+        "slit_aperture" : 0.05,
         "num_slits" : 2,
-        "slit_spacing" : 0.01
+        "slit_spacing" : 0.05
     },
     "parallelization" : {
-        "threads" : 24
+        "threads" : 12
     }
 }

@@ -84,7 +84,7 @@ def plot_prob_timestep(psi_fields, t_index=0, dt=1.0, dx=1.0):
 
     plt.figure()
     im = plt.imshow(field, origin="lower", extent=[0, field.shape[1]*dx, 0, field.shape[0]*dx])
-    plt.colorbar(im, label=r"$|\psi_{ij}|^2$")
+    plt.colorbar(im, label=r"$|v_{ij}^{n}|^2$")
     plt.xlabel(r"$y$")
     plt.ylabel(r"$x$")
     plt.tight_layout()
@@ -106,19 +106,19 @@ def plot_re_im_timestep(psi_fields, t_index=0, dt=1.0, dx=1.0):
         origin="lower",
         extent=[0, psi.shape[1] * dx, 0, psi.shape[0] * dx]
     )
-    plt.colorbar(im_re, ax=axes[0], label=r"$\Re(u_{ij})$")
+    plt.colorbar(im_re, ax=axes[0], label=r"$\Re(v_{ij}^{n})$")
     axes[0].set_ylabel(r"$x$")
-    axes[0].set_title(r"Real part $\,\Re(u_{ij})$")
+    axes[0].set_title(r"Real part $\,\Re(v_{ij}^{n})$")
 
     im_im = axes[1].imshow(
         psi.imag,
         origin="lower",
         extent=[0, psi.shape[1] * dx, 0, psi.shape[0] * dx]
     )
-    plt.colorbar(im_im, ax=axes[1], label=r"$\Im(u_{ij})$")
+    plt.colorbar(im_im, ax=axes[1], label=r"$\Im(v_{ij}^{n})$")
     axes[1].set_xlabel(r"$y$")
     axes[1].set_ylabel(r"$x$")
-    axes[1].set_title(r"Imaginary part $\,\Im(u_{ij})$")
+    axes[1].set_title(r"Imaginary part $\,\Im(v_{ij}^{n})$")
 
     plt.tight_layout()
     plt.savefig(output_dir + f"/re_im_timestep={t_index}.pdf")
@@ -127,9 +127,7 @@ def plot_re_im_timestep(psi_fields, t_index=0, dt=1.0, dx=1.0):
 
 
 if __name__ == "__main__":
-    filename = "output/wavefunction_slit_p8.txt"  # adjust path if needed
-    filename_p9_single_slit = "output/wavefunction_single_slit.txt"
-    
+    filename = "output/wavefunction_2slit.txt"  # adjust path if needed    
     psi_fields = read_wavefile(filename)
     
     dt = 2.5e-5  # time step size in seconds

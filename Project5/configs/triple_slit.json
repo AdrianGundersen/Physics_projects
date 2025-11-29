@@ -15,8 +15,8 @@
 
     },
     "output" : {
-        "file_name" : "output/probability_density_1slit.txt",
-        "file_name_wavefunction" : "output/wavefunction_1slit.txt",
+        "file_name" : "output/probability_density_3slit.txt",
+        "file_name_wavefunction" : "output/wavefunction_3slit.txt",
         "precision": 8,
         "write_interval": 1
     },
@@ -35,7 +35,7 @@
         "wall_center" : 0.5,
         "wall_thickness" : 0.02,
         "slit_aperture" : 0.05,
-        "num_slits" : 1,
+        "num_slits" : 3,
         "slit_spacing" : 0.05
     },
     "parallelization" : {
