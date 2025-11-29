@@ -99,7 +99,7 @@ namespace ds {
         }
 
         file << "Timestep " << timestep << ":\n";
-        file << std::fixed << std::setprecision(precision);
+        file << std::scientific << std::setprecision(precision);
         for (const auto& val : wavefunction) {
             file << val.real() << "," << val.imag() << "\n";
         }

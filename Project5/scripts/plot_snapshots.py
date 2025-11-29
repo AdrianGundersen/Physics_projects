@@ -89,7 +89,7 @@ def plot_prob_timestep(psi_fields, t_index=0, dt=1.0, dx=1.0):
     plt.ylabel(r"$x$")
     plt.tight_layout()
     plt.savefig(output_dir + f"/probability_density_timestep={t_index}.pdf")
-    plt.show()
+    # plt.show()
 
 
 def plot_re_im_timestep(psi_fields, t_index=0, dt=1.0, dx=1.0):
@@ -122,7 +122,7 @@ def plot_re_im_timestep(psi_fields, t_index=0, dt=1.0, dx=1.0):
 
     plt.tight_layout()
     plt.savefig(output_dir + f"/re_im_timestep={t_index}.pdf")
-    plt.show()
+    # plt.show()
 
 
 
