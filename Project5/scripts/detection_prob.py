@@ -30,7 +30,7 @@ def plot_screen_distribution(prob_fields, dt, T, filename, x_screen=0.8, L=1.0, 
     t_index = int(T / dt)
     field = prob_fields[t_index]      
     M = field.shape[0]
-    dx = L / (M)
+    dx = L / (M-1) # same as h
     
 
     # index to find x_screen

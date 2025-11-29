@@ -49,6 +49,5 @@ def read_prob_file(filename):
 
     M = prob_fields[0].shape 
     h = 1.0/(M[0] - 1)
-    prob_fields = np.array(prob_fields) * h * h  # normalize
 
     return prob_fields

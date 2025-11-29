@@ -51,7 +51,7 @@ namespace ds {
                 norm_factor += std::norm(psi_ij);
              }
         }
-        norm_factor = std::sqrt(norm_factor * h * h); // normalization factor
+        norm_factor = std::sqrt(norm_factor); // normalization factor
         if (norm_factor > 0.0) {
             #pragma omp parallel for
             for (ds::Index k = 0; k < grid.size(); ++k) {

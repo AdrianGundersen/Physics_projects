@@ -80,7 +80,7 @@ def plot_prob_timestep(psi_fields, t_index=0, dt=1.0, dx=1.0):
     Normalised by the total number of grid points.
     """
     psi = psi_fields[t_index]
-    field = np.abs(psi) ** 2 / psi.size
+    field = np.abs(psi) ** 2
 
     plt.figure()
     im = plt.imshow(field, origin="lower", extent=[0, field.shape[1]*dx, 0, field.shape[0]*dx])
@@ -89,6 +89,7 @@ def plot_prob_timestep(psi_fields, t_index=0, dt=1.0, dx=1.0):
     plt.ylabel(r"$x$")
     plt.tight_layout()
     plt.savefig(output_dir + f"/probability_density_timestep={t_index}.pdf")
+    print("Saved figure:", output_dir + f"/probability_density_timestep={t_index}.pdf")
     # plt.show()
 
 
@@ -122,6 +123,7 @@ def plot_re_im_timestep(psi_fields, t_index=0, dt=1.0, dx=1.0):
 
     plt.tight_layout()
     plt.savefig(output_dir + f"/re_im_timestep={t_index}.pdf")
+    print("Saved figure:", output_dir + f"/re_im_timestep={t_index}.pdf")
     # plt.show()
 
 
