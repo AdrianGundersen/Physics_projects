@@ -8,7 +8,7 @@ CXX  ?= g++
 MODE ?= release          # release | debug
 ARCH ?=                  # e.g. -march=native
 
-CXXFLAGS := -std=c++20 -Wall -Wextra -fopenmp $(ARCH)
+CXXFLAGS := -std=c++20 -Wall -Wextra -fopenmp -larmadillo $(ARCH)
 ifeq ($(MODE),release)
 CXXFLAGS += -O3
 else ifeq ($(MODE),debug)
@@ -30,10 +30,13 @@ SRC_CORE := \
 
 APP_MAIN := src/main.cpp
 BIN_MAIN := $(BIN_DIR)/ds_solver
-CONFIG   ?= configs/configs.json
+CONFIG   ?= configs/configs.
+
+APP_MATRIX := src/matrix_printer.cpp
+BIN_MATRIX := $(BIN_DIR)/matrix_printer.exe
 
 # --- Aggregate ---
-APPS := $(BIN_MAIN)
+APPS := $(BIN_MAIN) $(BIN_MATRIX)
 
 # --- Build rules (single-step link, no object dir) ---
 $(BIN_DIR):
@@ -45,12 +48,17 @@ $(OUT_DIR):
 $(BIN_MAIN): $(SRC_CORE) $(APP_MAIN) | $(BIN_DIR)
 	$(CXX) $(CXXFLAGS) $(INCLUDE) $^ -o $@ $(LDFLAGS)
 
+$(BIN_MATRIX): $(APP_MATRIX) | $(BIN_DIR)
+	$(CXX) $(CXXFLAGS) $(INCLUDE) $^ -o $@ $(LDFLAGS)
+
 # --- Top-level ---
 all: $(APPS) | $(OUT_DIR)
 
 run: $(BIN_MAIN)
 	./$(BIN_MAIN) $(CONFIG)
 
+run-printer: $(BIN_MATRIX)
+	./$(BIN_MATRIX)
 # --- Utilities ---
 clean:
 	rm -rf $(BIN_DIR)
