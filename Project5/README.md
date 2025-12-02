@@ -1,6 +1,6 @@
 
 
-# Project 5 - The Time-Dependent Schrödinger Equation in 2D & The Double Slit Experiment
+# The Time-Dependent Schrödinger Equation in 2D & The Double Slit Experiment
 
 ## Description
 We simulate the time-dependent Schrödinger equation on a 2D grid using the Crank-Nicolson method. The simulation focuses on the double slit experiment, demonstrating wavefunction evolution and interference patterns. 
