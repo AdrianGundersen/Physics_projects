@@ -1,7 +1,7 @@
 #include <armadillo>
 using namespace arma;
 
-inline int pos(int i, int j, int m) { return j*m + i; }
+inline int pos(int i, int j, int m) { return i*m + j; }
 
 void build_AB(int M, double h, double dt, const mat& V, cx_mat& A, cx_mat& B)
 {
