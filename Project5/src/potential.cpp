@@ -13,7 +13,6 @@ namespace ds {
         Real mass = ds::mass;
         V.values.resize(MM);
 
-
         if (potential_params.type == "harmonic") {
             const Real omega = potential_params.frequency;
 
@@ -34,6 +33,7 @@ namespace ds {
         }
         const ds::SlitsParams Slit = potential_params.slits;
         
+        // build barrier with slits if enabled
         if (Slit.enabled) {
             const Real V0 = potential_params.V0;
 

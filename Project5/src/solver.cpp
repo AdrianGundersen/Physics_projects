@@ -27,7 +27,6 @@ namespace ds {
         ds::Real norm_factor = 0.0;
 
         // Fill v_curr with unormalized Gaussian
-        //#pragma omp parallel for collapse(2) reduction(+:norm_factor)
         for (ds::Index i = 0; i < M; ++i) {
              const ds::Real x = static_cast<ds::Real>(i) * h;
              for (ds::Index j = 0; j < M; ++j) {
@@ -59,7 +58,7 @@ namespace ds {
             }
         }
     }
-
+    // calculkate probability density |psi|^2, not used as we write out wavefunction directly
     void probability_density(const ds::solver::SolverData& data, ds::rvec& prob_density, const ds::Grid& grid) { // |psi|^2
         const ds::Index size = data.v_curr.size();
         #pragma omp parallel for
@@ -67,7 +66,7 @@ namespace ds {
             prob_density[k] = std::norm(data.v_curr[k]) * grid.h * grid.h; // multiply by area element
         }
     }
-} // namespace
+} // namespace ds
 
 namespace ds::solver {
     void precompute_coeff(SolverData& data,

@@ -5,11 +5,15 @@
 High level:
 
 1. SolverData struct to hold current and next solution vector, RHS, and precomputed coeffs.
-2. precompute_coeff function to calculate coefficients based on simulation params, grid, and potential.
-3. build_RHS function to construct the right-hand side vector for the linear system.
-4. jacobi_solve function to iteratively solve the linear system using the Jacobi method
-5. crank_nicolson_step function to perform a single Crank-Nicolson time step.
-6. simulation function to run the entire simulation loop. 
+2. build_AB function to construct the full A and B matrices as required by the task.
+3. precompute_coeff function to calculate coefficients based on simulation params, grid, and potential.
+4. build_RHS function to construct the right-hand side vector for the linear system.
+5. jacobi_solve function to iteratively solve the linear system using the Jacobi method.
+6. gauss_seidel_solve function to iteratively solve the linear system using the Gauss-Seidel method.
+7. crank_nicolson_step function to perform a single Crank-Nicolson time step.
+8. initialize_wavefunction function to set up the initial wavefunction.
+9. probability_density function to compute the probability density from the wavefunction.
+10. simulation function to run the entire simulation loop. 
 
 */
 
@@ -39,14 +43,13 @@ namespace ds::solver {
 
     void jacobi_solve(SolverData& data, const ds::Grid& grid, Index max_iters, Real tol);
 
+    void gauss_seidel_solve(SolverData& data, const ds::Grid& grid, Index max_iters, Real tol);
+
     void crank_nicolson_step(SolverData& data,
                             const ds::simParams& params,
                             const ds::Grid& grid,
                             const ds::Potential& V,
                             const ds::SolverParams& solver_params);
-
-    void gauss_seidel_solve(SolverData& data, const ds::Grid& grid, Index max_iters, Real tol);
-
 } // namespace ds::solver
 
 namespace ds {

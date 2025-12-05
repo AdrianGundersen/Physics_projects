@@ -45,10 +45,11 @@ int main(int argc, char** argv) { // argc and argv to get JSON file path (argc i
     std::string filename;
     std::string filename_wavefunction;
 
-    double start_time = omp_get_wtime();
-    ds::params_from_json(j, sim_params, grid, solver_params, potential_params, output_params);
-    ds::simulation(sim_params, grid, solver_params, potential_params, output_params);
+    double start_time = omp_get_wtime();    // start timer
+    ds::params_from_json(j, sim_params, grid, solver_params, potential_params, output_params);  // pulling params from JSON
+    ds::simulation(sim_params, grid, solver_params, potential_params, output_params);   // run simulation
 
+    // end timer and print total time
     double end_time = omp_get_wtime();
     double total_time = end_time - start_time;
     int hours = static_cast<int>(total_time) / 3600;
