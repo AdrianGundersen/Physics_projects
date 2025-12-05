@@ -5,15 +5,14 @@
 High level:
 
 1. SolverData struct to hold current and next solution vector, RHS, and precomputed coeffs.
-2. build_AB function to construct the full A and B matrices as required by the task.
-3. precompute_coeff function to calculate coefficients based on simulation params, grid, and potential.
-4. build_RHS function to construct the right-hand side vector for the linear system.
-5. jacobi_solve function to iteratively solve the linear system using the Jacobi method.
-6. gauss_seidel_solve function to iteratively solve the linear system using the Gauss-Seidel method.
-7. crank_nicolson_step function to perform a single Crank-Nicolson time step.
-8. initialize_wavefunction function to set up the initial wavefunction.
-9. probability_density function to compute the probability density from the wavefunction.
-10. simulation function to run the entire simulation loop. 
+2. precompute_coeff function to calculate coefficients based on simulation params, grid, and potential.
+3. build_RHS function to construct the right-hand side vector for the linear system.
+4. jacobi_solve function to iteratively solve the linear system using the Jacobi method.
+5. gauss_seidel_solve function to iteratively solve the linear system using the Gauss-Seidel method.
+6. crank_nicolson_step function to perform a single Crank-Nicolson time step.
+7. initialize_wavefunction function to set up the initial wavefunction.
+8. probability_density function to compute the probability density from the wavefunction.
+9. simulation function to run the entire simulation loop. 
 
 */
 
@@ -31,9 +30,6 @@ namespace ds::solver {
         ds::cvec invD;
         Complex beta;
     };
-    
-
-    void build_AB(const SolverData& data, const ds::Grid& grid, cvec& A, cvec& B); // build full A and B matrices as the task requires
 
     void precompute_coeff(SolverData& data, const ds::simParams& params, 
                         const ds::Grid& grid, const ds::Potential& V);
