@@ -27,14 +27,46 @@ $$
 
 where
 
- $$
+$$
 \mathcal{L} = \mathrm{i}\Delta - \mathrm{i} V(x,y)
 $$
 
 
 ## Project Structure
 ```text
-
+Project5/
+├── Makefile                 # Build targets for solver binaries and helpers
+├── README.md                # Project overview and usage notes
+├── PROJECT_PLAN.md          # Internal scope/timeline notes
+├── configs/                 # JSON configs for reproducible runs
+│   ├── configs.json         # Default double-slit run
+│   ├── double_slit.json     # Two-slit configuration
+│   ├── no_slit_p7.json      # Closed-wall baseline
+│   ├── single_slit.json     # Single-slit configuration
+│   ├── slit_p7.json         # Variant slit setup
+│   └── triple_slit.json     # Three-slit configuration
+├── include/                 # C++ headers
+│   ├── constants.hpp        # Common typedefs and constants
+│   ├── io.hpp               # JSON parsing and I/O helpers
+│   ├── potential.hpp        # Potential builders (walls, slits, harmonic)
+│   └── solver.hpp           # Crank-Nicolson solver interface
+├── src/                     # C++ implementations
+│   ├── io.cpp               # JSON -> params and file writing
+│   ├── main.cpp             # Entry point for running simulations
+│   ├── matrix_printer.cpp   # Builds/prints A,B matrices for reporting
+│   ├── potential.cpp        # Potential and slit-mask construction
+│   └── solver.cpp           # Time stepping and iterative linear solves
+├── bin/                     # Compiled executables (generated)
+│   ├── ds_solver            # Main simulation binary
+│   └── matrix_printer.exe   # Matrix builder/printout utility
+├── scripts/                 # Python analysis and visualization
+│   ├── animate.py           # Probability-density animation
+│   ├── detection_prob.py    # Detection probability over time
+│   ├── io_python.py         # File-loading helpers for outputs
+│   ├── plot_snapshots.py    # Save snapshot frames
+│   └── plot_total_prob.py   # Probability conservation check
+├── output/                  # Simulation outputs (generated)
+│   └── wavefunction_2slit.txt # Example wavefunction dump
 ```
 
 ## Plot Config overview
@@ -72,7 +104,7 @@ make help
 
 
 **Example**
-How we did the first search for peaks at $L=20$.
+Double slit from `config.json`
 ```json
 {
     "grid" : {
@@ -91,12 +123,12 @@ How we did the first search for peaks at $L=20$.
 
     },
     "output" : {
-        "file_name" : "output/probability_density_p8.txt",                  # file for probability density output (not used, to use uncomment in solver.cpp)
-        "file_name_wavefunction" : "output/wavefunction_single_slit.txt",   # file for wavefunction output    
+        "file_name" : "output/probability_density_double.txt",                  # file for probability density output (not used, to use uncomment in solver.cpp)
+        "file_name_wavefunction" : "output/wavefunction_single_double.txt",   # file for wavefunction output    
         "precision" : 8                                                     # output precision
     },
     "solver" : {
-        "method" : "jacobi",     # solver method (only jacobi/gauss_seidel implemented)
+        "method" : "gauss_seidel",     # solver method (only jacobi/gauss_seidel implemented)
         "tolerance" : 1e-4,      # solver tolerance for jacobi
         "max_iterations" : 2000  # max iterations for jacobi
     },
@@ -110,7 +142,7 @@ How we did the first search for peaks at $L=20$.
         "wall_center" : 0.5,     # center position of wall in x
         "wall_thickness" : 0.02, # thickness of wall in x
         "slit_aperture" : 0.05,  # aperture of slits
-        "num_slits" : 1,         # number of slits
+        "num_slits" : 2,         # number of slits
         "slit_spacing" : 0.05    # spacing between slits
     },
     "parallelization" : {
@@ -153,22 +185,55 @@ make <target>
 ```
 
 ### Run
+To run with the basic config file `config.json`:
+```bash
+make run
+```
+To run with spesific config file:
+```bash
+./bin/ds_solver configs/<file>
+```
+To print out a simple $ m\times m $ matrix:
+```bash
+make run-printer
+```
 
 
-### Plotting
+## Plotting
 
-### What different scripts do
+- The scripts read `output/wavefunction_*.txt` produced by simulations. Edit the filename variables in each script for your run. All figures saves PNG to `output/figures/`
+- Animate probability density to GIF (defaults to `output/wavefunction_p8_.txt`):
+  ```bash
+  python3 scripts/animate.py
+  ```
+- Probability conservation check (defaults to `wavefunction_slit_p7.txt` and `wavefunction_no_slit.txt`):
+  ```bash
+  python3 scripts/plot_total_prob.py
+  ```
+- Detection screen distribution at `x_screen`. Adjust `filename_siffices`, `dt`, `T` and `L` according to generated the used config file. (defaults to `wavefunction_{1slit,2slit,3slit}.txt`):
+  ```bash
+  python3 scripts/detection_prob.py
+  ```
+- Snapshots of $|\Psi|^2$, Re(psi), Im(psi) at selected times. Adjust `T` for snapshots at different times.         (defaults to `wavefunction_2slit.txt`):
+  ```bash
+  python3 scripts/plot_snapshots.py
+  ```
 
-**Simulation apps**
-
-**Plotting and analysis utilities (Python)**
-
-
-## Important parameters for reproducability
-
+### Important parameters to reproduce report figures
+All other parameters not listed is unchanged as in the example of `config.json`
+- Total probability (free propagation): `./bin/ds_solver configs/no_slit_p7.json` → `python3 scripts/plot_total_prob.py` 
+    * N = 321, sigma_y = 0.05, V0 = 0.
+- Total probability (double slit): `./bin/ds_solver configs/slit_p7.json` → `python3 scripts/plot_total_prob.py` 
+    *  N = 321, sigma_y = 0.05, V0 = 1e10, two slits.
+- Snapshots (Re/Im and $|\Psi|^2$ at t = 0, 0.01, 0.02): `./bin/ds_solver configs/double_slit.json` → `python3 scripts/plot_snapshots.py`  
+    * N = 81, sigma_y = 0.2, V0 = 1e10, two slits.
+    * T = {0.0, 0.001, 0.002} in python
+- Detection screen distributions: run single/double/triple slit configs (`configs/single_slit.json`, `configs/double_slit.json`, `configs/triple_slit.json`) → `python3 scripts/detection_prob.py` for 8 slits, adjust adjust teh number of slits in any of the files. 
+    * N = 81, sigma_y = 0.2, V0 = 1e10, slits = {1,2,3,8}
+    * T = 0.002, x_screen = 0.8, L = 1.0 in Python
 
 ## Future work
-
+* GPU parallellization. 
 ## Declaration of Use of Generative AI
 
 In this scientific work, generative artificial intelligence (AI) has been used. All data and personal information have been processed in accordance with the University of Oslo’s regulations, and we, as the authors of the document, take full responsibility for its content, claims, and references. An overview of the use of generative AI is provided below.

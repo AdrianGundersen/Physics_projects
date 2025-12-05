@@ -1,4 +1,4 @@
-# Makefile — FYS3150 Project 5 Schrödinger CN solver
+# Makefile - Schrödinger CN solver
 
 SHELL := /bin/bash
 .DEFAULT_GOAL := help
