@@ -8,7 +8,7 @@ CXX  ?= g++
 MODE ?= release          # release | debug
 ARCH ?=                  # e.g. -march=native
 
-CXXFLAGS := -std=c++20 -Wall -Wextra -fopenmp -larmadillo $(ARCH)
+CXXFLAGS := -std=c++20 -Wall -Wextra -fopenmp $(ARCH)
 ifeq ($(MODE),release)
 CXXFLAGS += -O3
 else ifeq ($(MODE),debug)
