@@ -28,7 +28,7 @@ $$
 where
 
 $$
-\mathcal{L} = \mathrm{i}\Delta - \mathrm{i} V(x,y)
+\mathcal{L} = \mathrm{i}\mathbf{\Delta} - \mathrm{i} V(x,y)
 $$
 
 
