@@ -18,7 +18,8 @@
     "output": {
         "file_name": "output/probability_density_no_slit.txt",
         "file_name_wavefunction": "output/wavefunction_no_slit.txt",
-        "precision": 12
+        "precision": 12,
+        "write_interval": 1
     },
 
     "solver": {

@@ -221,14 +221,14 @@ make run-printer
 
 ### Important parameters to reproduce report figures
 All other parameters not listed is unchanged as in the example of `config.json`
-- Total probability (free propagation): `./bin/ds_solver configs/no_slit_p7.json` → `python3 scripts/plot_total_prob.py` 
+- Total probability (free propagation): `./bin/ds_solver configs/slit_p7.json` and `./bin/ds_solver configs/no_slit_p7.json` $\rightarrow$ `python3 scripts/plot_total_prob.py` 
     * N = 321, sigma_y = 0.05, V0 = 0.
-- Total probability (double slit): `./bin/ds_solver configs/slit_p7.json` → `python3 scripts/plot_total_prob.py` 
+- Total probability (double slit): `./bin/ds_solver configs/slit_p7.json` $\rightarrow$ `python3 scripts/plot_total_prob.py` 
     *  N = 321, sigma_y = 0.05, V0 = 1e10, two slits.
-- Snapshots (Re/Im and $|\Psi|^2$ at t = 0, 0.01, 0.02): `./bin/ds_solver configs/double_slit.json` → `python3 scripts/plot_snapshots.py`  
+- Snapshots (Re/Im and $|\Psi|^2$ at t = 0, 0.01, 0.02): `./bin/ds_solver configs/slit_p7.json` $\rightarrow$ `python3 scripts/plot_snapshots.py`  
     * N = 81, sigma_y = 0.2, V0 = 1e10, two slits.
     * T = {0.0, 0.001, 0.002} in python
-- Detection screen distributions: run single/double/triple slit configs (`configs/single_slit.json`, `configs/double_slit.json`, `configs/triple_slit.json`) → `python3 scripts/detection_prob.py` for 8 slits, adjust adjust teh number of slits in any of the files. 
+- Detection screen distributions: run single/double/triple slit configs (`configs/single_slit.json`, `configs/double_slit.json`, `configs/triple_slit.json`) $\rightarrow$ `python3 scripts/detection_prob.py` for 8 slits, adjust adjust teh number of slits in any of the files. 
     * N = 81, sigma_y = 0.2, V0 = 1e10, slits = {1,2,3,8}
     * T = 0.002, x_screen = 0.8, L = 1.0 in Python
 
