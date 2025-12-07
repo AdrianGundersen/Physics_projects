@@ -87,7 +87,7 @@ def plot_prob_timestep(psi_fields, t_index=0, dt=1.0, dx=1.0):
     field = np.abs(psi) ** 2
     plt.figure()
     im = plt.imshow(field, origin="lower", extent=[0, field.shape[1]*dx, 0, field.shape[0]*dx])
-    plt.colorbar(im, label=r"$|v_{ij}^{n}|^2$")
+    plt.colorbar(im, label=rf"$|v_{{ij}}^{{{t_index}}}|^2$")
     plt.xlabel(r"$y$")
     plt.ylabel(r"$x$")
     plt.tight_layout()
@@ -110,19 +110,19 @@ def plot_re_im_timestep(psi_fields, t_index=0, dt=1.0, dx=1.0):
         origin="lower",
         extent=[0, psi.shape[1] * dx, 0, psi.shape[0] * dx]
     )
-    plt.colorbar(im_re, ax=axes[0], label=r"$\Re(v_{ij}^{n})$")
+    plt.colorbar(im_re, ax=axes[0], label=rf"$\Re(v_{{ij}}^{{{t_index}}})$")
     axes[0].set_ylabel(r"$x$")
-    axes[0].set_title(r"Real part $\,\Re(v_{ij}^{n})$")
+    axes[0].set_title(rf"Real part $\,\Re(v_{{ij}}^{{{t_index}}})$")
 
     im_im = axes[1].imshow(
         psi.imag,
         origin="lower",
         extent=[0, psi.shape[1] * dx, 0, psi.shape[0] * dx]
     )
-    plt.colorbar(im_im, ax=axes[1], label=r"$\Im(v_{ij}^{n})$")
+    plt.colorbar(im_im, ax=axes[1], label=rf"$\Im(v_{{ij}}^{{{t_index}}})$")
     axes[1].set_xlabel(r"$y$")
     axes[1].set_ylabel(r"$x$")
-    axes[1].set_title(r"Imaginary part $\,\Im(v_{ij}^{n})$")
+    axes[1].set_title(rf"Imaginary part $\,\Im(v_{{ij}}^{{{t_index}}})$")
 
     plt.tight_layout()
     plt.savefig(output_dir + f"/re_im_timestep={t_index}.pdf")
