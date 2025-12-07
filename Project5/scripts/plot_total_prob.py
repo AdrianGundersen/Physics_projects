@@ -6,14 +6,14 @@ from io_python import read_prob_file
 # plotting style
 plt.rcParams.update({
     'font.family': 'serif',
-    'font.size': 12,
+    'font.size': 14,
     'figure.figsize': (6, 4),
-    'axes.titlesize': 14,
-    'axes.labelsize': 20,
-    'xtick.labelsize': 12,
-    'ytick.labelsize': 12,
+    'axes.titlesize': 16,
+    'axes.labelsize': 16,
+    'xtick.labelsize': 16,
+    'ytick.labelsize': 16,
     'lines.linewidth': 2.0,
-    'legend.fontsize': 14,
+    'legend.fontsize': 18,
     'figure.dpi': 300,
 })
 
