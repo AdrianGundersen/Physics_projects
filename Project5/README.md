@@ -221,10 +221,10 @@ make run-printer
 
 ### Important parameters to reproduce report figures
 All other parameters not listed is unchanged as in the example of `config.json`
-- Total probability (free propagation): `./bin/ds_solver configs/slit_p7.json` and `./bin/ds_solver configs/no_slit_p7.json` $\rightarrow$ `python3 scripts/plot_total_prob.py` 
+- Total probability (free propagation):  `./bin/ds_solver configs/no_slit_p7.json` $\rightarrow$ `python3 scripts/plot_total_prob.py` 
     * N = 321, sigma_y = 0.05, V0 = 0.
 - Total probability (double slit): `./bin/ds_solver configs/slit_p7.json` $\rightarrow$ `python3 scripts/plot_total_prob.py` 
-    *  N = 321, sigma_y = 0.05, V0 = 1e10, two slits.
+    *  N = 321, sigma_y = 0.1, V0 = 1e10, two slits.
 - Snapshots (Re/Im and $|\Psi|^2$ at t = 0, 0.01, 0.02): `./bin/ds_solver configs/slit_p7.json` $\rightarrow$ `python3 scripts/plot_snapshots.py`  
     * N = 81, sigma_y = 0.2, V0 = 1e10, two slits.
     * T = {0.0, 0.001, 0.002} in python
