@@ -1,22 +1,26 @@
 import numpy as np
+import matplotlib
+matplotlib.use("Agg") 
 import matplotlib.pyplot as plt
 import os
 from io_python import read_prob_file
 
 # plotting style
 plt.rcParams.update({
-    'font.family': 'serif',
-    'font.size': 14,
+    "text.usetex": False, 
+    "font.family": "serif",
+    "font.serif": ["DejaVu Serif"],
+    "mathtext.fontset": "cm",        
+    'font.size': 16,
     'figure.figsize': (6, 4),
-    'axes.titlesize': 16,
-    'axes.labelsize': 16,
+    'axes.titlesize': 20,
+    'axes.labelsize': 20,
     'xtick.labelsize': 16,
     'ytick.labelsize': 16,
     'lines.linewidth': 2.0,
     'legend.fontsize': 18,
     'figure.dpi': 300,
 })
-
 # make output/figures directory
 output_dir = "output/figures"
 os.makedirs(output_dir, exist_ok=True)

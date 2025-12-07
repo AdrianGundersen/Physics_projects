@@ -1,5 +1,7 @@
 import numpy as np
 import matplotlib
+matplotlib.use("Agg") 
+import matplotlib
 import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
 from io_python import read_prob_file

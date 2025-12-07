@@ -1,15 +1,20 @@
 import numpy as np
+import matplotlib
+matplotlib.use("Agg") 
 import matplotlib.pyplot as plt
 import os
 from io_python import read_prob_file
 
 # plotting style
 plt.rcParams.update({
-    'font.family': 'serif',
-    'font.size': 14,
+    "text.usetex": False, 
+    "font.family": "serif",
+    "font.serif": ["DejaVu Serif"],
+    "mathtext.fontset": "cm",        
+    'font.size': 16,
     'figure.figsize': (6, 4),
-    'axes.titlesize': 16,
-    'axes.labelsize': 16,
+    'axes.titlesize': 20,
+    'axes.labelsize': 20,
     'xtick.labelsize': 16,
     'ytick.labelsize': 16,
     'lines.linewidth': 2.0,
@@ -60,7 +65,7 @@ def plot_screen_distribution(prob_fields, dt, T, filename, x_screen=0.8, L=1.0, 
 
 if __name__ == "__main__":
     filenames_prefix = "output/wavefunction"
-    filename_suffices = ["1slit", "2slit", "3slit"]
+    filename_suffices = ["1slit", "2slit", "3slit", "8slit"]
     
     dt = 2.5e-5
     T = 0.002
