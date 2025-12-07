@@ -40,8 +40,8 @@ def plot(prob_fields, output_dir_prefix=None):
     plt.ylabel("Total Probability")
     plt.grid()
     plt.tight_layout()
-    plt.savefig(f"{output_dir_prefix}_total_prob.png")
-    plt.show()
+    plt.savefig(f"{output_dir_prefix}_total_prob.pdf")
+    #plt.show()
 
     # histogram
     mean = np.mean(dp)
@@ -56,8 +56,8 @@ def plot(prob_fields, output_dir_prefix=None):
     plt.xlabel(r"$P(t)-P(0)$")
     plt.ylabel("Count")
     plt.tight_layout()
-    plt.savefig(f"{output_dir_prefix}_hist.png")
-    plt.show()
+    plt.savefig(f"{output_dir_prefix}_hist.pdf")
+    #plt.show()
     return total_probs
 
 if __name__ == "__main__":
