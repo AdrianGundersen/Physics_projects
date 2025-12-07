@@ -129,7 +129,7 @@ Double slit from `config.json`
     },
     "solver" : {
         "method" : "gauss_seidel",     # solver method (only jacobi/gauss_seidel implemented)
-        "tolerance" : 1e-4,      # solver tolerance for jacobi
+        "tolerance" : 1e-10,      # solver tolerance for jacobi
         "max_iterations" : 2000  # max iterations for jacobi
     },
     "potential" : {
