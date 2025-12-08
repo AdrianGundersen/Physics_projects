@@ -31,7 +31,9 @@ $$
 \mathcal{L} = \mathrm{i}\mathbf{\Delta} - \mathrm{i} V(x,y)
 $$
 
-
+## Animation
+![Double slit similation running for $T=0.008$](probability_animation_2slit.gif)
+Double slit similation running for $T=0.008$ using the config example `config.json` listed below.
 ## Project Structure
 ```text
 Project5/
@@ -112,7 +114,7 @@ Double slit from `config.json`
         "L" : 1             # length of box domain
     },
     "simulation" : {
-        "N" : 81,           # total number of time steps t0, ... tN
+        "N" : 321,           # total number of time steps t0, ... tN
         "dt" : 2.5e-5,      # time step size
         "xC" : 0.25,        # x center of initial wave packet
         "sigma_x" : 0.05,   # standard deviation in x
@@ -123,8 +125,8 @@ Double slit from `config.json`
 
     },
     "output" : {
-        "file_name" : "output/probability_density_double.txt",                  # file for probability density output (not used, to use uncomment in solver.cpp)
-        "file_name_wavefunction" : "output/wavefunction_single_double.txt",   # file for wavefunction output    
+        "file_name" : "output/probability_.txt",                  # file for probability density output (not used, to use uncomment in solver.cpp)
+        "file_name_wavefunction" : "output/wavefunction_.txt",   # file for wavefunction output    
         "precision" : 8                                                     # output precision
     },
     "solver" : {
@@ -202,7 +204,7 @@ make run-printer
 ## Plotting
 
 - The scripts read `output/wavefunction_*.txt` produced by simulations. Edit the filename variables in each script for your run. All figures saves PNG to `output/figures/`
-- Animate probability density to GIF (defaults to `output/wavefunction_2slit.txt`):
+- Animate probability density to GIF (defaults to `output/wavefunction_.txt`):
   ```bash
   python3 scripts/animate.py
   ```
@@ -231,8 +233,8 @@ All other parameters not listed is unchanged as in the example of `config.json`
 - Detection screen distributions: run single/double/triple slit configs (`configs/single_slit.json`, `configs/double_slit.json`, `configs/triple_slit.json`) $\rightarrow$ `python3 scripts/detection_prob.py` for 8 slits, adjust adjust teh number of slits in any of the files. 
     * N = 81, sigma_y = 0.2, V0 = 1e10, slits = {1,2,3,8}
     * T = 0.002, x_screen = 0.8, L = 1.0 in Python
-- Animation in `README.md`: `configs/double_slit.json`
-    * N = 321, sigma_y = 0.2, V0 = 1e10
+- Animation in `README.md`: `configs/config.json` $\rightarrow$ `python3 scripts/animate.py`
+    * N = 321, sigma_y = 0.2, V0 = 1e10, two slits
 
 ## Future work
 * GPU parallellization. 

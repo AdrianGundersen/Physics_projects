@@ -4,7 +4,7 @@
         "L" : 1
     },
     "simulation" : {
-        "N" : 200,
+        "N" : 321,
         "dt" : 2.5e-5,
         "xC" : 0.25,
         "sigma_x" : 0.05,
@@ -15,8 +15,8 @@
 
     },
     "output" : {
-        "file_name" : "output/probability_density_double.txt",
-        "file_name_wavefunction" : "output/wavefunction_double.txt",
+        "file_name" : "output/probability_.txt",
+        "file_name_wavefunction" : "output/wavefunction_.txt",
         "precision": 8,
         "write_interval": 1
     },
