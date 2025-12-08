@@ -11,9 +11,7 @@ One of our main focuses is on how to implement Crank-Nicolson without forming la
 ## Physical Model
 The time-dependent Schrödinger equation in two dimensions is given by:
 
-$$
-\mathrm{i}\hbar \frac{\partial}{\partial t} \ket{\Psi}(x,y,t) = H\ket{\Psi}
-$$
+
 
 $$
 \mathrm{i}\hbar \frac{\partial \Psi(x,y,t)}{\partial t} = -\frac{\hbar^2}{2m} \left( \frac{\partial^2 \Psi(x,y,t)}{\partial x^2} + \frac{\partial^2 \Psi(x,y,t)}{\partial y^2} \right) + V(x,y) \Psi(x,y,t)
