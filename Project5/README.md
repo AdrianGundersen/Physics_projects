@@ -202,7 +202,7 @@ make run-printer
 ## Plotting
 
 - The scripts read `output/wavefunction_*.txt` produced by simulations. Edit the filename variables in each script for your run. All figures saves PNG to `output/figures/`
-- Animate probability density to GIF (defaults to `output/wavefunction_p8_.txt`):
+- Animate probability density to GIF (defaults to `output/wavefunction_2slit.txt`):
   ```bash
   python3 scripts/animate.py
   ```
@@ -231,6 +231,8 @@ All other parameters not listed is unchanged as in the example of `config.json`
 - Detection screen distributions: run single/double/triple slit configs (`configs/single_slit.json`, `configs/double_slit.json`, `configs/triple_slit.json`) $\rightarrow$ `python3 scripts/detection_prob.py` for 8 slits, adjust adjust teh number of slits in any of the files. 
     * N = 81, sigma_y = 0.2, V0 = 1e10, slits = {1,2,3,8}
     * T = 0.002, x_screen = 0.8, L = 1.0 in Python
+- Animation in `README.md`: `configs/double_slit.json`
+    * N = 321, sigma_y = 0.2, V0 = 1e10
 
 ## Future work
 * GPU parallellization. 

@@ -88,8 +88,8 @@ def animate_prob(prob_fields, dt=1.0, frame_stride=1):
 
 
 if __name__ == "__main__":
-    filename_suffix = "wavefunction_p8" # problem
-    filename_interfix = "" # or double, multi etc.
+    filename_suffix = "wavefunction" # problem
+    filename_interfix = "2slit" # or double, multi etc.
     filename = f"output/{filename_suffix}_{filename_interfix}.txt"  # adjust path if needed
     prob_fields = read_prob_file(filename)
 
