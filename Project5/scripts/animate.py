@@ -6,6 +6,22 @@ import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
 from io_python import read_prob_file
 
+# plotting style
+plt.rcParams.update({
+    "text.usetex": False, 
+    "font.family": "serif",
+    "font.serif": ["DejaVu Serif"],
+    "mathtext.fontset": "cm",        
+    'font.size': 16,
+    'figure.figsize': (6, 4),
+    'axes.titlesize': 20,
+    'axes.labelsize': 20,
+    'xtick.labelsize': 16,
+    'ytick.labelsize': 16,
+    'lines.linewidth': 2.0,
+    'legend.fontsize': 18,
+    'figure.dpi': 300,
+})
 
 def plot_timestep(prob_fields, t_index=0):
     field = prob_fields[t_index]
@@ -45,14 +61,16 @@ def animate_prob(prob_fields, dt=1.0, frame_stride=1):
     img = ax.imshow(first_field, origin="lower", cmap="viridis", norm=norm)
 
     # Axis labels
-    ax.set_xlabel("j", fontsize=fontsize)
-    ax.set_ylabel("i", fontsize=fontsize)
+    ax.set_xlabel(r"$y$", fontsize=fontsize)
+    ax.set_ylabel(r"$x$", fontsize=fontsize)
     ax.tick_params(labelsize=fontsize)
 
     # Colourbar
     cbar = fig.colorbar(img, ax=ax)
-    cbar.set_label(r"$|\psi|^2$", fontsize=fontsize)
+    cbar.set_label(r"$|v_{{ij}}^{{n}}|^2$", fontsize=fontsize)
     cbar.ax.tick_params(labelsize=fontsize)
+
+    fig.tight_layout()
 
     # Time text (in axes coordinates)
     time_txt = ax.text(
@@ -89,7 +107,7 @@ def animate_prob(prob_fields, dt=1.0, frame_stride=1):
 
 if __name__ == "__main__":
     filename_suffix = "wavefunction" # problem
-    filename_interfix = "2slit" # or double, multi etc.
+    filename_interfix = "" # or double, multi etc.
     filename = f"output/{filename_suffix}_{filename_interfix}.txt"  # adjust path if needed
     prob_fields = read_prob_file(filename)
 
