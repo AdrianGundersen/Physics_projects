@@ -225,8 +225,8 @@ All other parameters not listed is unchanged as in the example of `config.json`
     * N = 321, sigma_y = 0.05, V0 = 0.
 - Total probability (double slit): `./bin/ds_solver configs/slit_p7.json` $\rightarrow$ `python3 scripts/plot_total_prob.py` 
     *  N = 321, sigma_y = 0.1, V0 = 1e10, two slits.
-- Snapshots (Re/Im and $|\Psi|^2$ at t = 0, 0.01, 0.02): `./bin/ds_solver configs/slit_p7.json` $\rightarrow$ `python3 scripts/plot_snapshots.py`  
-    * N = 81, sigma_y = 0.2, V0 = 1e10, two slits.
+- Snapshots (Re/Im and $|\Psi|$ at t = 0, 0.01, 0.02): `./bin/ds_solver configs/single_slit.json` and `./bin/ds_solver configs/double_slit.json` $\rightarrow$ `python3 scripts/plot_snapshots.py`  
+    * N = 81, sigma_y = 0.2, V0 = 1e10, slits = {1,2}.
     * T = {0.0, 0.001, 0.002} in python
 - Detection screen distributions: run single/double/triple slit configs (`configs/single_slit.json`, `configs/double_slit.json`, `configs/triple_slit.json`) $\rightarrow$ `python3 scripts/detection_prob.py` for 8 slits, adjust adjust teh number of slits in any of the files. 
     * N = 81, sigma_y = 0.2, V0 = 1e10, slits = {1,2,3,8}
