@@ -95,11 +95,33 @@ def plot_prob_timestep(psi_fields, t_index=0, dt=1.0, dx=1.0):
     print("Saved figure:", output_dir + f"/probability_density_timestep={t_index}.pdf")
     # plt.show()
 
+def plot_prob_timestep_zoom_square(psi_fields, t_index=0, dt=1.0, dx=1.0, zoom=False, preffix=""):
+    """
+    Plot probability density |psi|^2 for a given timestep index.
+    Normalised by the total number of grid points.
+    """
+    psi_fields = np.sqrt(psi_fields)
+    psi = psi_fields[t_index]
+    field = np.abs(psi) ** 2
+    plt.figure()
+    im = plt.imshow(field, origin="lower", extent=[0, field.shape[1]*dx, 0, field.shape[0]*dx])
+    if zoom==True:
+        plt.xlim(0.3, 0.7)
+        plt.ylim(0.3, 0.7) 
+    plt.colorbar(im, label=rf"$|v_{{ij}}^{{{t_index}}}|$")
+    plt.xlabel(r"$y$")
+    plt.ylabel(r"$x$")
+    plt.tight_layout()
+    plt.savefig(output_dir + f"/probability_density_timestep_{preffix}={t_index}.pdf")
+    print("Saved figure:", output_dir + f"/probability_density_timestep_{preffix}={t_index}.pdf")
+    # plt.show()
+
 
 def plot_re_im_timestep(psi_fields, t_index=0, dt=1.0, dx=1.0):
     """
     Plot colourmaps of Re(psi_ij) and Im(psi_ij) for a given timestep index.
     """
+    psi_fields = np.sqrt(psi_fields)  # rescale for better visibility
     psi = psi_fields[t_index]
 
     # 2 rows, 1 column
@@ -110,30 +132,62 @@ def plot_re_im_timestep(psi_fields, t_index=0, dt=1.0, dx=1.0):
         origin="lower",
         extent=[0, psi.shape[1] * dx, 0, psi.shape[0] * dx]
     )
-    plt.colorbar(im_re, ax=axes[0], label=rf"$\Re(v_{{ij}}^{{{t_index}}})$")
+    plt.colorbar(im_re, ax=axes[0], label=rf"$\sqrt{{\Re(v_{{ij}}^{{{t_index}}})}}$")
     axes[0].set_ylabel(r"$x$")
-    axes[0].set_title(rf"Real part $\,\Re(v_{{ij}}^{{{t_index}}})$")
+    axes[0].set_title(rf"Real part $\,\sqrt{{\Re(v_{{ij}}^{{{t_index}}})}}$")
 
     im_im = axes[1].imshow(
         psi.imag,
         origin="lower",
         extent=[0, psi.shape[1] * dx, 0, psi.shape[0] * dx]
     )
-    plt.colorbar(im_im, ax=axes[1], label=rf"$\Im(v_{{ij}}^{{{t_index}}})$")
+    plt.colorbar(im_im, ax=axes[1], label=rf"$\sqrt{{\Im(v_{{ij}}^{{{t_index}}})}}$")
     axes[1].set_xlabel(r"$y$")
     axes[1].set_ylabel(r"$x$")
-    axes[1].set_title(rf"Imaginary part $\,\Im(v_{{ij}}^{{{t_index}}})$")
+    axes[1].set_title(rf"Imaginary part $\,\sqrt{{\Im(v_{{ij}}^{{{t_index}}})}}$")
 
     plt.tight_layout()
     plt.savefig(output_dir + f"/re_im_timestep={t_index}.pdf")
     print("Saved figure:", output_dir + f"/re_im_timestep={t_index}.pdf")
     # plt.show()
 
+def plot_re_timestep(psi_fields, t_index=0, dt=1.0, dx=1.0):
+    """
+    Plot colourmap of Re(psi_ij) zoomed in around slit for a given timestep index.
+    """
+    psi_fields = np.sqrt(psi_fields)  # rescale for better visibility
+    psi = psi_fields[t_index]
+
+    fig, ax = plt.subplots(figsize=(6, 4))
+    im_re = ax.imshow(
+        psi.real,
+        origin="lower",
+        extent=[0, psi.shape[1] * dx, 0, psi.shape[0] * dx],
+        interpolation="bilinear",   
+        aspect="equal",
+    )
+
+    ax.set_ylim(0.2, 0.8)
+    ax.set_xlim(0.2, 0.8)
+
+    fig.colorbar(im_re, ax=ax, label=rf"$\sqrt{{\Re(v_{{ij}}^{{{t_index}}})}}$")
+    ax.set_xlabel(r"$y$")
+    ax.set_ylabel(r"$x$")
+    ax.set_title(rf"Real part $\,\sqrt{{\Re(v_{{ij}}^{{{t_index}}})}}$")
+
+    fig.tight_layout()
+    fig.savefig(output_dir + f"/re_zoom_timestep={t_index}.pdf")
+    print("Saved figure:", output_dir + f"/re_zoom_timestep={t_index}.pdf")
+    plt.close(fig)
+
+
 
 
 if __name__ == "__main__":
-    filename = "output/wavefunction_2slit.txt"  # adjust path if needed    
+    filename = "output/wavefunction_2slit.txt"  # adjust path if needed  
+    filename_single = "output/wavefunction_1slit.txt"  # adjust path if needed  
     psi_fields = read_wavefile(filename)
+    psi_fields_single = read_wavefile(filename_single)
     
     dt = 2.5e-5  # time step size in seconds
     T = np.array([0.0, 0.001, 0.002])
@@ -144,6 +198,13 @@ if __name__ == "__main__":
     M = psi_fields[0].shape[0]
     dx = L / M
 
+    zoom = False
     for t_index in t_index_list:
-        plot_prob_timestep(psi_fields, t_index=t_index, dt=dt, dx=dx)
+        if t_index == t_index_list[1]:
+            plot_re_timestep(psi_fields_single, t_index=t_index, dt=dt, dx=dx)
+            zoom = True
+        else:
+            zoom = False
+        plot_prob_timestep_zoom_square(psi_fields, t_index=t_index, dt=dt, dx=dx, preffix="2slit")
         plot_re_im_timestep(psi_fields, t_index=t_index, dt=dt, dx=dx)
+        plot_prob_timestep_zoom_square(psi_fields_single, t_index=t_index, dt=dt, dx=dx, zoom=zoom, preffix="1slit")
