@@ -1,11 +1,13 @@
 
 
-# The Time-Dependent Schrödinger Equation in 2D & The Double Slit Experiment
+# Wave Dynamics through Slits --- A Memory-Efficient Stencil Scheme
 
 ## Description
-We simulate the time-dependent Schrödinger equation on a 2D grid using the Crank-Nicolson method. The simulation focuses on the double slit experiment, demonstrating wavefunction evolution and interference patterns. 
+This repository contaions a 2D solver for the time-dependent Schrödinger equation in slit potentials to study the classical double-slit experiment and related setups. The simulation focuses on the double slit experiment, demonstrating wavefunction evolution and interference patterns. 
 
-One of our main focuses is on how to implement Crank-Nicolson without forming large matrices and doing heavy linear algebra, but use stencil formulas. 
+The core is a matrix free Crank-Nicolson scheme solved with red-black Gauss-Seidel or Jacobi iterator. One of our main focuses is on how to implement Crank-Nicolson without forming large matrixes and doing heavy linear algebra, but use stencil formulas. 
+
+Simulations are configured via JSON files, and are supported by Python scrips to generate animations, probability conservation plots, and detection screen distributions used in the report.
 
 
 ## Physical Model
@@ -27,6 +29,10 @@ where
 
 $$
 \mathcal{L} = \mathrm{i}\mathbf{\Delta} - \mathrm{i} V(x,y)
+$$
+and
+$$
+\mathbf\Delta \equiv \left(\frac{\partial^2}{\partial x^2} + \frac{\partial^2}{\partial y^2}\right), \quad u_t \equiv \frac{\partial}{\partial t}u.
 $$
 
 ## Simulation and Method
