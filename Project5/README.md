@@ -34,6 +34,22 @@ and
 $$
 \mathbf\Delta \equiv \left(\frac{\partial^2}{\partial x^2} + \frac{\partial^2}{\partial y^2}\right), \quad u_t \equiv \frac{\partial}{\partial t}u.
 $$
+We initialize the wavefunction as a Gaussian wave packet:
+$$
+u(x,y,t=0)= \exp\left[-\frac{(x-x_c)^2}{2\sigma_x^2}-\frac{(y-y_c)^2}{2\sigma_y^2}+ ip_x x + ip_y y\right].
+$$
+We also impose a normalization constraint such that
+$$
+\|u\|_2 = 1.
+$$
+and Dirichlet boundary conditions on the edges of the box domain. 
+
+We discretize this into $v_{ij}^n$ in the natural way, with the caveat that our discrete wavefunction is normalized as
+$$
+\|v\|_{2,h}^2 = \langle v, v \rangle_h = \sum_{i,j=0}^{M-1} |v_{ij}|^2 = 1,
+$$
+omiting the $h^2$ factor. We then interpret $|v_{ij}^n|^2$ as the probability at grid point $(i,j)$ and time step $n$, not the probability density.
+
 
 ## Simulation and Method
 We discretize the spatial domain into a grid of size $M \times M$ with spacing $\Delta x = \Delta y = L / (M-1)$, where $L=1.0$ is the length of the box domain. The time domain is discretized into $N$ time steps with step size $\tau$. Our implementation uses the Crank-Nicolson method. We do not form large matrices, but rather use stencil formulas. The linear system is solved iteratively using the red-black Gauss-Seidel method. Jacobi method is also implemented if wanted. 
