@@ -29,6 +29,11 @@ $$
 \mathcal{L} = \mathrm{i}\mathbf{\Delta} - \mathrm{i} V(x,y)
 $$
 
+## Simulation and Method
+We discretize the spatial domain into a grid of size $M \times M$ with spacing $\Delta x = \Delta y = L / (M-1)$, where $L=1.0$ is the length of the box domain. The time domain is discretized into $N$ time steps with step size $\tau$. Our implementation uses the Crank-Nicolson method. We do not form large matrices, but rather use stencil formulas. The linear system is solved iteratively using the red-black Gauss-Seidel method. Jacobi method is also implemented if wanted. 
+
+Our scheme is convergent and stable for all time steps, grid sizes, and potential configurations tested. However, the iterative solver requires a real potential to converge properly. It also converges more slowly for larger grids, and smaller potentials. The relative error and maximum iterations can be adjusted as needed. 
+
 ## Animation
 ![Double slit similation running for $T=0.008$](probability_animation_2slit.gif)
 Double slit similation running for $T=0.008$ using the config example `config.json` listed below.
@@ -76,7 +81,6 @@ Project5/
 
 
 - **C++20 compiler** (e.g. g++ 11 or higher)
-- **Armadillo** (Not used for the main solver, but for solving matrix problems as requested per the project description)
 - **OpenMP** 
 - **Python 3.10+**
 - **nhlomann/json** (header-only C++ JSON library) - included in    `include/` folder
@@ -236,6 +240,9 @@ All other parameters not listed is unchanged as in the example of `config.json`
 
 ## Future work
 * GPU parallellization. 
+* Better iterative solvers
+* More potential configurations.
+* Adaptive time steps.
 ## Declaration of Use of Generative AI
 
 In this scientific work, generative artificial intelligence (AI) has been used. All data and personal information have been processed in accordance with the University of Oslo’s regulations, and we, as the authors of the document, take full responsibility for its content, claims, and references. An overview of the use of generative AI is provided below.
