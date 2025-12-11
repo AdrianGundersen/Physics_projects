@@ -40,9 +40,9 @@ We discretize the spatial domain into a grid of size $M \times M$ with spacing $
 
 Our scheme is convergent and stable for all time steps, grid sizes, and potential configurations tested. However, the iterative solver requires a real potential to converge properly. It also converges more slowly for larger grids, and smaller potentials. The relative error and maximum iterations can be adjusted as needed. 
 
-## Animation
+## Animation of $|v_{ij}^n|^2$ for increasing $T$
 ![Double slit similation running for $T=0.008$](probability_animation_2slit.gif)
-Double slit similation running for $T=0.008$ using the config example `config.json` listed below.
+Double slit similation running for $T=0.008$ using the config example `config.json` listed below. Note the animation is of the full probability propagation $|v_{ij}^n|^2$ not $|v_{ij}^n|$.
 ## Project Structure
 ```text
 Project5/
@@ -69,7 +69,7 @@ Project5/
 │   └── solver.cpp           # Time stepping and iterative linear solves
 ├── bin/                     # Compiled executables (generated)
 │   ├── ds_solver            # Main simulation binary
-│   └── matrix_printer.exe   # Matrix builder/printout utility
+│   └── matrix_printer   # Matrix builder/printout utility
 ├── scripts/                 # Python analysis and visualization
 │   ├── animate.py           # Probability-density animation
 │   ├── detection_prob.py    # Detection probability over time
@@ -77,11 +77,9 @@ Project5/
 │   ├── plot_snapshots.py    # Save snapshot frames
 │   └── plot_total_prob.py   # Probability conservation check
 ├── output/                  # Simulation outputs (generated)
-│   └── wavefunction_2slit.txt # Example wavefunction dump
+│   ├── wavefunction_2slit.txt # Example wavefunction dump
+│   └── figures/
 ```
-
-## Plot Config overview
-
 
 ## Installation and Dependencies
 
@@ -189,11 +187,6 @@ To compile the code to `bin/`, use:
 make all
 ```
 
-or to compile only specific:
-```bash
-make <target>
-```
-
 ### Run
 To run with the basic config file `config.json`:
 ```bash
@@ -230,19 +223,17 @@ make run-printer
   ```
 
 ### Important parameters to reproduce report figures
-All other parameters not listed is unchanged as in the example of `config.json`
-- Total probability (free propagation):  `./bin/ds_solver configs/no_slit_p7.json` $\rightarrow$ `python3 scripts/plot_total_prob.py` 
-    * N = 321, sigma_y = 0.05, V0 = 0.
-- Total probability (double slit): `./bin/ds_solver configs/slit_p7.json` $\rightarrow$ `python3 scripts/plot_total_prob.py` 
-    *  N = 321, sigma_y = 0.1, V0 = 1e10, two slits.
-- Snapshots (Re/Im and $|\Psi|$ at t = 0, 0.01, 0.02): `./bin/ds_solver configs/single_slit.json` and `./bin/ds_solver configs/double_slit.json` $\rightarrow$ `python3 scripts/plot_snapshots.py`  
-    * N = 81, sigma_y = 0.2, V0 = 1e10, slits = {1,2}.
-    * T = {0.0, 0.001, 0.002} in python
-- Detection screen distributions: run single/double/triple slit configs (`configs/single_slit.json`, `configs/double_slit.json`, `configs/triple_slit.json`) $\rightarrow$ `python3 scripts/detection_prob.py` for 8 slits, adjust adjust teh number of slits in any of the files. 
-    * N = 81, sigma_y = 0.2, V0 = 1e10, slits = {1,2,3,8}
-    * T = 0.002, x_screen = 0.8, L = 1.0 in Python
-- Animation in `README.md`: `configs/config.json` $\rightarrow$ `python3 scripts/animate.py`
-    * N = 321, sigma_y = 0.2, V0 = 1e10, two slits
+
+All other parameters not listed are unchanged from the example `config.json`.
+
+| Plot / figure                                | Simulation command(s)                                                                                             | Plotting script                          | Key parameters / notes                                                                                                  |
+|---------------------------------------------|--------------------------------------------------------------------------------------------------------------------|------------------------------------------|-------------------------------------------------------------------------------------------------------------------------|
+| Total probability (free propagation)        | `./bin/ds_solver configs/no_slit_p7.json`                                                                          | `python3 scripts/plot_total_prob.py`     | `N = 321`, `sigma_y = 0.05`, `V0 = 0`.                                                                                  |
+| Total probability (double slit)             | `./bin/ds_solver configs/slit_p7.json`                                                                             | `python3 scripts/plot_total_prob.py`     | `N = 321`, `sigma_y = 0.1`, `V0 = 1e10`, two slits.                                                                    |
+| Snapshots (Re/Im and \|Ψ\| at t = 0, 0.01, 0.02) | `./bin/ds_solver configs/single_slit.json` and `./bin/ds_solver configs/double_slit.json`                        | `python3 scripts/plot_snapshots.py`      | `N = 81`, `sigma_y = 0.2`, `V0 = 1e10`, `slits = {1,2}`. In Python: `T = {0.0, 0.001, 0.002}`.                         |
+| Detection screen distributions              | Run single/double/triple slit configs: `./bin/ds_solver configs/single_slit.json`, `double_slit.json`, `triple_slit.json` | `python3 scripts/detection_prob.py`      | `N = 81`, `sigma_y = 0.2`, `V0 = 1e10`, `slits = {1,2,3,8}`. For 8 slits: adjust `num_slits` to 8 in one config. In Python: `T = 0.002`, `x_screen = 0.8`, `L = 1.0`. |
+| Animation in README.md                      | `./bin/ds_solver configs/config.json`                                                                              | `python3 scripts/animate.py`             | `N = 321`, `sigma_y = 0.2`, `V0 = 1e10`, two slits.                                                                    |
+
 
 ## Future work
 * GPU parallellization. 

@@ -33,7 +33,7 @@ BIN_MAIN := $(BIN_DIR)/ds_solver
 CONFIG   ?= configs/configs.
 
 APP_MATRIX := src/matrix_printer.cpp
-BIN_MATRIX := $(BIN_DIR)/matrix_printer.exe
+BIN_MATRIX := $(BIN_DIR)/matrix_printer
 
 # --- Aggregate ---
 APPS := $(BIN_MAIN) $(BIN_MATRIX)
